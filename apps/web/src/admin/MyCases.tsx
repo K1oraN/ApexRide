@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
+import { Button, Select, Textarea } from '../components/design-system';
 import { authRequest } from '../services/auth';
-import { errorText, type Row } from './service';
 import './admin.css';
+import { errorText, type Row } from './service';
 export function MyCases() {
   const [notice, setNotice] = useState('');
   useEffect(() => {
@@ -70,7 +71,7 @@ export function MyCases() {
       <span className="eyebrow">MINHA CONTA</span>
       <h1>Medidas e solicitações</h1>
       {notice && <p>{notice}</p>}
-      <Link className="text-link" to="/configuracoes">
+      <Link className="text-link action-link" to="/configuracoes">
         Voltar à conta
       </Link>
       {error && <p role="alert">{error}</p>}
@@ -102,24 +103,24 @@ export function MyCases() {
                       new Date(String(s.expires_at)).toLocaleString('pt-BR')
                     : 'Sem prazo definido'}
               </small>
-              <button
-                className="button"
+              <Button
+                variant="secondary"
                 onClick={() => setTarget('sanction:' + s.id)}
               >
                 Contestar medida
-              </button>
+              </Button>
             </article>
           ))}
           {data.decisions.map((d) => (
             <article key={String(d.id)} className="panel admin-action">
               <strong>{String(d.action)}</strong>
               <p>{String(d.explanation)}</p>
-              <button
-                className="button"
+              <Button
+                variant="secondary"
                 onClick={() => setTarget('decision:' + d.id)}
               >
                 Contestar decisão
-              </button>
+              </Button>
             </article>
           ))}
           {target && (
@@ -137,7 +138,7 @@ export function MyCases() {
               <h2>Enviar recurso</h2>
               <label className="account-field">
                 Fundamentação
-                <textarea
+                <Textarea
                   required
                   minLength={5}
                   maxLength={2000}
@@ -145,9 +146,9 @@ export function MyCases() {
                   onChange={(e) => setExplanation(e.target.value)}
                 />
               </label>
-              <button className="button button-primary" disabled={busy}>
+              <Button variant="primary" disabled={busy}>
                 Enviar para revisão
-              </button>
+              </Button>
             </form>
           )}
           <h2>Meus recursos</h2>
@@ -178,7 +179,7 @@ export function MyCases() {
       >
         <label className="account-field">
           Tipo de solicitação
-          <select value={kind} onChange={(e) => setKind(e.target.value)}>
+          <Select value={kind} onChange={(e) => setKind(e.target.value)}>
             {[
               ['question', 'Dúvida'],
               ['access', 'Acesso aos meus dados'],
@@ -191,11 +192,11 @@ export function MyCases() {
                 {label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="account-field">
           Descreva sua solicitação
-          <textarea
+          <Textarea
             required
             minLength={5}
             maxLength={1000}
@@ -203,9 +204,9 @@ export function MyCases() {
             onChange={(e) => setPrivacy(e.target.value)}
           />
         </label>
-        <button className="button button-primary" disabled={busy}>
+        <Button variant="primary" disabled={busy}>
           Registrar solicitação
-        </button>
+        </Button>
       </form>
       {requests.map((p) => (
         <article key={String(p.id)}>

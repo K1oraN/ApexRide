@@ -1,4 +1,5 @@
 import { authRequest } from './auth';
+import type { Directions } from '../navigation/types';
 import type {
   RouteRecord,
   RouteData,
@@ -12,6 +13,20 @@ export interface RouteList {
   hasMore: boolean;
 }
 export const routeService = {
+  providers: () =>
+    authRequest<{
+      routing: boolean;
+      geocoding: boolean;
+      geocoder: string;
+      elevation: boolean;
+    }>('/routes/providers'),
+  destinations: (query: string) =>
+    authRequest<{
+      places: { id: string; label: string; coordinate: Coordinate }[];
+      attribution: string;
+    }>('/routes/geocode', 'POST', { query }),
+  directions: (waypoints: Coordinate[]) =>
+    authRequest<Directions>('/routes/directions', 'POST', { waypoints }),
   list: (query: URLSearchParams, scope = '') =>
     authRequest<RouteList>(`/routes${scope}?${query}`),
   detail: (id: string) =>

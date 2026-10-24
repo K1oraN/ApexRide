@@ -1,5 +1,13 @@
 # Vídeo local durante o Ride — Parte 16
 
+**Interface da Etapa 5:** `/ride/videos` reúne as gravações da conta neste
+aparelho; `/ride/estudio` abre os mesmos segmentos no compositor existente.
+Configuração de câmera fica recolhida antes de iniciar e durante pausa. Durante
+o registro há estado real e ação para encerrar somente a câmera. A transição
+para espera de GPS preserva a prévia autorizada; sair do preparo sem sessão
+nem início pendente continua liberando a câmera. Importação de arquivos externos
+não foi implementada: o contrato atual exige âncoras produzidas pelo Ride.
+
 ## Uso
 
 Entre na conta, selecione moto e modo e abra **Vídeo opcional** na preparação

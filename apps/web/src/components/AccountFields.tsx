@@ -1,37 +1,93 @@
-import { useState, type InputHTMLAttributes } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import {
+  useId,
+  useState,
+  type InputHTMLAttributes,
+  type ReactNode,
+} from 'react';
+import { IconButton, Input, Select } from './design-system';
 export function Field({
   label,
+  icon,
+  hint,
+  error,
+  success,
+  id: providedId,
   ...props
-}: InputHTMLAttributes<HTMLInputElement> & { label: string }) {
+}: InputHTMLAttributes<HTMLInputElement> & {
+  label: string;
+  icon?: ReactNode;
+  hint?: string;
+  error?: string;
+  success?: string;
+}) {
+  const generated = useId(),
+    id = providedId ?? generated;
   return (
-    <label className="account-field">
-      <span>{label}</span>
-      <input {...props} />
-    </label>
+    <div className="account-field ui-field">
+      {icon && (
+        <span className="auth-field-icon" aria-hidden>
+          {icon}
+        </span>
+      )}
+      <label htmlFor={id}>{label}</label>
+      <Input
+        {...props}
+        id={id}
+        data-state={!error && success ? 'success' : undefined}
+        aria-invalid={error ? true : props['aria-invalid']}
+        aria-describedby={
+          error || hint || success ? `${id}-help` : props['aria-describedby']
+        }
+      />
+      {(error || success || hint) && (
+        <small
+          id={`${id}-help`}
+          className={
+            error
+              ? 'ui-field-error'
+              : success
+                ? 'ui-field-success'
+                : 'ui-field-hint'
+          }
+        >
+          {error || success || hint}
+        </small>
+      )}
+    </div>
   );
 }
 export function PasswordField({
   label,
+  icon,
+  id: providedId,
   ...props
-}: Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & { label: string }) {
+}: Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
+  label: string;
+  icon?: ReactNode;
+}) {
   const [visible, setVisible] = useState(false);
+  const generated = useId(),
+    id = providedId ?? generated;
   return (
-    <label className="account-field">
-      <span>{label}</span>
+    <div className="account-field ui-field">
+      {icon && (
+        <span className="auth-field-icon" aria-hidden>
+          {icon}
+        </span>
+      )}
+      <label htmlFor={id}>{label}</label>
       <span className="password-input">
-        <input {...props} type={visible ? 'text' : 'password'} />
-        <button
-          type="button"
-          className="icon-button"
-          aria-label={`${visible ? 'Ocultar' : 'Mostrar'} ${label.toLowerCase()}`}
+        <Input {...props} id={id} type={visible ? 'text' : 'password'} />
+        <IconButton
+          label={`${visible ? 'Ocultar' : 'Mostrar'} ${label.toLowerCase()}`}
           aria-pressed={visible}
           onClick={() => setVisible(!visible)}
         >
           {visible ? <EyeOff size={20} /> : <Eye size={20} />}
-        </button>
+        </IconButton>
       </span>
-    </label>
+    </div>
   );
 }
 const states = [
@@ -73,7 +129,7 @@ export function StateField({
   return (
     <label className="account-field">
       <span>Estado (opcional)</span>
-      <select
+      <Select
         name="state"
         autoComplete="address-level1"
         value={value}
@@ -85,7 +141,7 @@ export function StateField({
             {uf === 'AL' ? 'Alagoas (AL)' : uf}
           </option>
         ))}
-      </select>
+      </Select>
     </label>
   );
 }

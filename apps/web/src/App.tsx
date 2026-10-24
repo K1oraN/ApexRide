@@ -1,14 +1,25 @@
 import { lazy, Suspense } from 'react';
 import { Link, Route, Routes } from 'react-router';
-import { Layout } from './components/Layout';
-import { HomePage } from './pages/HomePage';
 import { AuthProvider } from './auth/AuthProvider';
 import { RequireAuth } from './auth/RequireAuth';
+import { ButtonLink } from './components/design-system';
+import { Layout } from './components/Layout';
+import { PublicLayout } from './components/PublicLayout';
+import { LiveProvider } from './events/LiveProvider';
+import { GarageProvider } from './garage/GarageProvider';
+import { LandingPage } from './pages/LandingPage';
+import { RideProvider } from './ride/RideProvider';
+import { NavigationProvider } from './navigation/NavigationProvider';
 import './styles/account.css';
 import './styles/garage.css';
-import { GarageProvider } from './garage/GarageProvider';
-import { RideProvider } from './ride/RideProvider';
-import { LiveProvider } from './events/LiveProvider';
+const DiscoveriesPage = lazy(() =>
+  import('./pages/DiscoveriesPage').then((m) => ({
+    default: m.DiscoveriesPage,
+  })),
+);
+const HomePage = lazy(() =>
+  import('./pages/HomePage').then((m) => ({ default: m.HomePage })),
+);
 const AdminPage = lazy(() =>
   import('./admin/AdminPage').then((m) => ({ default: m.AdminPage })),
 );
@@ -99,6 +110,29 @@ const HealthPage = lazy(() =>
 const RidePage = lazy(() =>
   import('./pages/RidePage').then((module) => ({ default: module.RidePage })),
 );
+const GuidePage = lazy(() =>
+  import('./pages/GuidePage').then((m) => ({ default: m.GuidePage })),
+);
+const RideSessionsPage = lazy(() =>
+  import('./pages/RideWorkspacePages').then((m) => ({
+    default: m.RideSessionsPage,
+  })),
+);
+const RideCircuitsPage = lazy(() =>
+  import('./pages/RideWorkspacePages').then((m) => ({
+    default: m.RideCircuitsPage,
+  })),
+);
+const RideTelemetryPage = lazy(() =>
+  import('./pages/RideWorkspacePages').then((m) => ({
+    default: m.RideTelemetryPage,
+  })),
+);
+const RideMediaPage = lazy(() =>
+  import('./pages/RideWorkspacePages').then((m) => ({
+    default: m.RideMediaPage,
+  })),
+);
 
 const MotorcyclePage = lazy(() =>
   import('./pages/GaragePage').then((m) => ({ default: m.MotorcyclePage })),
@@ -108,6 +142,11 @@ const RouteDetailPage = lazy(() =>
 );
 const RouteEditorPage = lazy(() =>
   import('./pages/RoutePages').then((m) => ({ default: m.RouteEditorPage })),
+);
+const NavigationPage = lazy(() =>
+  import('./navigation/NavigationPage').then((m) => ({
+    default: m.NavigationPage,
+  })),
 );
 const RouteModerationPage = lazy(() =>
   import('./pages/RoutePages').then((m) => ({
@@ -150,173 +189,208 @@ export function App() {
     <AuthProvider>
       <GarageProvider>
         <RideProvider>
-          <LiveProvider>
-            <Routes>
-              <Route
-                path="admin/:section?"
-                element={
-                  <Suspense
-                    fallback={<p role="status">Carregando administração…</p>}
-                  >
-                    <AdminPage />
-                  </Suspense>
-                }
-              />
-              <Route element={<Layout />}>
-                <Route index element={<HomePage />} />
-                <Route path="explorar" element={<ExplorePage />} />
-                <Route path="explorar/:id" element={<RouteDetailPage />} />
-                <Route path="ride" element={<RidePage />} />
+          <NavigationProvider>
+            <LiveProvider>
+              <Routes>
                 <Route
-                  path="compartilhar/rides/:id"
-                  element={<PublicRidePage />}
-                />
-                <Route path="comunidade" element={<CommunityPage />} />
-                <Route path="comunidade/grupos" element={<GroupsPage />} />
-                <Route
-                  path="comunidade/grupos/:id"
-                  element={<GroupDetailsPage />}
-                />
-                <Route
-                  path="comunidade/grupos/convite/:invitationId"
-                  element={<GroupInvitationPage />}
-                />
-                <Route
-                  path="comunidade/u/:username"
-                  element={<SocialProfilePage />}
-                />
-                <Route
-                  path="entrar"
-                  element={<AuthPage key="login" mode="login" />}
-                />
-                <Route
-                  path="cadastro"
-                  element={<AuthPage key="register" mode="register" />}
-                />
-                <Route
-                  path="recuperar-senha"
-                  element={<AuthPage key="forgot" mode="forgot" />}
-                />
-                <Route
-                  path="redefinir-senha"
-                  element={<AuthPage key="reset" mode="reset" />}
-                />
-                <Route
-                  path="verificar-email"
-                  element={<AuthPage key="verify" mode="verify" />}
-                />
-                <Route
-                  path="documentos"
+                  path="admin/:section?"
                   element={
-                    <section className="account-card panel">
-                      <h1>Documentos para publicação</h1>
-                      <p>
-                        Os textos definitivos dos Termos de Uso e da Política de
-                        Privacidade ainda precisam ser fornecidos e revisados
-                        pelo responsável antes do lançamento. O ambiente atual
-                        registra apenas ciência preliminar para testes.
-                      </p>
-                      <Link className="text-link" to="/cadastro">
-                        Voltar ao cadastro
-                      </Link>
-                    </section>
+                    <Suspense
+                      fallback={<p role="status">Carregando administração…</p>}
+                    >
+                      <AdminPage />
+                    </Suspense>
                   }
                 />
                 <Route element={<RequireAuth />}>
-                  <Route path="perfil/medidas" element={<MyCases />} />
+                  <Route element={<Layout />}>
+                    <Route path="app" element={<HomePage />} />
+                    <Route path="explorar" element={<ExplorePage />} />
+                    <Route path="explorar/:id" element={<RouteDetailPage />} />
+                    <Route path="ride" element={<RidePage />} />
+                    <Route path="guia" element={<GuidePage />} />
+                    <Route path="descobertas" element={<DiscoveriesPage />} />
+                    <Route path="ride/sessoes" element={<RideSessionsPage />} />
+                    <Route
+                      path="ride/circuitos"
+                      element={<RideCircuitsPage />}
+                    />
+                    <Route
+                      path="ride/telemetria"
+                      element={<RideTelemetryPage />}
+                    />
+                    <Route
+                      path="ride/videos"
+                      element={<RideMediaPage key="library" />}
+                    />
+                    <Route
+                      path="ride/estudio"
+                      element={<RideMediaPage key="studio" studio />}
+                    />
+                    <Route path="comunidade" element={<CommunityPage />} />
+                    <Route path="comunidade/grupos" element={<GroupsPage />} />
+                    <Route
+                      path="comunidade/grupos/:id"
+                      element={<GroupDetailsPage />}
+                    />
+                    <Route
+                      path="comunidade/grupos/convite/:invitationId"
+                      element={<GroupInvitationPage />}
+                    />
+                    <Route
+                      path="comunidade/u/:username"
+                      element={<SocialProfilePage />}
+                    />
+                    <Route path="perfil/medidas" element={<MyCases />} />
+                    <Route
+                      path="perfil/conquistas"
+                      element={<AchievementsPage />}
+                    />
+                    <Route path="perfil/xp" element={<XpHistoryPage />} />
+                    <Route
+                      path="comunidade/rankings"
+                      element={<RankingsPage />}
+                    />
+                    <Route path="comunidade/eventos" element={<EventsPage />} />
+                    <Route
+                      path="comunidade/eventos/:id"
+                      element={<EventDetailsPage />}
+                    />
+                    <Route
+                      path="comunidade/eventos/novo"
+                      element={<EventCreatePage />}
+                    />
+                    <Route
+                      path="comunidade/eventos/:id/mapa"
+                      element={<EventLiveMapPage />}
+                    />
+                    <Route
+                      path="comunidade/grupos/novo"
+                      element={<GroupCreatePage />}
+                    />
+                    <Route
+                      path="explorar/:id/comparar"
+                      element={<ComparisonPage />}
+                    />
+                    <Route path="historico" element={<HistoryPage />} />
+                    <Route path="historico/:id" element={<RideDetailsPage />} />
+                    <Route
+                      path="historico/:id/replay"
+                      element={<ReplayPage />}
+                    />
+                    <Route
+                      path="historico/:id/semelhantes"
+                      element={<SimilarityPage />}
+                    />
+                    <Route
+                      path="historico/local/:clientId/replay"
+                      element={<ReplayPage />}
+                    />
+                    <Route
+                      path="historico/local/:clientId"
+                      element={<LocalRideDetailsPage />}
+                    />
+                    <Route
+                      path="estatisticas"
+                      element={<RideStatisticsPage />}
+                    />
+                    <Route
+                      path="explorar/novo"
+                      element={<RouteEditorPage key="new-route" />}
+                    />
+                    <Route
+                      path="explorar/navegar"
+                      element={<NavigationPage />}
+                    />
+                    <Route
+                      path="explorar/:id/editar"
+                      element={<RouteEditorPage key="edit-route" />}
+                    />
+                    <Route
+                      path="explorar/moderacao"
+                      element={<RouteModerationPage />}
+                    />
+                    <Route
+                      path="garagem/nova"
+                      element={<MotorcyclePage key="new" />}
+                    />
+                    <Route
+                      path="garagem/:id"
+                      element={<MotorcyclePage key="detail" />}
+                    />
+                    <Route
+                      path="garagem/:id/editar"
+                      element={<MotorcyclePage key="edit" edit />}
+                    />
+                    <Route path="perfil" element={<CommunityPage />} />
+                    <Route path="configuracoes" element={<AccountPage />} />
+                    <Route
+                      path="privacidade"
+                      element={<AccountPage key="privacy" privacyOnly />}
+                    />
+                    <Route path="garagem" element={<GaragePage />} />
+                    <Route path="tecnico" element={<HealthPage />} />
+                  </Route>
+                </Route>
+                <Route element={<PublicLayout />}>
+                  <Route index element={<LandingPage />} />
                   <Route
-                    path="perfil/conquistas"
-                    element={<AchievementsPage />}
+                    path="compartilhar/rides/:id"
+                    element={<PublicRidePage />}
                   />
-                  <Route path="perfil/xp" element={<XpHistoryPage />} />
                   <Route
-                    path="comunidade/rankings"
-                    element={<RankingsPage />}
-                  />
-                  <Route path="comunidade/eventos" element={<EventsPage />} />
-                  <Route
-                    path="comunidade/eventos/:id"
-                    element={<EventDetailsPage />}
+                    path="entrar"
+                    element={<AuthPage key="login" mode="login" />}
                   />
                   <Route
-                    path="comunidade/eventos/novo"
-                    element={<EventCreatePage />}
+                    path="cadastro"
+                    element={<AuthPage key="register" mode="register" />}
                   />
                   <Route
-                    path="comunidade/eventos/:id/mapa"
-                    element={<EventLiveMapPage />}
+                    path="recuperar-senha"
+                    element={<AuthPage key="forgot" mode="forgot" />}
                   />
                   <Route
-                    path="comunidade/grupos/novo"
-                    element={<GroupCreatePage />}
+                    path="redefinir-senha"
+                    element={<AuthPage key="reset" mode="reset" />}
                   />
                   <Route
-                    path="explorar/:id/comparar"
-                    element={<ComparisonPage />}
-                  />
-                  <Route path="historico" element={<HistoryPage />} />
-                  <Route path="historico/:id" element={<RideDetailsPage />} />
-                  <Route path="historico/:id/replay" element={<ReplayPage />} />
-                  <Route
-                    path="historico/:id/semelhantes"
-                    element={<SimilarityPage />}
+                    path="verificar-email"
+                    element={<AuthPage key="verify" mode="verify" />}
                   />
                   <Route
-                    path="historico/local/:clientId/replay"
-                    element={<ReplayPage />}
+                    path="documentos"
+                    element={
+                      <section className="account-card panel">
+                        <h1>Documentos para publicação</h1>
+                        <p>
+                          Os textos definitivos dos Termos de Uso e da Política
+                          de Privacidade ainda precisam ser fornecidos e
+                          revisados pelo responsável antes do lançamento. O
+                          ambiente atual registra apenas ciência preliminar para
+                          testes.
+                        </p>
+                        <Link className="text-link action-link" to="/cadastro">
+                          Voltar ao cadastro
+                        </Link>
+                      </section>
+                    }
                   />
                   <Route
-                    path="historico/local/:clientId"
-                    element={<LocalRideDetailsPage />}
-                  />
-                  <Route path="estatisticas" element={<RideStatisticsPage />} />
-                  <Route
-                    path="explorar/novo"
-                    element={<RouteEditorPage key="new-route" />}
-                  />
-                  <Route
-                    path="explorar/:id/editar"
-                    element={<RouteEditorPage key="edit-route" />}
-                  />
-                  <Route
-                    path="explorar/moderacao"
-                    element={<RouteModerationPage />}
-                  />
-                  <Route
-                    path="garagem/nova"
-                    element={<MotorcyclePage key="new" />}
-                  />
-                  <Route
-                    path="garagem/:id"
-                    element={<MotorcyclePage key="detail" />}
-                  />
-                  <Route
-                    path="garagem/:id/editar"
-                    element={<MotorcyclePage key="edit" edit />}
-                  />
-                  <Route path="perfil" element={<CommunityPage />} />
-                  <Route path="configuracoes" element={<AccountPage />} />
-                  <Route
-                    path="privacidade"
-                    element={<AccountPage key="privacy" privacyOnly />}
+                    path="*"
+                    element={
+                      <section className="empty-state panel">
+                        <h1>Página não encontrada</h1>
+                        <ButtonLink variant="outline" to="/">
+                          Voltar ao início
+                        </ButtonLink>
+                      </section>
+                    }
                   />
                 </Route>
-                <Route path="garagem" element={<GaragePage />} />
-                <Route path="tecnico" element={<HealthPage />} />
-                <Route
-                  path="*"
-                  element={
-                    <section className="empty-state panel">
-                      <h1>Página não encontrada</h1>
-                      <Link className="button button-primary" to="/">
-                        Voltar ao início
-                      </Link>
-                    </section>
-                  }
-                />
-              </Route>
-            </Routes>
-          </LiveProvider>
+              </Routes>
+            </LiveProvider>
+          </NavigationProvider>
         </RideProvider>
       </GarageProvider>
     </AuthProvider>

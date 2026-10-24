@@ -1,24 +1,25 @@
-import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
 import { calculateMetrics } from '@apex-ride/ride-core';
-import { trackPreview } from '@apex-ride/ride-core/history';
 import {
-  gpsChart,
   assistedChart,
+  gpsChart,
   motionChart,
   type ChartData,
 } from '@apex-ride/ride-core/charts';
+import { trackPreview } from '@apex-ride/ride-core/history';
 import { detectLaps, type Lap } from '@apex-ride/ride-core/routes';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import { Link, useNavigate, useParams } from 'react-router';
 import { useAuth } from '../auth/useAuth';
-import { useOffline } from '../offline/context';
-import type { Activity } from '../ride/controller';
-import type { LocalSession } from '../offline/repository';
+import { Button, ButtonLink } from '../components/design-system';
 import { HistoryMetrics } from '../history/HistoryMetrics';
 import { HistoryTrackMap } from '../history/HistoryTrackMap';
 import type { HistoryDetail } from '../history/detail-types';
 import { syncLabels } from '../history/local-history';
-import { TelemetryCharts } from '../ride/TelemetryCharts';
+import { useOffline } from '../offline/context';
+import type { LocalSession } from '../offline/repository';
 import { EventResults } from '../ride/AdvancedResults';
+import { TelemetryCharts } from '../ride/TelemetryCharts';
+import type { Activity } from '../ride/controller';
 import '../styles/history.css';
 import '../styles/ride-session.css';
 import { VideoLibrary } from '../video/VideoLibrary';
@@ -91,7 +92,7 @@ export function LocalRideDetailsPage() {
         <p role={error ? 'alert' : 'status'}>
           {error || 'Carregando cópia local…'}
         </p>
-        <Link className="text-link" to="/historico">
+        <Link className="text-link action-link" to="/historico">
           Voltar ao histórico
         </Link>
       </section>
@@ -162,7 +163,7 @@ export function LocalRideDetailsPage() {
   }
   return (
     <div className="history-detail">
-      <Link className="text-link" to="/historico">
+      <Link className="text-link action-link" to="/historico">
         Voltar ao histórico
       </Link>
       <header className="panel history-panel">
@@ -180,33 +181,33 @@ export function LocalRideDetailsPage() {
         </p>
         {queued?.error && <p>{queued.error}</p>}
         <div className="history-actions">
-          <Link
-            className="button button-primary"
+          <ButtonLink
+            variant="primary"
             to={`/historico/local/${p.clientId}/replay`}
           >
             Reproduzir Ride
-          </Link>
-          <button
-            className="button"
+          </ButtonLink>
+          <Button
+            variant="secondary"
             onClick={() =>
               void offline.sync.run(true).catch((e) => setMessage(e.message))
             }
           >
             Sincronizar agora
-          </button>
+          </Button>
           {data.row.decision === 'review' && (
-            <button
-              className="button"
+            <Button
+              variant="secondary"
               onClick={() =>
                 void offline.recover(clientId!).then(() => navigate('/ride'))
               }
             >
               Revisar para salvar no Ride
-            </button>
+            </Button>
           )}
-          <button className="button" onClick={() => void discard()}>
+          <Button variant="destructive" onClick={() => void discard()}>
             Descartar atividade local
-          </button>
+          </Button>
         </div>
         {message && <p role="status">{message}</p>}
       </header>
@@ -219,9 +220,9 @@ export function LocalRideDetailsPage() {
       <section className="panel history-panel">
         <h2>Gráficos locais</h2>
         {!charts ? (
-          <button className="button" onClick={load}>
+          <Button variant="secondary" onClick={load}>
             Carregar gráficos locais
-          </button>
+          </Button>
         ) : (
           <>
             <TelemetryCharts

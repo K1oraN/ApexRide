@@ -1,12 +1,14 @@
+import { ChoiceSelect } from '../components/design-system';
+import { BIKE_CATEGORIES } from '@apex-ride/ride-core/comparison';
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { Avatar } from '../components/ui';
 import { StateField } from '../components/AccountFields';
-import { BIKE_CATEGORIES } from '@apex-ride/ride-core/comparison';
-import { useGamification } from './useGamification';
-import type { Ranking, Season, Preferences } from './types';
-import { RankingPreferences } from './RankingPreferences';
+import { Button, Input, Select } from '../components/design-system';
+import { Avatar } from '../components/ui';
 import '../styles/gamification.css';
+import { RankingPreferences } from './RankingPreferences';
+import type { Preferences, Ranking, Season } from './types';
+import { useGamification } from './useGamification';
 export function RankingsPage() {
   const [season, setSeason] = useState(''),
     [kind, setKind] = useState('xp'),
@@ -38,7 +40,7 @@ export function RankingsPage() {
   };
   return (
     <div className="gamification-page">
-      <Link className="text-link" to="/comunidade">
+      <Link className="text-link action-link" to="/comunidade">
         Voltar à Comunidade
       </Link>
       <header>
@@ -53,7 +55,7 @@ export function RankingsPage() {
         <div className="gamification-filters">
           <label className="account-field">
             Temporada
-            <select
+            <Select
               value={season}
               onChange={(e) => change(setSeason)(e.target.value)}
             >
@@ -68,19 +70,20 @@ export function RankingsPage() {
                       : 'Encerrada'}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
-          <label className="account-field">
-            Classificação
-            <select
+          <div className="account-field">
+            <span>Classificação</span>
+            <ChoiceSelect
+              aria-label="Classificação"
               value={kind}
               onChange={(e) => change(setKind)(e.target.value)}
             >
               <option value="xp">XP da temporada</option>
               <option value="community">Participação comunitária</option>
               <option value="exploration">Exploração</option>
-            </select>
-          </label>
+            </ChoiceSelect>
+          </div>
           <StateField
             value={state}
             onChange={(v) => {
@@ -90,7 +93,7 @@ export function RankingsPage() {
           />
           <label className="account-field">
             Município (opcional)
-            <input
+            <Input
               value={city}
               disabled={!state}
               maxLength={80}
@@ -99,7 +102,7 @@ export function RankingsPage() {
           </label>
           <label className="account-field">
             Região
-            <select
+            <Select
               value={region}
               onChange={(e) => change(setRegion)(e.target.value)}
             >
@@ -109,11 +112,11 @@ export function RankingsPage() {
                   <option key={r}>{r}</option>
                 ),
               )}
-            </select>
+            </Select>
           </label>
           <label className="account-field">
             Categoria da moto
-            <select
+            <Select
               value={category}
               onChange={(e) => change(setCategory)(e.target.value)}
             >
@@ -121,11 +124,11 @@ export function RankingsPage() {
               {BIKE_CATEGORIES.map((c) => (
                 <option key={c}>{c}</option>
               ))}
-            </select>
+            </Select>
           </label>
           <label className="account-field">
             Cilindrada
-            <select
+            <Select
               value={band}
               onChange={(e) => change(setBand)(e.target.value)}
             >
@@ -135,7 +138,7 @@ export function RankingsPage() {
               <option value="601-1000">601–1000 cc</option>
               <option value="over-1000">Acima de 1000 cc</option>
               <option value="unknown">Não informada</option>
-            </select>
+            </Select>
           </label>
         </div>
         <small>
@@ -148,9 +151,9 @@ export function RankingsPage() {
         <div className="panel gamification-card" role="alert">
           <p>{error}</p>
           <p>Sem conexão, a classificação remota fica indisponível.</p>
-          <button className="button" onClick={reload}>
+          <Button variant="secondary" onClick={reload}>
             Tentar novamente
-          </button>
+          </Button>
         </div>
       )}
       {data && (
@@ -195,22 +198,22 @@ export function RankingsPage() {
               {data.items.length === 0 && (
                 <p>Nenhum participante elegível nesta seleção.</p>
               )}
-              <div className="gamification-actions">
-                <button
-                  className="button"
+              <div className="page-pagination">
+                <Button
+                  variant="secondary"
                   disabled={page <= 1}
                   onClick={() => setPage((n) => n - 1)}
                 >
                   Anterior
-                </button>
+                </Button>
                 <span>Página {page}</span>
-                <button
-                  className="button"
+                <Button
+                  variant="secondary"
                   disabled={!data.hasMore}
                   onClick={() => setPage((n) => n + 1)}
                 >
                   Próxima
-                </button>
+                </Button>
               </div>
             </>
           )}

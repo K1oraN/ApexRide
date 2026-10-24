@@ -1,4 +1,5 @@
-﻿import { expect, test } from '@playwright/test';
+import { chooseOption } from './choices';
+import { expect, test } from '@playwright/test';
 import { createRequire } from 'node:module';
 import { mkdir } from 'node:fs/promises';
 import { prepare, finish } from './ride-fixtures';
@@ -21,7 +22,7 @@ test('Parte 11: editor, aprovação, favorito, Ride offline e associação real'
     .fill('Passeio sintético de validação');
   await page.getByLabel('Cidade', { exact: true }).fill('Maceió');
   await page.getByLabel('Estado (UF)', { exact: true }).fill('AL');
-  await page.getByLabel('Traçado', { exact: true }).selectOption('manual');
+  await chooseOption(page, 'Traçado', 'manual');
   const map = page.locator('.gps-map-canvas');
   await expect(page.getByText('Carregando mapa…')).toHaveCount(0);
   const box = await map.boundingBox();

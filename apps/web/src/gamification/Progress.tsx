@@ -1,11 +1,12 @@
-import { Link } from 'react-router';
 import { LockKeyhole } from 'lucide-react';
-import { AchievementMedal } from './Badge';
-import { Progress } from '../components/ui';
+import { Link } from 'react-router';
 import { useAuth } from '../auth/useAuth';
-import { useGamification } from './useGamification';
-import type { ProgressData, Achievement } from './types';
+import { Button } from '../components/design-system';
+import { Progress } from '../components/ui';
 import '../styles/gamification.css';
+import { AchievementMedal } from './Badge';
+import type { Achievement, ProgressData } from './types';
+import { useGamification } from './useGamification';
 export function ProgressSummary({ data }: { data: ProgressData | null }) {
   return (
     <div className="gamification-progress">
@@ -60,7 +61,7 @@ export function AchievementPreview() {
         </p>
       )}
       {!data && !error && <p>Consultando conquistas…</p>}
-      <Link className="text-link" to="/perfil/conquistas">
+      <Link className="text-link action-link" to="/perfil/conquistas">
         Ver conquistas e metas
       </Link>
     </div>
@@ -92,11 +93,11 @@ export function RideXp({ id }: { id: string }) {
         <p>{error || 'Consultando validação…'}</p>
       )}
       {(error || data?.fact.state === 'pending') && (
-        <button className="button" onClick={reload}>
+        <Button variant="secondary" onClick={reload}>
           Atualizar validação
-        </button>
+        </Button>
       )}
-      <Link className="text-link" to={`/perfil/xp?rideId=${id}`}>
+      <Link className="text-link action-link" to={`/perfil/xp?rideId=${id}`}>
         Histórico de XP e solicitações de revisão
       </Link>
     </section>

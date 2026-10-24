@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
-import type { HistoryOptions } from '../history/types';
+import { historyParams } from '../history/filters';
 import { HistoryFilters } from '../history/HistoryFilters';
 import { historyService } from '../history/service';
+import type { HistoryOptions } from '../history/types';
 import { useHistoryStats } from '../history/useHistoryStats';
-import { historyParams } from '../history/filters';
 import { formatDuration } from '../ride/format';
 import '../styles/history.css';
 import '../styles/ride-session.css';
@@ -53,7 +53,7 @@ export function RideStatisticsPage() {
     <div className="history-page">
       <header className="history-heading">
         <h1>Estatísticas dos Rides</h1>
-        <Link className="text-link" to="/historico">
+        <Link className="text-link action-link" to="/historico">
           Voltar ao histórico
         </Link>
       </header>

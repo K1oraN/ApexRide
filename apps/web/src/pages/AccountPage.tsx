@@ -1,10 +1,12 @@
+import { ChoiceSelect } from '../components/design-system';
 import { useState, type SubmitEvent } from 'react';
-import { SpeedSettings } from '../ride/SpeedSettings';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../auth/useAuth';
 import { Field, PasswordField, StateField } from '../components/AccountFields';
-import { authRequest, type User, type Privacy } from '../services/auth';
+import { Button, Textarea } from '../components/design-system';
 import { RankingPreferences } from '../gamification/RankingPreferences';
+import { SpeedSettings } from '../ride/SpeedSettings';
+import { authRequest, type Privacy, type User } from '../services/auth';
 import '../styles/gamification.css';
 export function AccountPage({
   privacyOnly = false,
@@ -102,9 +104,10 @@ export function AccountPage({
       {privacyOnly ? (
         <form className="account-form" onSubmit={savePrivacy}>
           <fieldset disabled={busy}>
-            <label className="account-field">
+            <div className="account-field">
               <span>Visibilidade do perfil</span>
-              <select
+              <ChoiceSelect
+                aria-label="Visibilidade do perfil"
                 value={profileVisibility}
                 onChange={(e) =>
                   setProfileVisibility(e.target.value as 'public' | 'private')
@@ -112,16 +115,17 @@ export function AccountPage({
               >
                 <option value="public">Público</option>
                 <option value="private">Privado</option>
-              </select>
-            </label>
+              </ChoiceSelect>
+            </div>
             <p>
               O perfil público apresenta nome, usuário, biografia, cidade e
               estado. E-mail e dados da conta permanecem restritos. Ao torná-lo
               privado, o perfil deixa de estar disponível na consulta pública.
             </p>
-            <label className="account-field">
+            <div className="account-field">
               <span>Visibilidade padrão de atividades futuras</span>
-              <select
+              <ChoiceSelect
+                aria-label="Visibilidade padrão de atividades futuras"
                 value={activityVisibility}
                 onChange={(e) =>
                   setActivityVisibility(e.target.value as 'public' | 'private')
@@ -129,8 +133,8 @@ export function AccountPage({
               >
                 <option value="public">Público</option>
                 <option value="private">Privado</option>
-              </select>
-            </label>
+              </ChoiceSelect>
+            </div>
             <p>
               Novas contas começam com atividades públicas por padrão. A
               preferência será utilizada quando o módulo de atividades estiver
@@ -143,9 +147,9 @@ export function AccountPage({
                 desenvolvido. Nenhum acesso ao GPS é solicitado nesta etapa.
               </p>
             </div>
-            <button type="submit" className="button button-primary">
+            <Button type="submit" variant="primary">
               {busy ? 'Salvando…' : 'Salvar privacidade'}
-            </button>
+            </Button>
           </fieldset>
         </form>
       ) : (
@@ -178,7 +182,7 @@ export function AccountPage({
               />
               <label className="account-field">
                 <span>Biografia</span>
-                <textarea
+                <Textarea
                   name="biography"
                   maxLength={300}
                   rows={4}
@@ -205,9 +209,9 @@ export function AccountPage({
                 está indisponível nesta etapa. Avatar padrão; envio de foto em
                 uma etapa futura.
               </small>
-              <button className="button button-primary" type="submit">
+              <Button variant="primary" type="submit">
                 {busy ? 'Salvando…' : 'Salvar perfil'}
-              </button>
+              </Button>
             </fieldset>
           </form>
           <form
@@ -247,9 +251,9 @@ export function AccountPage({
                 value={confirmation}
                 onChange={(e) => setConfirmation(e.target.value)}
               />
-              <button className="button button-outline" type="submit">
+              <Button variant="outline" type="submit">
                 {busy ? 'Aguarde…' : 'Alterar senha e sair'}
-              </button>
+              </Button>
             </fieldset>
           </form>
         </>
@@ -257,16 +261,16 @@ export function AccountPage({
       <RankingPreferences />
       <div className="account-links">
         <Link
-          className="text-link"
+          className="text-link action-link"
           to={privacyOnly ? '/configuracoes' : '/privacidade'}
         >
           {privacyOnly ? 'Editar perfil' : 'Configurações de privacidade'}
         </Link>
-        <Link className="text-link" to="/perfil">
+        <Link className="text-link action-link" to="/perfil">
           Meu perfil
         </Link>
-        <button
-          className="button button-muted"
+        <Button
+          variant="outline"
           disabled={busy}
           onClick={() =>
             void run(async () => {
@@ -275,7 +279,7 @@ export function AccountPage({
           }
         >
           Sair da conta
-        </button>
+        </Button>
       </div>
     </section>
   );

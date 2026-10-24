@@ -1,5 +1,14 @@
 # Funcionamento offline — Parte 10
 
+## Atualização — acesso autenticado da Etapa 1
+
+Uma sessão já validada pode continuar registrando uma atividade ao perder a
+conexão. Após **recarregar offline**, o painel exige reconexão e nova confirmação
+de sessão pela API antes de abrir. O perfil salvo no dispositivo não substitui
+a autenticação. Atividades, checkpoints e vídeos permanecem preservados para
+recuperação com a mesma conta. Veja [Etapa 1](refinamento/etapa1-acesso.md).
+As seções abaixo descrevem o mecanismo de gravação e sincronização existente.
+
 Implementação local em 23/10/2026. O registro depende de a página e os serviços de
 localização continuarem executando. Tela bloqueada, suspensão e encerramento do
 navegador podem interromper a coleta. Nenhuma homologação física Android/iPhone

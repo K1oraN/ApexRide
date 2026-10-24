@@ -7,6 +7,7 @@ import { mkdir, mkdtemp, readdir, unlink, rmdir } from 'node:fs/promises';
 import pg from 'pg';
 import { loadConfig } from '../src/config/env.js';
 import { migrate } from '../src/migrate.js';
+import { routeProviderFixture } from './route-provider-fixture.js';
 const config = loadConfig();
 async function runBatch(args: string[]) {
   const schema = `auth_e2e_${randomUUID().replaceAll('-', '')}`;
@@ -20,12 +21,15 @@ async function runBatch(args: string[]) {
   const admin = new pg.Pool(options);
   const pool = new pg.Pool({ ...options, options: `-c search_path=${schema}` });
   let photoDirectory: string | undefined;
+  let fixture: Awaited<ReturnType<typeof routeProviderFixture>> | undefined;
   let status: number;
   try {
     await admin.query(`CREATE SCHEMA "${schema}"`);
     await migrate(pool);
     await mkdir(dirname(config.motorcycleStorageDir), { recursive: true });
     photoDirectory = await mkdtemp(`${config.motorcycleStorageDir}-e2e-`);
+    if (args.some((arg) => arg.includes('explore-navigation.spec.ts')))
+      fixture = await routeProviderFixture();
     const require = createRequire(
       new URL('../../web/package.json', import.meta.url),
     );
@@ -46,6 +50,12 @@ async function runBatch(args: string[]) {
         WEB_API_PROXY_TARGET: 'http://127.0.0.1:3002',
         VITE_API_BASE_URL: '/api',
         MOTORCYCLE_STORAGE_DIR: photoDirectory,
+        ...(fixture
+          ? {
+              ROUTING_OSRM_URL: fixture.url,
+              E2E_ROUTING_FIXTURE_URL: fixture.url,
+            }
+          : {}),
       },
     });
     status = await new Promise<number>((resolve) => {
@@ -58,6 +68,7 @@ async function runBatch(args: string[]) {
     );
     status = 1;
   } finally {
+    await fixture?.close();
     await pool.end();
     if (/^auth_e2e_[a-f0-9]{32}$/.test(schema)) {
       await admin.query(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`);

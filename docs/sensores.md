@@ -1,5 +1,14 @@
 # Sensores de movimento — Parte 07
 
+**Etapa 5:** abra **Diagnóstico e calibração de sensores** no preparo do Ride.
+Ativar Sensores continua exigindo ação. O diagnóstico individual exige três
+leituras distintas em uma janela de pelo menos 100 ms e expira com a lacuna de
+1,5 s existente. Acelerômetro (linear ou gravidade), giroscópio e orientação
+são avaliados separadamente; orientação repetida não conta como nova amostra.
+Isso comprova recebimento, não precisão física. G exige também aceleração
+linear e calibração válidas. **Calibração opcional** abre as confirmações e a
+montagem. Algoritmos `motion-1` e seus limites permanecem intactos.
+
 Implementação `motion-1`, de 23/10/2026. Não há homologação física nem precisão
 metrológica declarada. Não implementa GPS Assistido, velocidade inercial,
 0–100/100–0, voltas, vídeo, Bluetooth, rankings ou sincronização offline.

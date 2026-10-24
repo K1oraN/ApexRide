@@ -1,4 +1,5 @@
 import type { Vector } from '@apex-ride/ride-core/motion';
+import type { MotionDiagnostics } from './diagnostics';
 export interface Orientation {
   alpha: number | null;
   beta: number | null;
@@ -29,6 +30,8 @@ export type SensorStatus =
   | 'insufficient'
   | 'interrupted';
 export interface SensorSnapshot {
+  diagnostics: MotionDiagnostics;
+  orientationPermission: 'unknown' | 'granted' | 'denied';
   policyWarning: string | null;
   status: SensorStatus;
   active: boolean;

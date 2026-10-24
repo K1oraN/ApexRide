@@ -1,6 +1,6 @@
 import { useMemo, useSyncExternalStore } from 'react';
-import { floorIndex, type ReplayTimeline } from './timeline';
 import type { ReplayEngine } from './engine';
+import { floorIndex, type ReplayTimeline } from './timeline';
 /** Projected local trace without third-party tiles. Static paths are prepared once. */
 export function OfflineReplayTrace({
   timeline,

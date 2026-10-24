@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
 import { useAuth } from '../auth/useAuth';
+import { Button } from '../components/design-system';
 import { useOffline } from '../offline/context';
-import { ApiError } from '../services/auth';
 import { loadServerReplay, localReplay } from '../replay/load';
-import type { ReplayInput } from '../replay/timeline';
 import { ReplayPanel } from '../replay/ReplayPanel';
+import type { ReplayInput } from '../replay/timeline';
+import { ApiError } from '../services/auth';
 export function ReplayPage() {
   const { id, clientId } = useParams(),
     { user } = useAuth();
@@ -76,12 +77,12 @@ function ReplayDetails() {
   }, [id, clientId, user, offline, attempt]);
   return (
     <div className="history-detail">
-      <Link className="text-link" to="/historico">
+      <Link className="text-link action-link" to="/historico">
         Voltar ao histórico
       </Link>
       {params.get('semelhantes') && (
         <Link
-          className="text-link"
+          className="text-link action-link"
           to={`/historico/${encodeURIComponent(params.get('semelhantes')!)}/semelhantes?atividade=${encodeURIComponent(params.get('atividade') ?? '')}`}
         >
           Voltar aos trajetos semelhantes
@@ -89,7 +90,7 @@ function ReplayDetails() {
       )}
       {params.get('comparar') && (
         <Link
-          className="text-link"
+          className="text-link action-link"
           to={`/explorar/${encodeURIComponent(params.get('comparar')!)}/comparar?atividades=${encodeURIComponent(params.get('atividades') ?? '')}&executar=1`}
         >
           Voltar à comparação
@@ -107,8 +108,8 @@ function ReplayDetails() {
       {error ? (
         <section className="panel history-panel">
           <p role="alert">Falha ao carregar replay: {error}</p>
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             onClick={() => {
               setError('');
               setProgress('Carregando atividade…');
@@ -116,7 +117,7 @@ function ReplayDetails() {
             }}
           >
             Tentar novamente
-          </button>
+          </Button>
         </section>
       ) : result?.owner === user?.id ? (
         <ReplayPanel input={result!.input} />

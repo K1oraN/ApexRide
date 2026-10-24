@@ -1,0 +1,637 @@
+.ride-workspace {
+  min-width: 0;
+  max-width: 1120px;
+  margin-inline: auto;
+}
+.ride-page.ride-workspace {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+.ride-section-nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  overflow: visible;
+  padding: 3px 2px 10px;
+  margin-bottom: 12px;
+}
+.ride-section-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 44px;
+  padding: 7px 3px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: linear-gradient(145deg, #171d22, #0b0e11);
+  color: var(--muted);
+  font-size: 11px;
+}
+.ride-section-nav a[aria-current='page'] {
+  color: white;
+  background: linear-gradient(135deg, #f6192b, #b40013);
+  border-color: #ff3546;
+}
+.ride-workspace-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-block: 12px 18px;
+}
+.ride-workspace-heading h1 {
+  font-size: clamp(21px, 3.5vw, 32px);
+  margin: 4px 0;
+}
+.ride-workspace-heading p,
+.ride-workspace .ride-help p,
+.ride-instrument-note,
+.ride-force-group > small {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.ride-workspace .mode-selector {
+  flex-shrink: 0;
+  padding: 5px;
+}
+.ride-workspace .mode-selector > svg:last-child {
+  display: none;
+}
+.ride-workspace .mode-selector select {
+  max-width: 145px;
+}
+.ride-workspace .ride-preflight {
+  padding: 16px;
+  margin: 0 0 18px;
+  border-color: #343a42;
+}
+.ride-preflight h2 {
+  font-size: 17px;
+  margin-bottom: 12px;
+}
+.ride-workspace .ride-bike-selection {
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 12px;
+  margin: 0;
+}
+.ride-workspace .ride-bike-selection .motorcycle-photo {
+  height: 72px;
+}
+.ride-bike-selection label {
+  display: grid;
+  gap: 5px;
+  font-size: 12px;
+}
+.ride-bike-selection small {
+  color: var(--muted);
+}
+.ride-context-choice {
+  margin-block: 12px;
+}
+.ride-context-choice > span {
+  color: var(--muted);
+  font-size: 11px;
+}
+.ride-context-choice > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 6px;
+}
+.ride-context-choice .button {
+  padding: 6px;
+  min-height: 40px;
+  font-size: 12px;
+}
+.ride-preflight-gps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-block: 12px;
+}
+.ride-preflight-gps > span {
+  color: var(--muted);
+  font-size: 11px;
+  max-width: 180px;
+  text-align: right;
+}
+.ride-start-actions {
+  display: grid;
+  gap: 8px;
+}
+.ride-start-actions .record-button {
+  display: flex;
+  justify-content: space-between;
+  min-height: 60px;
+  width: 100%;
+  font-size: 20px;
+  box-shadow: 0 5px 22px #ff001a26;
+}
+.ride-start-actions > .button:last-child {
+  min-height: 44px;
+}
+.ride-workspace .ride-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  margin: 0;
+  flex-wrap: wrap;
+}
+.ride-status > div:not(.gps-state) {
+  display: grid;
+  gap: 4px;
+}
+.ride-status > div > span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.ride-record-indicator {
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--red);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--red);
+  background: #ff001a0d;
+  box-shadow: 0 0 16px #ff001a20;
+}
+.ride-status .ride-status-clock {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.ride-status-clock strong {
+  font-size: 22px;
+  font-style: italic;
+}
+.ride-state-running .ride-record-indicator {
+  box-shadow: 0 0 18px #ff001a45;
+}
+.ride-state-paused .ride-status {
+  border-color: #9c742f;
+}
+.ride-state-paused .ride-record-indicator {
+  color: #ffc06d;
+  border-color: #9c742f;
+}
+.ride-workspace .ride-instruments {
+  margin-top: 10px;
+}
+.ride-workspace .ride-dashboard {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.75fr) minmax(0, 1fr);
+  max-width: 850px;
+  margin: 0 auto;
+  gap: 0;
+}
+.ride-workspace .ride-dashboard > .speedometer {
+  grid-column: auto;
+  grid-row: auto;
+  max-width: 390px;
+  margin: 0;
+  justify-self: center;
+  background: radial-gradient(
+    circle at 50% 42%,
+    #15191c,
+    #080a0b 65%,
+    transparent 66%
+  );
+}
+.ride-workspace .gauge-value {
+  font-size: 85px;
+  font-weight: 800;
+}
+.ride-workspace .dashboard-side {
+  gap: 10px;
+}
+.ride-workspace .dashboard-side .metric-card {
+  padding: 16px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 7px;
+}
+.ride-workspace .dashboard-side .metric-card strong {
+  font-size: clamp(17px, 2.8vw, 26px);
+  white-space: nowrap;
+}
+.ride-workspace .dashboard-side .metric-card small {
+  font-size: 12px;
+}
+.ride-workspace .dashboard-side .metric-icon {
+  margin: 0;
+}
+.ride-workspace .dashboard-side .metric-icon svg {
+  width: 30px;
+  height: 30px;
+}
+.ride-workspace .dashboard-side .metric-label {
+  font-size: 12px;
+}
+.ride-workspace .speed-source {
+  min-height: 36px;
+  font-size: 11px;
+  line-height: 1.4;
+  padding: 0 6px;
+}
+.ride-distance-time {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+.ride-distance-time .metric-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+}
+.ride-distance-time .metric-icon {
+  margin: 0;
+}
+.ride-distance-time .metric-card strong {
+  font-size: 25px;
+}
+.ride-workspace .ride-secondary-instruments {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+.ride-workspace .force-grid,
+.ride-workspace .lean-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  gap: 8px;
+}
+.ride-workspace .ride-secondary-instruments .metric-card {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column !important;
+  padding: 12px;
+  gap: 8px;
+}
+.ride-secondary-instruments .metric-label {
+  font-size: 12px;
+}
+.ride-secondary-instruments .metric-card strong {
+  font-size: 25px;
+}
+.ride-workspace .ride-secondary-instruments .metric-icon svg {
+  width: 32px;
+  height: 32px;
+}
+.ride-force-group > small {
+  display: block;
+  margin-top: 5px;
+  font-size: 10px;
+}
+.ride-instrument-note {
+  margin: 8px 2px 12px;
+}
+.ride-workspace .ride-active-controls {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0 20px;
+}
+.ride-workspace .ride-active-controls > .button {
+  flex-direction: row;
+  min-height: 66px;
+  font-size: 18px;
+}
+.ride-workspace .ride-finish-button {
+  border-color: #ee263a;
+}
+.ride-optional-settings {
+  display: grid;
+  gap: 8px;
+  margin-block: 20px;
+}
+.ride-optional-settings > details,
+.ride-help {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(130deg, #11171c, #080b0d);
+}
+.ride-optional-settings summary,
+.ride-help > summary {
+  min-height: 48px;
+  padding: 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.ride-optional-settings .ride-preparation {
+  border: 0;
+  margin: 0;
+  background: transparent;
+}
+.ride-optional-settings .video-panel {
+  margin: 0 14px 14px;
+}
+.ride-workspace .ride-map-panel {
+  padding: 0;
+  overflow: hidden;
+  margin: 18px 0;
+}
+.ride-workspace .ride-map-panel .map-ride {
+  height: clamp(240px, 34vw, 400px);
+  aspect-ratio: auto;
+}
+.ride-workspace .ride-video-running {
+  padding: 14px;
+  margin-top: 16px;
+}
+.ride-video-running .video-placeholder {
+  min-height: 0;
+  padding: 10px;
+}
+.ride-video-running .video-panel {
+  padding: 0;
+  border: 0;
+}
+.ride-video-running h2 {
+  font-size: 15px;
+}
+.ride-workspace .ride-help {
+  padding: 0;
+  margin-top: 16px;
+}
+.ride-help > p {
+  padding-inline: 14px;
+}
+.ride-calibration {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.ride-calibration > summary {
+  padding: 8px 0;
+}
+.ride-sensor-diagnostics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.ride-sensor-diagnostics > div {
+  display: grid;
+  gap: 5px;
+  align-content: start;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+.ride-sensor-diagnostics svg {
+  color: var(--red);
+}
+.ride-sensor-diagnostics strong {
+  font-size: 13px;
+}
+.ride-sensor-diagnostics span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.ride-sensor-diagnostics > p {
+  grid-column: 1 / -1;
+}
+.ride-circuit-panel {
+  padding: 16px;
+  margin-block: 16px;
+}
+.ride-circuit-panel h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+}
+.ride-circuit-panel h2 svg {
+  color: var(--red);
+}
+.ride-circuit-panel p,
+.ride-circuit-panel small {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.ride-lap-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.ride-lap-metrics > div {
+  padding: 12px;
+  background: #151a1e;
+  border-radius: 10px;
+}
+.ride-lap-metrics dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+.ride-lap-metrics dd {
+  margin: 6px 0 0;
+  font-size: 23px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.ride-lap-list {
+  max-height: 260px;
+  overflow-y: auto;
+  padding-left: 22px;
+  font-size: 13px;
+}
+.ride-hub-current {
+  padding: 18px;
+}
+.ride-hub-current h2 {
+  font-size: 18px;
+}
+.ride-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.ride-media-card {
+  padding: 18px;
+}
+.ride-media-card > svg {
+  color: var(--red);
+}
+.ride-media-card h2 {
+  font-size: 18px;
+}
+.ride-media-card p {
+  font-size: 12px;
+  color: var(--muted);
+}
+.ride-media-card.selected {
+  border-color: var(--red);
+}
+.ride-workspace .video-library article {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #0b1014;
+  padding: 16px;
+  margin: 12px 0;
+}
+.ride-workspace .video-library article h3 {
+  font-size: 16px;
+}
+.ride-workspace .video-library article > .button {
+  margin: 6px 8px 6px 0;
+}
+.ride-workspace .video-overlay {
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+.ride-workspace .history-heading h1 {
+  font-size: 22px;
+}
+@media (min-width: 768px) {
+  .ride-section-nav {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .ride-section-nav a {
+    flex-direction: row;
+    font-size: 12px;
+    padding: 10px 5px;
+  }
+  .ride-workspace .ride-preflight {
+    max-width: 680px;
+    margin-inline: auto;
+  }
+  .ride-start-actions {
+    grid-template-columns: 2fr 1fr;
+  }
+  .ride-lap-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .ride-sensor-diagnostics {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .ride-workspace .ride-active-controls {
+    max-width: 800px;
+    margin-inline: auto;
+  }
+}
+@media (min-width: 1024px) {
+  .ride-media-page .video-overlay {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 14px;
+  }
+  .ride-media-page .video-overlay > * {
+    grid-column: 1 / -1;
+  }
+  .ride-media-page .video-overlay > .overlay-preview {
+    grid-column: 1;
+    grid-row: 3;
+    position: sticky;
+    top: 20px;
+  }
+  .ride-media-page .video-overlay > .overlay-controls {
+    grid-column: 2;
+    grid-row: 3;
+    margin: 0;
+  }
+  .ride-media-page .overlay-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .ride-workspace-heading {
+    align-items: flex-start;
+  }
+  .ride-workspace-heading .eyebrow {
+    font-size: 9px;
+  }
+  .ride-workspace .mode-selector {
+    max-width: 140px;
+  }
+  .ride-workspace .mode-selector > svg {
+    display: none;
+  }
+  .ride-workspace .mode-selector select {
+    max-width: 125px;
+    font-size: 12px;
+    padding: 8px;
+  }
+  .ride-workspace .ride-dashboard {
+    grid-template-columns: 1fr 1.8fr 1fr;
+    margin-inline: -4px;
+  }
+  .ride-workspace .dashboard-side .metric-card {
+    padding: 10px 6px;
+    gap: 4px;
+  }
+  .ride-workspace .dashboard-side .metric-card strong {
+    font-size: 16px;
+  }
+  .ride-workspace .dashboard-side .metric-card small {
+    display: block;
+    font-size: 10px;
+  }
+  .ride-workspace .dashboard-side .metric-label {
+    font-size: 10px;
+  }
+  .ride-workspace .dashboard-side .metric-icon svg {
+    width: 23px;
+    height: 23px;
+  }
+  .ride-workspace .ride-secondary-instruments {
+    grid-template-columns: 1fr;
+  }
+  .ride-workspace .ride-secondary-instruments .metric-card {
+    flex-direction: row !important;
+    align-items: center;
+  }
+  .ride-workspace .speed-source {
+    font-size: 9px;
+  }
+  .ride-status .gps-state {
+    font-size: 10px;
+    margin-left: auto;
+  }
+  .ride-workspace .ride-status {
+    gap: 8px;
+    padding: 10px;
+  }
+  .ride-record-indicator {
+    width: 34px;
+    height: 34px;
+  }
+  .ride-status .preview-state {
+    font-size: 13px;
+  }
+  .ride-status > div > span {
+    font-size: 10px;
+  }
+  .ride-status-clock strong {
+    font-size: 18px;
+  }
+  .ride-distance-time .metric-card {
+    padding: 10px;
+    gap: 8px;
+  }
+  .ride-distance-time .metric-card strong {
+    font-size: 22px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ride-workspace * {
+    scroll-behavior: auto;
+  }
+}

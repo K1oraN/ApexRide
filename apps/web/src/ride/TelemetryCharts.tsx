@@ -1,5 +1,17 @@
+import { ChoiceSelect } from '../components/design-system';
+import type { RidePoint } from '@apex-ride/ride-core';
+import type { ChartData } from '@apex-ride/ride-core/charts';
+import type { MotionSample } from '@apex-ride/ride-core/motion';
+import type { SpeedSample } from '@apex-ride/ride-core/speed';
+import type { PerformanceEvent } from '@apex-ride/ride-core/telemetry';
 import { memo, useMemo, useState, useSyncExternalStore } from 'react';
 import type { ReplayEngine } from '../replay/engine';
+import {
+  assistedChart,
+  gpsChart,
+  motionChart,
+  type ChartPoint,
+} from '../services/telemetry/charts';
 type ReplayChart = { engine: ReplayEngine; duration: number };
 function ReplayCursor({ replay }: { replay: ReplayChart }) {
   const { time } = useSyncExternalStore(
@@ -19,17 +31,6 @@ function ReplayCursor({ replay }: { replay: ReplayChart }) {
     />
   );
 }
-import type { RidePoint } from '@apex-ride/ride-core';
-import type { MotionSample } from '@apex-ride/ride-core/motion';
-import type { SpeedSample } from '@apex-ride/ride-core/speed';
-import type { PerformanceEvent } from '@apex-ride/ride-core/telemetry';
-import type { ChartData } from '@apex-ride/ride-core/charts';
-import {
-  assistedChart,
-  gpsChart,
-  motionChart,
-  type ChartPoint,
-} from '../services/telemetry/charts';
 
 function Plot({
   label,
@@ -122,6 +123,21 @@ function Plot({
           ))}
         <path d={path} className="telemetry-line" />
         {replay && <ReplayCursor replay={replay} />}
+        {interactive && !replay && (
+          <circle
+            cx={x(selected.timestamp)}
+            cy={y(selected.value)}
+            r="4"
+            fill="white"
+            stroke="#ff2035"
+            strokeWidth="2"
+          >
+            <title>
+              Amostra selecionada:{' '}
+              {selected.value.toFixed(unit === 'G' ? 2 : 1)} {unit}
+            </title>
+          </circle>
+        )}
         {points.length === 1 && (
           <circle
             cx={x(points[0]!.timestamp)}
@@ -165,6 +181,7 @@ export const TelemetryCharts = memo(function TelemetryCharts({
   events,
   prepared,
   replay,
+  interactive = false,
 }: {
   points: RidePoint[];
   motion: MotionSample[];
@@ -173,6 +190,7 @@ export const TelemetryCharts = memo(function TelemetryCharts({
   events: PerformanceEvent[];
   prepared?: ChartData;
   replay?: ReplayChart;
+  interactive?: boolean;
 }) {
   const [source, setSource] = useState('gps');
   const series = useMemo(
@@ -187,17 +205,17 @@ export const TelemetryCharts = memo(function TelemetryCharts({
   );
   return (
     <div className="telemetry-charts">
-      <label className="account-field">
-        Série de velocidade
-        <select
+      <div className="account-field">
+        <span>Série de velocidade</span>
+        <ChoiceSelect
           aria-label="Série de velocidade"
           value={source}
           onChange={(e) => setSource(e.target.value)}
         >
           <option value="gps">GPS original</option>
           <option value="assisted">GPS Assistido · estimativa</option>
-        </select>
-      </label>
+        </ChoiceSelect>
+      </div>
       <Plot
         label={
           source === 'gps' ? 'Velocidade GPS' : 'Velocidade assistida estimada'
@@ -206,7 +224,7 @@ export const TelemetryCharts = memo(function TelemetryCharts({
         points={source === 'gps' ? series.gps : series.assisted}
         start={start}
         events={events}
-        interactive={Boolean(prepared)}
+        interactive={interactive || Boolean(prepared)}
         replay={replay}
       />
       <Plot
@@ -215,7 +233,7 @@ export const TelemetryCharts = memo(function TelemetryCharts({
         points={series.force}
         start={start}
         events={events}
-        interactive={Boolean(prepared)}
+        interactive={interactive || Boolean(prepared)}
         replay={replay}
       />
       <Plot
@@ -224,7 +242,7 @@ export const TelemetryCharts = memo(function TelemetryCharts({
         points={series.lean}
         start={start}
         events={events}
-        interactive={Boolean(prepared)}
+        interactive={interactive || Boolean(prepared)}
         replay={replay}
       />
       <p>

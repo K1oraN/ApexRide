@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useAuth } from '../auth/useAuth';
-import { historyService } from './service';
-import { RideHistoryCard } from './RideHistoryCard';
-import type { HistoryRide } from './types';
+import { Route } from 'lucide-react';
+import { ButtonLink, EmptyState, Skeleton } from '../components/design-system';
 import '../styles/history.css';
 import { LastRide } from './LastRide';
+import { RideHistoryCard } from './RideHistoryCard';
+import { historyService } from './service';
+import type { HistoryRide } from './types';
 export function HistoryPreview({ profile = false }: { profile?: boolean }) {
   const { user } = useAuth(),
     [response, setResponse] = useState<{
@@ -36,7 +38,7 @@ export function HistoryPreview({ profile = false }: { profile?: boolean }) {
     return (
       <div className="last-ride panel history-panel">
         <p>Entre para consultar seus Rides.</p>
-        <Link className="text-link" to="/entrar">
+        <Link className="text-link action-link" to="/entrar">
           Entrar para ver atividades
         </Link>
       </div>
@@ -46,12 +48,12 @@ export function HistoryPreview({ profile = false }: { profile?: boolean }) {
       {error ? (
         <p role="status">
           Histórico indisponível.{' '}
-          <Link className="text-link" to="/historico">
+          <Link className="text-link action-link" to="/historico">
             Abrir histórico
           </Link>
         </p>
       ) : rides === null ? (
-        <p>Carregando atividades…</p>
+        <Skeleton label="Carregando atividades…" />
       ) : rides.length ? (
         !profile ? (
           <LastRide ride={rides[0]!} />
@@ -63,14 +65,18 @@ export function HistoryPreview({ profile = false }: { profile?: boolean }) {
           </div>
         )
       ) : (
-        <div className="last-ride panel history-panel">
-          <p>Seu primeiro Ride começa aqui.</p>
-          <Link className="text-link" to="/ride">
-            Preparar Ride
-          </Link>
-        </div>
+        <EmptyState
+          icon={<Route size={26} />}
+          title="Seu primeiro Ride começa aqui."
+          children="Prepare sua moto e registre uma atividade para acompanhar seu histórico."
+          action={
+            <ButtonLink variant="secondary" to="/ride">
+              Preparar Ride
+            </ButtonLink>
+          }
+        />
       )}
-      <Link className="text-link" to="/historico">
+      <Link className="text-link action-link" to="/historico">
         Ver todas as atividades
       </Link>
     </div>

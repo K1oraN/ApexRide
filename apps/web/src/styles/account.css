@@ -35,15 +35,8 @@
 .account-field textarea {
   width: 100%;
   min-width: 0;
-  min-height: 48px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px;
-  color: var(--text);
-  background: var(--background);
-  font: inherit;
 }
-.account-field input:read-only {
+.account-field input[readonly] {
   color: var(--muted);
 }
 .password-input {
@@ -136,14 +129,4 @@
 }
 .profile-copy .xp-label {
   flex-wrap: wrap;
-}
-.profile-link > span {
-  min-width: 0;
-  max-width: 130px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.header-tools {
-  min-width: 0;
 }

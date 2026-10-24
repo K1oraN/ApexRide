@@ -1,5 +1,11 @@
 # Vídeo com telemetria — arquitetura e homologação
 
+**Etapa 5:** entrada própria em `/ride/estudio`, com escolha de gravação e
+prévia ao lado dos controles em desktop. Compartilha `VideoOverlayPlayer`,
+resolver, renderer e exportador abaixo. Nenhuma nova associação temporal,
+transcodificação, upload ou reescrita do original foi introduzida. Vídeo externo
+sem âncoras da captura não pode ser associado automaticamente a uma atividade.
+
 Parte 17/23. Todo processamento de mídia acontece no aparelho. Abra uma atividade
 no Histórico, escolha **Assistir com telemetria** no segmento e abra **Configurar
 overlay**. A ação de reprodução original da Parte 16 continua disponível. A

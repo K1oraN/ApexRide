@@ -1,6 +1,7 @@
 import { useState, type SubmitEvent } from 'react';
-import { adminRequest, errorText, type Row } from './service';
+import { Button, Input, Select, Textarea } from '../components/design-system';
 import type { Action } from './actions';
+import { adminRequest, errorText, type Row } from './service';
 export function ActionForm({
   action,
   onDone,
@@ -93,7 +94,7 @@ export function ActionForm({
             >
               {f.type !== 'checkbox' && f.label}
               {f.options ? (
-                <select
+                <Select
                   aria-label={f.label}
                   value={String(values[f.key])}
                   onChange={(e) =>
@@ -105,9 +106,9 @@ export function ActionForm({
                       {label}
                     </option>
                   ))}
-                </select>
+                </Select>
               ) : f.type === 'textarea' ? (
-                <textarea
+                <Textarea
                   aria-label={f.label}
                   rows={4}
                   maxLength={2000}
@@ -118,7 +119,7 @@ export function ActionForm({
                   }
                 />
               ) : (
-                <input
+                <Input
                   aria-label={f.label}
                   type={f.type ?? 'text'}
                   required={f.required}
@@ -158,7 +159,7 @@ export function ActionForm({
             {action.critical && (
               <label className="account-field">
                 Digite CONFIRMAR
-                <input
+                <Input
                   required
                   value={typed}
                   onChange={(e) => setTyped(e.target.value)}
@@ -166,18 +167,18 @@ export function ActionForm({
                 />
               </label>
             )}
-            <button
-              className="button"
+            <Button
+              variant="secondary"
               type="button"
               onClick={() => setConfirm(false)}
             >
               Corrigir decisão
-            </button>
+            </Button>
           </div>
         )}
         <div className="admin-pagination">
-          <button
-            className="button button-primary"
+          <Button
+            variant="primary"
             disabled={
               busy || (confirm && action.critical && typed !== 'CONFIRMAR')
             }
@@ -187,15 +188,15 @@ export function ActionForm({
               : confirm
                 ? 'Executar decisão'
                 : 'Revisar decisão'}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="button"
+            variant="outline"
             disabled={busy}
             onClick={onCancel}
           >
             Cancelar
-          </button>
+          </Button>
         </div>
       </form>
     </section>

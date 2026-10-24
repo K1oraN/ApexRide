@@ -1,34 +1,30 @@
-import { useState } from 'react';
+import { Award, Compass, Flag, LockKeyhole, UsersRound } from 'lucide-react';
+import { useState, type ComponentType } from 'react';
+import { RideIcon } from '../components/Brand';
 import { Link } from 'react-router';
-import {
-  Award,
-  LockKeyhole,
-  Compass,
-  UsersRound,
-  Bike,
-  Flag,
-} from 'lucide-react';
+import { Button, Select, SearchInput } from '../components/design-system';
 import { Progress } from '../components/ui';
 import { Composer } from '../social/Composer';
-import { useGamification, changeGamification } from './useGamification';
-import type { Achievement, Challenge } from './types';
 import '../styles/gamification.css';
-const icons: Record<string, typeof Award> = {
+import type { Achievement, Challenge } from './types';
+import { changeGamification, useGamification } from './useGamification';
+const icons: Record<string, ComponentType<{ size?: number }>> = {
   Exploração: Compass,
   Comunidade: UsersRound,
-  Garagem: Bike,
+  Garagem: RideIcon,
   Circuitos: Flag,
 };
 export function AchievementsPage() {
   const { data, error, reload } = useGamification<{ items: Achievement[] }>(
     '/gamification/me/achievements',
   );
-  const [category, setCategory] = useState(''),
+  const [query, setQuery] = useState(''),
+    [category, setCategory] = useState(''),
     [filter, setFilter] = useState(''),
     [share, setShare] = useState<Achievement | null>(null);
   return (
     <div className="gamification-page">
-      <Link className="text-link" to="/perfil">
+      <Link className="text-link action-link" to="/perfil">
         Voltar ao perfil
       </Link>
       <header>
@@ -42,15 +38,21 @@ export function AchievementsPage() {
       {error && (
         <div role="alert">
           {error}
-          <button className="button" onClick={reload}>
+          <Button variant="secondary" onClick={reload}>
             Tentar novamente
-          </button>
+          </Button>
         </div>
       )}
+      <SearchInput
+        label="Pesquisar conquistas"
+        placeholder="Buscar conquista…"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
       <div className="gamification-filters">
         <label className="account-field">
           Categoria
-          <select
+          <Select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
@@ -60,17 +62,17 @@ export function AchievementsPage() {
                 <option key={c}>{c}</option>
               ),
             )}
-          </select>
+          </Select>
         </label>
         <label className="account-field">
           Estado da conquista
-          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
             <option value="">Todas</option>
             <option value="unlocked">Desbloqueadas</option>
             <option value="locked">Bloqueadas</option>
             <option value="revoked">Reavaliadas</option>
             <option value="unavailable">Indisponíveis</option>
-          </select>
+          </Select>
         </label>
       </div>
       {share && (
@@ -86,6 +88,9 @@ export function AchievementsPage() {
         {data?.items
           .filter(
             (a) =>
+              `${a.name} ${a.description}`
+                .toLocaleLowerCase('pt-BR')
+                .includes(query.toLocaleLowerCase('pt-BR')) &&
               (!category || a.category === category) &&
               (!filter || a.status === filter),
           )
@@ -126,9 +131,9 @@ export function AchievementsPage() {
                   <small>Até {a.xp_reward} XP, conforme regras e limites</small>
                 )}
                 {a.status === 'unlocked' ? (
-                  <button className="button" onClick={() => setShare(a)}>
+                  <Button variant="secondary" onClick={() => setShare(a)}>
                     Compartilhar conquista
-                  </button>
+                  </Button>
                 ) : (
                   <LockKeyhole size={16} aria-label="Conquista bloqueada" />
                 )}
@@ -168,8 +173,8 @@ function Challenges() {
     }
   }
   return (
-    <section className="panel gamification-card">
-      <h2>Metas pessoais opcionais</h2>
+    <section id="missoes" className="panel gamification-card">
+      <h2>Missões pessoais</h2>
       <p>
         Sem prazo, penalidade ou XP adicional. Descanse sempre que precisar.
       </p>
@@ -179,8 +184,8 @@ function Challenges() {
           ['first_route', 'Uma rota diferente'],
           ['first_event', 'Um evento verificado'],
         ].map(([code, name]) => (
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={
               busy ||
               data?.items.some(
@@ -191,7 +196,7 @@ function Challenges() {
             onClick={() => void act(code!)}
           >
             {name}
-          </button>
+          </Button>
         ))}
       </div>
       {data?.items
@@ -204,13 +209,13 @@ function Challenges() {
               {c.target} ·{' '}
               {c.status === 'completed' ? 'Concluída' : 'Em andamento'}
             </p>
-            <button
-              className="button"
+            <Button
+              variant="outline"
               disabled={busy}
               onClick={() => void act(c.code, true)}
             >
               Cancelar meta
-            </button>
+            </Button>
           </article>
         ))}
       {(message || error) && <p role="status">{message || error}</p>}

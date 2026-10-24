@@ -1,3 +1,4 @@
+import { chooseOption } from './choices';
 import { expect, test, type Page } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import { prepare } from './ride-fixtures';
@@ -43,7 +44,7 @@ test('18E texto, foto, moto, curtida, comentário, edição, falha de rede e exc
   await page
     .getByLabel('Texto da publicação', { exact: true })
     .fill('Passeio real com fotografia');
-  await page.getByLabel('Público da publicação').selectOption('public');
+  await chooseOption(page, 'Público da publicação', 'public');
   await page
     .getByLabel('Associar moto', { exact: true })
     .selectOption(bikes[0]!);
@@ -259,7 +260,7 @@ test('18E Histórico prepara resumo sem publicar, privacidade revoga, responsivi
   await page
     .getByLabel('Texto da publicação', { exact: true })
     .fill('Meu resumo seguro');
-  await page.getByLabel('Público da publicação').selectOption('public');
+  await chooseOption(page, 'Público da publicação', 'public');
   await page
     .getByRole('button', { name: 'Visualizar prévia', exact: true })
     .click();

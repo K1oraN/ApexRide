@@ -1,9 +1,10 @@
 import { Heart } from 'lucide-react';
 import { Link } from 'react-router';
+import { Button } from '../components/design-system';
 import { Avatar, Photo } from '../components/ui';
 import { apiUrl } from '../services/auth';
-import { usePage } from './usePage';
 import type { SocialPost } from './types';
+import { usePage } from './usePage';
 export function CommunityPreview() {
   const p = usePage<SocialPost>('/feed?limit=3');
   return (
@@ -12,15 +13,15 @@ export function CommunityPreview() {
       {p.error && (
         <div className="panel social-summary" role="alert">
           {p.error}
-          <button className="button" onClick={() => void p.reload()}>
+          <Button variant="secondary" onClick={() => void p.reload()}>
             Tentar novamente
-          </button>
+          </Button>
         </div>
       )}
       {!p.loading && !p.error && !p.data.items.length && (
         <div className="panel social-summary">
           Nenhuma publicação por aqui ainda.{' '}
-          <Link className="text-link" to="/comunidade">
+          <Link className="text-link action-link" to="/comunidade">
             Participar da Comunidade
           </Link>
         </div>

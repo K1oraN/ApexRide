@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { useAuth } from '../auth/useAuth';
+import { Button, ButtonLink } from '../components/design-system';
 import { useGarage } from './context';
 import { MotorcycleCard } from './MotorcycleCard';
 export function GaragePreview() {
@@ -9,7 +10,7 @@ export function GaragePreview() {
     return (
       <div className="garage-empty panel">
         <p>Entre na sua conta para ver sua garagem.</p>
-        <Link className="text-link" to="/entrar?retorno=%2Fgaragem">
+        <Link className="text-link action-link" to="/entrar?retorno=%2Fgaragem">
           Acessar garagem
         </Link>
       </div>
@@ -19,9 +20,9 @@ export function GaragePreview() {
     return (
       <div className="garage-empty panel">
         <p role="alert">{error}</p>
-        <button className="button" onClick={() => void refresh()}>
+        <Button variant="secondary" onClick={() => void refresh()}>
           Tentar novamente
-        </button>
+        </Button>
       </div>
     );
   if (!motorcycles.length)
@@ -31,9 +32,9 @@ export function GaragePreview() {
           Sua garagem está vazia. Cadastre sua primeira moto para começar sua
           jornada no Apex Ride.
         </p>
-        <Link className="button button-primary" to="/garagem/nova">
+        <ButtonLink variant="primary" to="/garagem/nova">
           Adicionar Moto
-        </Link>
+        </ButtonLink>
       </div>
     );
   return (

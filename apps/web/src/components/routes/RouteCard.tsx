@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Camera,
   ChevronRight,
@@ -8,9 +7,10 @@ import {
   Route,
   Signal,
 } from 'lucide-react';
+import { useState } from 'react';
 import { Link } from 'react-router';
-import { ModeIcon } from '../Brand';
 import { type DemoRoute, rideModes } from '../../data/demo';
+import { ModeIcon } from '../Brand';
 import { Chip, Photo } from '../ui';
 
 export function RouteCard({

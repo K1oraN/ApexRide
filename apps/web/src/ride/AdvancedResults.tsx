@@ -1,10 +1,11 @@
-﻿import { useState } from 'react';
+import { RIDE_MODES } from '@apex-ride/ride-core/modes';
 import type {
-  PerformanceEvent,
   AdvancedTelemetry,
+  PerformanceEvent,
 } from '@apex-ride/ride-core/telemetry';
 import { formatEventTime } from '@apex-ride/ride-core/telemetry';
-import { RIDE_MODES } from '@apex-ride/ride-core/modes';
+import { useState } from 'react';
+import { Button } from '../components/design-system';
 import { useRide } from './context';
 import { TelemetryCharts } from './TelemetryCharts';
 
@@ -105,20 +106,20 @@ export function EventResults({
           </ul>
           {events.length > 20 && (
             <div className="session-summary-actions">
-              <button
-                className="button"
+              <Button
+                variant="secondary"
                 disabled={page === 0}
                 onClick={() => setPage(page - 1)}
               >
                 Anteriores
-              </button>
-              <button
-                className="button"
+              </Button>
+              <Button
+                variant="secondary"
                 disabled={(page + 1) * 20 >= events.length}
                 onClick={() => setPage(page + 1)}
               >
                 Próximos
-              </button>
+              </Button>
             </div>
           )}
         </>
@@ -127,7 +128,13 @@ export function EventResults({
   );
 }
 const empty: never[] = [];
-export function AdvancedResults({ summary = false }: { summary?: boolean }) {
+export function AdvancedResults({
+  summary = false,
+  expanded = false,
+}: {
+  summary?: boolean;
+  expanded?: boolean;
+}) {
   const { controller, snapshot } = useRide();
   const a = snapshot.activity;
   if (!a || !RIDE_MODES[a.payload.mode].advanced) return null;
@@ -135,12 +142,15 @@ export function AdvancedResults({ summary = false }: { summary?: boolean }) {
   const events =
     data?.events ?? (summary ? empty : controller.telemetry.events);
   return (
-    <details className="ride-preparation panel" open={summary || undefined}>
+    <details
+      className="ride-preparation panel"
+      open={summary || expanded || undefined}
+    >
       <summary>Telemetria avançada · análise pessoal</summary>
       <EventResults
         events={events}
         truncated={data?.truncated ?? false}
-        detailed={summary}
+        detailed={summary || expanded}
       />
       {controller.telemetry.failed && (
         <p role="alert">
@@ -154,6 +164,7 @@ export function AdvancedResults({ summary = false }: { summary?: boolean }) {
         </p>
       )}
       <TelemetryCharts
+        interactive={summary || expanded}
         points={summary ? a.payload.points : a.payload.points.slice(-600)}
         motion={
           summary

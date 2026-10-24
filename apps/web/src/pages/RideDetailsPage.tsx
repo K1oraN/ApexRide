@@ -1,23 +1,24 @@
-import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router';
 import type { TrackPreview } from '@apex-ride/ride-core/history';
 import type { PerformanceEvent } from '@apex-ride/ride-core/telemetry';
-import { historyService } from '../history/service';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router';
+import { Button, ButtonLink } from '../components/design-system';
+import { RideXp } from '../gamification/Progress';
 import type {
-  HistoryDetail,
-  HistoryTelemetry,
-  HistoryLap,
   DataPage,
+  HistoryDetail,
+  HistoryLap,
+  HistoryTelemetry,
 } from '../history/detail-types';
 import { HistoryMetrics } from '../history/HistoryMetrics';
 import { HistoryTrackMap } from '../history/HistoryTrackMap';
-import { TelemetryCharts } from '../ride/TelemetryCharts';
-import { EventResults } from '../ride/AdvancedResults';
 import { RidePrivacyControls } from '../history/RidePrivacyControls';
+import { historyService } from '../history/service';
+import { EventResults } from '../ride/AdvancedResults';
+import { TelemetryCharts } from '../ride/TelemetryCharts';
 import '../styles/history.css';
 import '../styles/ride-session.css';
 import { VideoLibrary } from '../video/VideoLibrary';
-import { RideXp } from '../gamification/Progress';
 const empty: never[] = [];
 export function RideDetailsPage() {
   const { id } = useParams();
@@ -91,15 +92,15 @@ function RideDetails() {
   }
   return (
     <div className="history-detail">
-      <Link className="text-link" to="/historico">
+      <Link className="text-link action-link" to="/historico">
         Voltar ao histórico
       </Link>
       {error && (
         <div className="panel history-panel" role="alert">
           {error}
-          <button className="button" onClick={() => setRefresh((n) => n + 1)}>
+          <Button variant="secondary" onClick={() => setRefresh((n) => n + 1)}>
             Tentar novamente
-          </button>
+          </Button>
         </div>
       )}
       {ride ? (
@@ -119,21 +120,21 @@ function RideDetails() {
                 : 'Identificação histórica da moto indisponível'}
             </p>
             {ride.description && <p>{ride.description}</p>}
-            <Link
-              className="button button-primary"
-              to={`/historico/${ride.id}/replay`}
-            >
+            <ButtonLink variant="primary" to={`/historico/${ride.id}/replay`}>
               Reproduzir Ride
-            </Link>
-            <Link className="button" to={`/historico/${ride.id}/semelhantes`}>
+            </ButtonLink>
+            <ButtonLink
+              variant="secondary"
+              to={`/historico/${ride.id}/semelhantes`}
+            >
               Trajetos Semelhantes
-            </Link>
-            <Link
-              className="button"
+            </ButtonLink>
+            <ButtonLink
+              variant="secondary"
               to={`/comunidade?ride=${encodeURIComponent(ride.id)}`}
             >
               Compartilhar na Comunidade
-            </Link>
+            </ButtonLink>
           </header>
           <RidePrivacyControls
             key={`${ride.id}:${ride.updated_at}`}
@@ -151,12 +152,12 @@ function RideDetails() {
               : {})}
           />
           {ride.route_id && (
-            <Link
-              className="button"
+            <ButtonLink
+              variant="secondary"
               to={`/explorar/${ride.route_id}/comparar?atividades=${ride.id}`}
             >
               Comparar atividades nesta rota
-            </Link>
+            </ButtonLink>
           )}
           {track ? (
             <HistoryTrackMap track={track} plan={ride.route_snapshot} />
@@ -172,15 +173,15 @@ function RideDetails() {
               medições ausentes permanecem indisponíveis.
             </p>
             {!telemetry && (
-              <button
-                className="button"
+              <Button
+                variant="secondary"
                 disabled={telemetryLoading}
                 onClick={() => void loadTelemetry()}
               >
                 {telemetryLoading
                   ? 'Carregando gráficos…'
                   : 'Carregar gráficos e eventos'}
-              </button>
+              </Button>
             )}
             {telemetryError && <p role="alert">{telemetryError}</p>}
             {telemetry && (
@@ -218,20 +219,20 @@ function RideDetails() {
                       truncated={ride.telemetry_summary?.truncated ?? false}
                     />
                     <div className="history-actions">
-                      <button
-                        className="button"
+                      <Button
+                        variant="secondary"
                         disabled={!events || events.page === 1}
                         onClick={() => void more('events', events!.page - 1)}
                       >
                         Eventos anteriores
-                      </button>
-                      <button
-                        className="button"
+                      </Button>
+                      <Button
+                        variant="secondary"
                         disabled={!events?.hasMore}
                         onClick={() => void more('events', events!.page + 1)}
                       >
                         Próximos eventos
-                      </button>
+                      </Button>
                     </div>
                   </>
                 )}
@@ -259,20 +260,20 @@ function RideDetails() {
                       ))}
                     </ol>
                     <div className="history-actions">
-                      <button
-                        className="button"
+                      <Button
+                        variant="secondary"
                         disabled={!laps || laps.page === 1}
                         onClick={() => void more('laps', laps!.page - 1)}
                       >
                         Voltas anteriores
-                      </button>
-                      <button
-                        className="button"
+                      </Button>
+                      <Button
+                        variant="secondary"
                         disabled={!laps?.hasMore}
                         onClick={() => void more('laps', laps!.page + 1)}
                       >
                         Próximas voltas
-                      </button>
+                      </Button>
                     </div>
                   </>
                 ) : (

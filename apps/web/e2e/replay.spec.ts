@@ -185,6 +185,11 @@ test('Parte 13: local saved ride replays offline and remains one ride after sync
   await begin(page);
   await page.waitForTimeout(1100);
   await page.evaluate(() => window.__gpsTest.emit({ longitude: -35.7349 }));
+  // A fulfilled map fixture bypasses network offline mode: fail this provider explicitly.
+  await page.unroute('https://tiles.openfreemap.org/**');
+  await page.route('https://tiles.openfreemap.org/**', (route) =>
+    route.abort('internetdisconnected'),
+  );
   await page.context().setOffline(true);
   await finish(page);
   await page

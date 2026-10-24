@@ -1,9 +1,16 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { social } from '../social/service';
-import { usePage } from '../social/usePage';
+import {
+  Button,
+  Checkbox,
+  Input,
+  Select,
+  Textarea,
+} from '../components/design-system';
 import { Report } from '../social/Feed';
+import { social } from '../social/service';
 import type { Person } from '../social/types';
+import { usePage } from '../social/usePage';
 import { PageState } from './GroupsPage';
 import {
   roleNames,
@@ -30,7 +37,7 @@ export function GroupMembers({
       <h2>{requests ? 'Solicitações pendentes' : 'Membros autorizados'}</h2>
       <label className="account-field">
         Pesquisar membros
-        <input
+        <Input
           maxLength={100}
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -117,20 +124,20 @@ function Member({
       </div>
       {requests ? (
         <div className="social-controls">
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={busy}
             onClick={() => void act(`join-requests/${m.id}/approve`)}
           >
             Aprovar
-          </button>
-          <button
-            className="button"
+          </Button>
+          <Button
+            variant="secondary"
             disabled={busy}
             onClick={() => void act(`join-requests/${m.id}/reject`)}
           >
             Recusar solicitação
-          </button>
+          </Button>
         </div>
       ) : (
         <>
@@ -138,7 +145,7 @@ function Member({
             <fieldset className="account-form" disabled={busy}>
               <label className="account-field">
                 Motivo da medida
-                <input
+                <Input
                   maxLength={500}
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
@@ -146,7 +153,7 @@ function Member({
               </label>
               <label className="account-field">
                 Suspensão (horas, até 720)
-                <input
+                <Input
                   type="number"
                   min={1}
                   max={720}
@@ -156,38 +163,38 @@ function Member({
               </label>
               <div className="social-controls">
                 {m.status === 'banned' ? (
-                  <button
-                    className="button"
+                  <Button
+                    variant="secondary"
                     onClick={() => void act(`${member}/ban`, 'DELETE')}
                   >
                     Revogar banimento
-                  </button>
+                  </Button>
                 ) : (
                   <>
-                    <button
-                      className="button"
+                    <Button
+                      variant="destructive"
                       disabled={!reason.trim()}
                       onClick={() => void act(member, 'DELETE')}
                     >
                       Remover membro
-                    </button>
-                    <button
-                      className="button"
+                    </Button>
+                    <Button
+                      variant="secondary"
                       disabled={!reason.trim()}
                       onClick={() => void act(`${member}/ban`)}
                     >
                       Banir membro
-                    </button>
+                    </Button>
                     {m.suspended ? (
-                      <button
-                        className="button"
+                      <Button
+                        variant="secondary"
                         onClick={() => void act(`${member}/suspend`, 'DELETE')}
                       >
                         Encerrar suspensão
-                      </button>
+                      </Button>
                     ) : (
-                      <button
-                        className="button"
+                      <Button
+                        variant="secondary"
                         disabled={
                           !reason.trim() ||
                           m.status !== 'active' ||
@@ -197,7 +204,7 @@ function Member({
                         onClick={() => void act(`${member}/suspend`)}
                       >
                         Suspender membro
-                      </button>
+                      </Button>
                     )}
                   </>
                 )}
@@ -210,7 +217,7 @@ function Member({
               <fieldset className="account-form" disabled={busy}>
                 <label className="account-field">
                   Cargo
-                  <select
+                  <Select
                     value={role}
                     onChange={(e) => setRole(e.target.value as typeof role)}
                   >
@@ -219,24 +226,23 @@ function Member({
                         {roleNames[r as keyof typeof roleNames]}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                 </label>
-                <button
-                  className="button"
+                <Button
+                  variant="secondary"
                   onClick={() => void act(`${member}/role`, 'PATCH', { role })}
                 >
                   Alterar cargo
-                </button>
+                </Button>
                 <label>
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={transfer}
                     onChange={(e) => setTransfer(e.target.checked)}
                   />
                   Confirmo transferir a propriedade para {m.displayName}
                 </label>
-                <button
-                  className="button"
+                <Button
+                  variant="secondary"
                   disabled={!transfer || m.suspended}
                   onClick={() =>
                     void act('transfer-ownership', 'POST', {
@@ -246,7 +252,7 @@ function Member({
                   }
                 >
                   Transferir propriedade
-                </button>
+                </Button>
               </fieldset>
             )}
           <Report id={m.id} kind="group_member" groupId={g.id} />
@@ -307,38 +313,38 @@ export function GroupInvites({ g }: { g: Group }) {
       <fieldset disabled={busy} className="account-form">
         <label className="account-field">
           Buscar motociclista
-          <input
+          <Input
             maxLength={80}
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
         </label>
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={!q.trim()}
           onClick={() => void find()}
         >
           Buscar pessoa
-        </button>
+        </Button>
         <label className="account-field">
           Destinatário
-          <select value={target} onChange={(e) => setTarget(e.target.value)}>
+          <Select value={target} onChange={(e) => setTarget(e.target.value)}>
             <option value="">Link limitado e revogável</option>
             {people.map((p) => (
               <option value={p.id} key={p.id}>
                 {p.displayName} · @{p.username}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         {more && (
-          <button className="button" onClick={() => void find(more)}>
+          <Button variant="secondary" onClick={() => void find(more)}>
             Mais pessoas
-          </button>
+          </Button>
         )}
         <label className="account-field">
           Expiração (dias)
-          <input
+          <Input
             type="number"
             min={1}
             max={30}
@@ -349,7 +355,7 @@ export function GroupInvites({ g }: { g: Group }) {
         {!target && (
           <label className="account-field">
             Limite de usos
-            <input
+            <Input
               type="number"
               min={1}
               max={100}
@@ -358,18 +364,18 @@ export function GroupInvites({ g }: { g: Group }) {
             />
           </label>
         )}
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={days < 1 || days > 30 || limit < 1 || limit > 100}
           onClick={() => void invite()}
         >
           Gerar convite
-        </button>
+        </Button>
       </fieldset>
       {url && (
         <label className="account-field">
           Resultado do convite
-          <textarea readOnly rows={4} value={url} />
+          <Textarea readOnly rows={4} value={url} />
           <small>Guarde o link agora. O token é mostrado uma única vez.</small>
         </label>
       )}
@@ -382,8 +388,8 @@ export function GroupInvites({ g }: { g: Group }) {
             {i.usage_count}/{i.usage_limit} usos ·{' '}
             {new Date(i.expires_at).toLocaleString('pt-BR')}
           </p>
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={busy || i.status !== 'pending'}
             onClick={() => {
               setBusy(true);
@@ -394,7 +400,7 @@ export function GroupInvites({ g }: { g: Group }) {
             }}
           >
             Revogar convite
-          </button>
+          </Button>
         </div>
       ))}
       <PageState p={p} empty="Nenhum convite criado." />
@@ -455,8 +461,8 @@ export function GroupReports({ g }: { g: Group }) {
             Alvo: {r.post_id ?? r.comment_id ?? r.group_member_id ?? 'Grupo'} ·{' '}
             {r.reviewed ? 'Analisada internamente' : 'Pendente'} · Plataforma
           </p>
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={busy || r.reviewed}
             onClick={() => {
               setBusy(true);
@@ -469,7 +475,7 @@ export function GroupReports({ g }: { g: Group }) {
             }}
           >
             Registrar análise
-          </button>
+          </Button>
         </article>
       ))}
       <PageState p={p} empty="Nenhuma denúncia disponível." />

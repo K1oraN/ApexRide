@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useAuth } from '../auth/useAuth';
-import { historyService } from '../history/service';
+import { Button, ButtonLink } from '../components/design-system';
 import { HistoryFilters } from '../history/HistoryFilters';
+import { OfflineHistory } from '../history/OfflineHistory';
 import { RideHistoryCard } from '../history/RideHistoryCard';
 import { historyParams } from '../history/filters';
+import { historyService } from '../history/service';
 import type { HistoryOptions, HistoryResult } from '../history/types';
-import '../styles/history.css';
-import { OfflineHistory } from '../history/OfflineHistory';
 import { useOffline } from '../offline/context';
-import { useSyncExternalStore } from 'react';
 import { SimilarGroups } from '../similarity/SimilarGroups';
-export function HistoryPage() {
+import '../styles/history.css';
+import { VideoRecovery } from '../video/VideoLibrary';
+export function HistoryPage({ embedded = false }: { embedded?: boolean }) {
   const { user } = useAuth(),
     [params, setParams] = useSearchParams();
   const serialized = params.toString();
@@ -102,20 +103,27 @@ export function HistoryPage() {
   };
   return (
     <div className="history-page">
-      <div className="history-heading">
-        <div>
-          <span className="eyebrow">MEUS RIDES</span>
-          <h1>Histórico de Rides</h1>
-          <p>
-            {result
-              ? `${result.total} atividade(s) salva(s) na conta`
-              : 'Atividades da sua conta'}
-          </p>
+      {!embedded && (
+        <div className="history-heading">
+          <div>
+            <span className="eyebrow">MEUS RIDES</span>
+            <h1>Histórico de Rides</h1>
+            <p>
+              {result
+                ? `${result.total} sessões salvas`
+                : 'Atividades da sua conta'}
+            </p>
+          </div>
+          <Link className="text-link action-link" to="/perfil">
+            Voltar ao perfil
+          </Link>
         </div>
-        <Link className="text-link" to="/perfil">
-          Voltar ao perfil
-        </Link>
-      </div>
+      )}
+      {embedded && (
+        <p className="history-result-count">
+          {result ? `${result.total} sessões salvas` : 'Suas sessões'}
+        </p>
+      )}
       <HistoryFilters
         params={params}
         options={mergedOptions}
@@ -137,9 +145,9 @@ export function HistoryPage() {
       ) : error ? (
         <div className="panel empty-state" role="alert">
           <p>{error}</p>
-          <button className="button" onClick={() => setRefresh((n) => n + 1)}>
+          <Button variant="secondary" onClick={() => setRefresh((n) => n + 1)}>
             Tentar novamente
-          </button>
+          </Button>
         </div>
       ) : result?.rides.length ? (
         <div className="history-grid" aria-label="Histórico sincronizado">
@@ -151,29 +159,29 @@ export function HistoryPage() {
         <div className="panel empty-state">
           <h2>Nenhuma atividade encontrada</h2>
           <p>Altere os filtros ou salve seu primeiro Ride.</p>
-          <Link className="button button-primary" to="/ride">
+          <ButtonLink variant="primary" to="/ride">
             Preparar Ride
-          </Link>
+          </ButtonLink>
         </div>
       )}
       {!['pending', 'error'].includes(params.get('sync') ?? '') && (
-        <div className="route-tools">
-          <button
-            className="button"
+        <div className="page-pagination">
+          <Button
+            variant="secondary"
             disabled={loading || (result?.page ?? 1) <= 1}
             onClick={() => change('page', String((result?.page ?? 1) - 1))}
           >
             Anterior
-          </button>
+          </Button>
           <span>Página {result?.page ?? 1}</span>
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={loading || !result?.hasMore}
             onClick={() => change('page', String((result?.page ?? 1) + 1))}
           >
             Próxima
-          </button>
-          <Link className="text-link" to="/estatisticas">
+          </Button>
+          <Link className="text-link action-link" to="/estatisticas">
             Estatísticas
           </Link>
         </div>
@@ -181,4 +189,3 @@ export function HistoryPage() {
     </div>
   );
 }
-import { VideoRecovery } from '../video/VideoLibrary';

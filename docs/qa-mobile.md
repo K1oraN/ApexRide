@@ -18,6 +18,49 @@ locais de teste; as quatro referências originais não foram localizadas nesta
 rodada. Preservaram-se tokens, cores, layout, velocímetro circular e cinco abas,
 sem afirmar nova aprovação visual pixel a pixel.
 
+## Homologação da Etapa 5 — roteiro e registro pendentes
+
+Executar separadamente em Android intermediário, Android superior, iPhone Safari
+e iPhone PWA. Nenhum desses aparelhos foi disponibilizado nesta etapa. Preencher
+modelo, SO/navegador/versão, data, responsável e evidência por caso; os resultados
+de Chrome desktop com GPS/sensores/câmera sintéticos são outra categoria.
+
+1. Com a moto parada, conferir preparo em retrato/paisagem, botão Iniciar,
+   navegação com cinco abas, safe areas, foco, TalkBack/VoiceOver e texto ampliado.
+2. Negar/conceder GPS. Aguardar posição válida; conferir ausência de timer antes
+   do início, velocidade ausente diferente de zero e qualidade/fonte indicadas.
+3. Em trajeto a pé seguro, comparar distância e tempo com referência independente,
+   pausar/retomar e navegar entre páginas. Não testar manobras de desempenho.
+4. Verificar cada canal do diagnóstico: construtor sem eventos, só aceleração,
+   giro/orientação nulos, leituras recentes e expiração. GPS deve continuar sozinho.
+5. Em suporte fixo e parado, testar as duas montagens, confirmação vertical,
+   estabilidade/rejeição/recalibração. Rodar tela, interromper eventos e retirar
+   referência; G fica indisponível, inclinação dinâmica sempre indisponível.
+6. GPS Assistido: comparar fonte e fallback, negar sensores, perder calibração,
+   observar lacunas. Somente referência metrológica independente pode homologar
+   precisão dinâmica; a aparência do velocímetro não constitui essa evidência.
+7. Câmeras frontal/traseira, apenas uma ativa; áudio desligado/consentido,
+   REC após início confirmado, pausa encerrando arquivo e retomada em segmento
+   novo. Troca de câmera somente durante pausa, com a moto parada.
+8. Negar/revogar câmera/microfone, receber chamada, mudar app, bloquear tela,
+   ocultar página. Conferir mensagem, preservação dos blocos confirmados,
+   liberação de recursos e ausência de falsa gravação em segundo plano.
+9. Espaço reduzido/quota, IndexedDB indisponível, rede ausente, reload inesperado,
+   recuperação após lease. Conferir só checkpoints, lacunas e sincronização única.
+10. Biblioteca/estúdio: reproduzir originais e segmentos, testar seek/taxas,
+    offset e layouts, ausências de telemetria, cancelamento, codec recusado,
+    exportação WebM/MP4 apenas quando oferecida e áudio explicitamente escolhido.
+    Abrir composto em player externo, conferir frames e ouvir início/meio/fim.
+11. Outra conta no mesmo aparelho não pode acessar arquivos anteriores. Excluir
+    exige confirmação, não remove outra atividade nem publica localização.
+12. Em bancada, registrar consumo/aquecimento durante sessões de duração conhecida,
+    versão, brilho, conexão, câmera/qualidade, carga inicial/final e interrupções.
+    Não inferir autonomia móvel do benchmark sintético de Node.
+
+Circuitos: conferir linha/sentido/geometria/versionamento com registros sintéticos
+e referência independente em ambiente autorizado. Não executar testes físicos
+perigosos de aceleração ou frenagem em vias públicas. Voltas permanecem estimadas.
+
 ## Roteiro obrigatório em cada aparelho
 
 Registrar fabricante/modelo, SO, versão do navegador, modo Safari/PWA, conexão,

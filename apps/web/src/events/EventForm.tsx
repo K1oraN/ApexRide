@@ -1,14 +1,23 @@
+import { ChoiceSelect } from '../components/design-system';
+import type { Coordinate } from '@apex-ride/ride-core/routes';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import {
+  Button,
+  ButtonLink,
+  Checkbox,
+  Input,
+  Select,
+  Textarea,
+} from '../components/design-system';
 import { RouteMap } from '../components/maps/RouteMap';
-import type { Coordinate } from '@apex-ride/ride-core/routes';
-import { routeService, type RouteRecord } from '../services/routes';
-import { authRequest } from '../services/auth';
-import { uploadPhoto } from '../social/service';
 import type { Group } from '../groups/types';
+import { authRequest } from '../services/auth';
+import { routeService, type RouteRecord } from '../services/routes';
+import { uploadPhoto } from '../social/service';
 import { events } from './service';
+import { toUtc, wallTime } from './timezone';
 import type { SocialEvent } from './types';
-import { wallTime, toUtc } from './timezone';
 export function EventForm({
   event,
   onCancel,
@@ -154,7 +163,7 @@ export function EventForm({
         <fieldset className="account-form" disabled={busy || !!saved}>
           <label className="account-field">
             Nome do evento
-            <input
+            <Input
               required
               minLength={3}
               maxLength={120}
@@ -164,26 +173,27 @@ export function EventForm({
           </label>
           <label className="account-field">
             Descrição
-            <textarea
+            <Textarea
               maxLength={4000}
               value={form.description}
               onChange={(e) => change('description', e.target.value)}
             />
           </label>
           <div className="event-filters">
-            <label className="account-field">
-              Tipo de evento
-              <select
+            <div className="account-field">
+              <span>Tipo de evento</span>
+              <ChoiceSelect
+                aria-label="Tipo de evento"
                 value={form.eventType}
                 onChange={(e) => change('eventType', e.target.value)}
               >
                 <option value="meetup">Encontro</option>
                 <option value="ride">Passeio organizado</option>
-              </select>
-            </label>
+              </ChoiceSelect>
+            </div>
             <label className="account-field">
               Grupo organizador
-              <select
+              <Select
                 disabled={!!event}
                 value={form.groupId}
                 onChange={(e) => change('groupId', e.target.value)}
@@ -198,11 +208,12 @@ export function EventForm({
                   !groups.some((g) => g.id === event.group_id) && (
                     <option value={event.group_id}>Grupo do evento</option>
                   )}
-              </select>
+              </Select>
             </label>
-            <label className="account-field">
-              Visibilidade
-              <select
+            <div className="account-field">
+              <span>Visibilidade</span>
+              <ChoiceSelect
+                aria-label="Visibilidade"
                 disabled={!!form.groupId}
                 value={form.visibility}
                 onChange={(e) => change('visibility', e.target.value)}
@@ -215,24 +226,25 @@ export function EventForm({
                     <option value="invite">Privado por convite</option>
                   </>
                 )}
-              </select>
-            </label>
-            <label className="account-field">
-              Confirmação de presença
-              <select
+              </ChoiceSelect>
+            </div>
+            <div className="account-field">
+              <span>Confirmação de presença</span>
+              <ChoiceSelect
+                aria-label="Confirmação de presença"
                 value={form.joinPolicy}
                 onChange={(e) => change('joinPolicy', e.target.value)}
               >
                 <option value="immediate">Imediata</option>
                 <option value="approval">Exige aprovação</option>
-              </select>
-            </label>
+              </ChoiceSelect>
+            </div>
           </div>
           {event && form.visibility !== event.visibility && (
             <label className="check-field">
-              <input
+              <Checkbox
                 required
-                type="checkbox"
+
                 checked={disclosure}
                 onChange={(e) => setDisclosure(e.target.checked)}
               />
@@ -243,7 +255,7 @@ export function EventForm({
           <div className="event-filters">
             <label className="account-field">
               Data e hora de início
-              <input
+              <Input
                 required
                 type="datetime-local"
                 value={form.startsAt}
@@ -252,7 +264,7 @@ export function EventForm({
             </label>
             <label className="account-field">
               Encerramento previsto
-              <input
+              <Input
                 required
                 type="datetime-local"
                 value={form.endsAt}
@@ -261,7 +273,7 @@ export function EventForm({
             </label>
             <label className="account-field">
               Fuso horário
-              <input
+              <Input
                 required
                 list="event-timezones"
                 value={form.timezone}
@@ -291,7 +303,7 @@ export function EventForm({
           <div className="event-filters">
             <label className="account-field">
               Cidade
-              <input
+              <Input
                 required
                 maxLength={100}
                 value={form.city}
@@ -300,7 +312,7 @@ export function EventForm({
             </label>
             <label className="account-field">
               Estado
-              <select
+              <Select
                 value={form.state}
                 onChange={(e) => change('state', e.target.value)}
               >
@@ -309,11 +321,11 @@ export function EventForm({
                   .map((s) => (
                     <option key={s}>{s}</option>
                   ))}
-              </select>
+              </Select>
             </label>
             <label className="account-field">
               Máximo de participantes (opcional)
-              <input
+              <Input
                 type="number"
                 min={1}
                 max={100000}
@@ -324,7 +336,7 @@ export function EventForm({
           </div>
           <label className="account-field">
             Nome do ponto de encontro
-            <input
+            <Input
               required
               maxLength={200}
               value={form.meetingPointLabel}
@@ -355,7 +367,7 @@ export function EventForm({
           <div className="event-filters">
             <label className="account-field">
               Latitude
-              <input
+              <Input
                 required
                 type="number"
                 step="any"
@@ -371,7 +383,7 @@ export function EventForm({
             </label>
             <label className="account-field">
               Longitude
-              <input
+              <Input
                 required
                 type="number"
                 step="any"
@@ -388,15 +400,14 @@ export function EventForm({
           </div>
           <label className="account-field">
             Referência do local
-            <textarea
+            <Textarea
               maxLength={500}
               value={form.meetingReference}
               onChange={(e) => change('meetingReference', e.target.value)}
             />
           </label>
           <label className="check-field">
-            <input
-              type="checkbox"
+            <Checkbox
               required
               checked={confirmed}
               onChange={(e) => {
@@ -411,7 +422,7 @@ export function EventForm({
             <>
               <label className="account-field">
                 Pesquisar rota cadastrada
-                <input
+                <Input
                   maxLength={100}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -419,7 +430,7 @@ export function EventForm({
               </label>
               <label className="account-field">
                 Rota opcional
-                <select
+                <Select
                   value={form.routeId}
                   onChange={(e) => change('routeId', e.target.value)}
                 >
@@ -435,7 +446,7 @@ export function EventForm({
                         Rota atual · versão {event.route_version}
                       </option>
                     )}
-                </select>
+                </Select>
               </label>
               {route && (
                 <p>
@@ -443,14 +454,14 @@ export function EventForm({
                   {route.city}, {route.state}
                 </p>
               )}
-              <Link className="text-link" to="/explorar/novo">
+              <Link className="text-link action-link" to="/explorar/novo">
                 Criar percurso no editor de Rotas
               </Link>
             </>
           )}
           <label className="account-field">
             Regras
-            <textarea
+            <Textarea
               maxLength={4000}
               value={form.rules}
               onChange={(e) => change('rules', e.target.value)}
@@ -458,7 +469,7 @@ export function EventForm({
           </label>
           <label className="account-field">
             Imagem opcional
-            <input
+            <Input
               type="file"
               accept="image/jpeg,image/png,image/webp"
               onChange={(e) => {
@@ -505,11 +516,7 @@ export function EventForm({
           </p>
         )}
         <div className="event-actions">
-          <button
-            className="button button-primary"
-            disabled={busy}
-            type="submit"
-          >
+          <Button variant="primary" disabled={busy} type="submit">
             {busy
               ? 'Salvando…'
               : preview
@@ -517,15 +524,15 @@ export function EventForm({
                   ? 'Confirmar alterações'
                   : 'Confirmar criação'
                 : 'Revisar informações'}
-          </button>
+          </Button>
           {onCancel ? (
-            <button type="button" className="button" onClick={onCancel}>
+            <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar edição
-            </button>
+            </Button>
           ) : (
-            <Link className="button" to="/comunidade/eventos">
+            <ButtonLink variant="outline" to="/comunidade/eventos">
               Cancelar
-            </Link>
+            </ButtonLink>
           )}
         </div>
       </form>

@@ -1,14 +1,23 @@
+import { Heart, MessageCircle, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
-import { Heart, MessageCircle, MoreHorizontal } from 'lucide-react';
 import { useAuth } from '../auth/useAuth';
+import {
+  Button,
+  EmptyState,
+  Feedback,
+  Input,
+  Select,
+  Skeleton,
+  Textarea,
+} from '../components/design-system';
 import { Avatar, Popover } from '../components/ui';
 import { apiUrl } from '../services/auth';
+import '../styles/social.css';
 import { Composer } from './Composer';
 import { social } from './service';
-import { usePage } from './usePage';
 import type { Comment, SocialPost } from './types';
-import '../styles/social.css';
+import { usePage } from './usePage';
 export function Report({
   id,
   kind,
@@ -43,14 +52,14 @@ export function Report({
   }
   return (
     <div>
-      <button className="button" onClick={() => setOpen(!open)}>
+      <Button variant="secondary" onClick={() => setOpen(!open)}>
         Denunciar{kind === 'comment' ? ' comentário' : ''}
-      </button>
+      </Button>
       {open && (
         <div className="account-form">
           <label className="account-field">
             Motivo
-            <select value={reason} onChange={(e) => setReason(e.target.value)}>
+            <Select value={reason} onChange={(e) => setReason(e.target.value)}>
               {Object.entries({
                 harassment: 'Assédio',
                 offensive: 'Conteúdo ofensivo',
@@ -64,24 +73,24 @@ export function Report({
                   {label}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <label className="account-field">
             Detalhes opcionais
-            <textarea
+            <Textarea
               aria-label="Detalhes opcionais"
               maxLength={500}
               value={detail}
               onChange={(e) => setDetail(e.target.value)}
             />
           </label>
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={busy}
             onClick={() => void send()}
           >
             Enviar denúncia
-          </button>
+          </Button>
         </div>
       )}
       {message && <p role="status">{message}</p>}
@@ -107,14 +116,14 @@ function Moderate({
       <summary>Moderar conteúdo</summary>
       <label className="account-field">
         Motivo da ocultação
-        <input
+        <Input
           maxLength={500}
           value={reason}
           onChange={(e) => setReason(e.target.value)}
         />
       </label>
-      <button
-        className="button"
+      <Button
+        variant="secondary"
         disabled={busy || !reason.trim()}
         onClick={() => {
           setBusy(true);
@@ -127,7 +136,7 @@ function Moderate({
         }}
       >
         Ocultar conteúdo
-      </button>
+      </Button>
       {error && <p role="alert">{error}</p>}
     </details>
   );
@@ -173,13 +182,13 @@ function Comments({
             <p>{c.text}</p>
             <small>{new Date(c.created_at).toLocaleString('pt-BR')}</small>
             {user?.id === c.author.id ? (
-              <button
+              <Button
                 disabled={busy}
-                className="button"
+                variant="destructive"
                 onClick={() => void act(`/comments/${c.id}`, 'DELETE')}
               >
                 Excluir comentário
-              </button>
+              </Button>
             ) : (
               user && <Report id={c.id} kind="comment" />
             )}
@@ -204,19 +213,19 @@ function Comments({
       {p.error && (
         <p role="alert">
           {p.error}
-          <button className="button" onClick={() => void p.reload()}>
+          <Button variant="secondary" onClick={() => void p.reload()}>
             Tentar novamente
-          </button>
+          </Button>
         </p>
       )}
       {p.data.nextCursor && (
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={p.loading}
           onClick={() => void p.more()}
         >
           Mais comentários
-        </button>
+        </Button>
       )}
       {user ? (
         <form
@@ -228,7 +237,7 @@ function Comments({
         >
           <label className="account-field">
             Escrever comentário
-            <textarea
+            <Textarea
               aria-label="Escrever comentário"
               required
               maxLength={1000}
@@ -236,9 +245,9 @@ function Comments({
               onChange={(e) => setText(e.target.value)}
             />
           </label>
-          <button className="button" disabled={busy || !text.trim()}>
+          <Button variant="secondary" disabled={busy || !text.trim()}>
             Enviar comentário
-          </button>
+          </Button>
         </form>
       ) : (
         <Link to="/entrar">Entre para comentar</Link>
@@ -335,12 +344,12 @@ export function LivePost({
           >
             {user.id === post.author_id ? (
               <>
-                <button className="button" onClick={() => setEdit(true)}>
+                <Button variant="secondary" onClick={() => setEdit(true)}>
                   Editar publicação
-                </button>
-                <button className="button" onClick={() => setConfirm(true)}>
+                </Button>
+                <Button variant="destructive" onClick={() => setConfirm(true)}>
                   Excluir publicação
-                </button>
+                </Button>
               </>
             ) : (
               <Report id={post.id} kind="post" />
@@ -384,7 +393,7 @@ export function LivePost({
             {post.ride.distanceKm} km · {post.ride.activeMinutes} min
           </p>
           <Link
-            className="text-link"
+            className="text-link action-link"
             to={`/compartilhar/rides/${post.ride.id}`}
           >
             Abrir resumo autorizado do Ride
@@ -417,7 +426,7 @@ export function LivePost({
         </button>
         {user && user.id !== post.author_id && (
           <Link
-            className="text-link"
+            className="text-link action-link"
             to={`/comunidade/u/${post.author.username}`}
           >
             {post.following ? 'Seguindo' : 'Ver perfil / Seguir'}
@@ -430,16 +439,16 @@ export function LivePost({
             Excluir esta publicação e suas fotografias? A moto e o Ride serão
             preservados.
           </p>
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={busy}
             onClick={() => void action('delete')}
           >
             Confirmar exclusão
-          </button>
-          <button className="button" onClick={() => setConfirm(false)}>
+          </Button>
+          <Button variant="outline" onClick={() => setConfirm(false)}>
             Cancelar exclusão
-          </button>
+          </Button>
         </div>
       )}
       {error && <p role="alert">{error}</p>}
@@ -503,36 +512,33 @@ export function Feed({
     <div className="social-feed" aria-label="Publicações reais">
       {!compact && !username && !groupId && (
         <div className="social-controls">
-          <button
-            className="button"
+          <Button
+            variant={mode === 'public' ? 'selected' : 'secondary'}
             aria-pressed={mode === 'public'}
             onClick={() => setMode('public')}
           >
             Para todos
-          </button>
-          <button
-            className="button"
+          </Button>
+          <Button
+            variant={mode === 'following' ? 'selected' : 'secondary'}
             disabled={!user}
             aria-pressed={mode === 'following'}
             onClick={() => setMode('following')}
           >
             Seguindo
-          </button>
-          <button className="button" onClick={() => void p.reload()}>
+          </Button>
+          <Button variant="secondary" onClick={() => void p.reload()}>
             Atualizar feed
-          </button>
+          </Button>
         </div>
       )}
       {!compact &&
         user &&
         canPost &&
         (!username || username === user.username) && (
-          <button
-            className="button button-primary"
-            onClick={() => setComposing(true)}
-          >
+          <Button variant="primary" onClick={() => setComposing(true)}>
             Criar publicação
-          </button>
+          </Button>
         )}
       {!compact && user && (composing || selectedRide) && (
         <Composer
@@ -566,37 +572,41 @@ export function Feed({
           }}
         />
       ))}
-      {p.loading && <p role="status">Carregando publicações…</p>}
+      {p.loading && <Skeleton label="Carregando publicações…" />}
       {p.error && (
-        <div className="panel social-summary" role="alert">
+        <Feedback tone="error">
           {p.error}
-          <button className="button" onClick={() => void p.reload()}>
+          <Button variant="secondary" onClick={() => void p.reload()}>
             Tentar novamente
-          </button>
-        </div>
+          </Button>
+        </Feedback>
       )}
       {!p.loading && !p.error && !p.data.items.length && (
-        <div className="panel social-summary">
-          <p>
-            {mode === 'following'
+        <EmptyState
+          icon={<MessageCircle size={26} />}
+          title="Sua comunidade começa aqui"
+          children={
+            mode === 'following'
               ? 'Nenhuma publicação das contas seguidas. Descubra motociclistas para seguir.'
-              : 'Nenhuma publicação por aqui ainda.'}
-          </p>
-          {!user && (
-            <Link className="text-link" to="/entrar">
-              Entre para participar
-            </Link>
-          )}
-        </div>
+              : 'Nenhuma publicação por aqui ainda.'
+          }
+          action={
+            !user ? (
+              <Link className="text-link action-link" to="/entrar">
+                Entre para participar
+              </Link>
+            ) : undefined
+          }
+        />
       )}
       {!compact && p.data.nextCursor && (
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={p.loading}
           onClick={() => void p.more()}
         >
           Carregar mais publicações
-        </button>
+        </Button>
       )}
       {!p.loading &&
         !p.error &&

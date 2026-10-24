@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../auth/useAuth';
+import { Button, Input, Select } from '../components/design-system';
 import { authRequest } from '../services/auth';
 import { social } from '../social/service';
 import { events } from './service';
@@ -95,8 +96,8 @@ export function EventParticipants({
             <fieldset disabled={busy} className="event-actions">
               {p.participation_status === 'pending' && (
                 <>
-                  <button
-                    className="button"
+                  <Button
+                    variant="secondary"
                     onClick={() =>
                       void act(`participants/${p.user_id}`, 'PATCH', {
                         status: 'confirmed',
@@ -104,9 +105,9 @@ export function EventParticipants({
                     }
                   >
                     Aprovar presença
-                  </button>
-                  <button
-                    className="button"
+                  </Button>
+                  <Button
+                    variant="secondary"
                     onClick={() =>
                       void act(`participants/${p.user_id}`, 'PATCH', {
                         status: 'rejected',
@@ -114,12 +115,12 @@ export function EventParticipants({
                     }
                   >
                     Recusar solicitação
-                  </button>
+                  </Button>
                 </>
               )}
               {!['removed', 'rejected'].includes(p.participation_status) && (
-                <button
-                  className="button"
+                <Button
+                  variant="destructive"
                   onClick={() =>
                     void act(`participants/${p.user_id}`, 'PATCH', {
                       status: 'removed',
@@ -127,11 +128,11 @@ export function EventParticipants({
                   }
                 >
                   Remover participante
-                </button>
+                </Button>
               )}
               {p.participation_status === 'confirmed' && (
-                <button
-                  className="button"
+                <Button
+                  variant="secondary"
                   onClick={() =>
                     void act(
                       `organizers/${p.user_id}`,
@@ -142,27 +143,27 @@ export function EventParticipants({
                   {p.organizer
                     ? 'Revogar coorganizador'
                     : 'Designar coorganizador'}
-                </button>
+                </Button>
               )}
             </fieldset>
           )}
         </article>
       ))}
       <div className="event-actions">
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={page <= 1}
           onClick={() => setPage((x) => x - 1)}
         >
           Participantes anteriores
-        </button>
-        <button
-          className="button"
+        </Button>
+        <Button
+          variant="secondary"
           disabled={!more}
           onClick={() => setPage((x) => x + 1)}
         >
           Mais participantes
-        </button>
+        </Button>
       </div>
     </section>
   );
@@ -208,21 +209,21 @@ function AttendanceControl({
       </p>
       <label className="account-field">
         Motivo da verificação ou revogação
-        <input
+        <Input
           maxLength={500}
           value={reason}
           onChange={(e) => setReason(e.target.value)}
         />
       </label>
-      <button
-        className="button"
+      <Button
+        variant="secondary"
         disabled={busy || !reason.trim()}
         onClick={() => void save()}
       >
         {person.attendance_verified
           ? 'Revogar presença verificada'
           : 'Confirmar participação efetiva'}
-      </button>
+      </Button>
       {error && <p role="alert">{error}</p>}
     </details>
   );
@@ -315,56 +316,56 @@ export function EventInvites({ event }: { event: SocialEvent }) {
       <fieldset className="account-form" disabled={busy}>
         <label className="account-field">
           Buscar motociclista
-          <input
+          <Input
             maxLength={80}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </label>
         <div className="event-actions">
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={!query.trim()}
             onClick={() => void search()}
           >
             Buscar pessoa
-          </button>
+          </Button>
           {event.group_id && (
-            <button className="button" onClick={() => void search(true)}>
+            <Button variant="secondary" onClick={() => void search(true)}>
               Selecionar integrante do grupo
-            </button>
+            </Button>
           )}
         </div>
         <label className="account-field">
           Destinatário
-          <select value={target} onChange={(e) => setTarget(e.target.value)}>
+          <Select value={target} onChange={(e) => setTarget(e.target.value)}>
             <option value="">Selecione uma pessoa</option>
             {people.map((p) => (
               <option value={p.id} key={p.id}>
                 {p.displayName} · @{p.username}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         {groupCursor && (
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             onClick={() => void search(true, groupCursor)}
           >
             Mais integrantes
-          </button>
+          </Button>
         )}
         {peopleCursor && (
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             onClick={() => void search(false, peopleCursor)}
           >
             Mais motociclistas
-          </button>
+          </Button>
         )}
         <label className="account-field">
           Validade do convite (dias)
-          <input
+          <Input
             type="number"
             min={1}
             max={30}
@@ -372,13 +373,13 @@ export function EventInvites({ event }: { event: SocialEvent }) {
             onChange={(e) => setDays(Number(e.target.value))}
           />
         </label>
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={!target}
           onClick={() => void invite()}
         >
           Enviar convite
-        </button>
+        </Button>
       </fieldset>
       {message && <p role="status">{message}</p>}
       {error && <p role="alert">{error}</p>}
@@ -398,8 +399,8 @@ export function EventInvites({ event }: { event: SocialEvent }) {
                     : 'Revogado'}
           </span>
           {i.status === 'pending' && (
-            <button
-              className="button"
+            <Button
+              variant="secondary"
               disabled={busy}
               onClick={() => {
                 setBusy(true);
@@ -411,25 +412,25 @@ export function EventInvites({ event }: { event: SocialEvent }) {
               }}
             >
               Revogar convite
-            </button>
+            </Button>
           )}
         </article>
       ))}
       <div className="event-actions">
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={invitePage <= 1}
           onClick={() => setInvitePage((x) => x - 1)}
         >
           Convites anteriores
-        </button>
-        <button
-          className="button"
+        </Button>
+        <Button
+          variant="secondary"
           disabled={!inviteMore}
           onClick={() => setInvitePage((x) => x + 1)}
         >
           Mais convites
-        </button>
+        </Button>
       </div>
     </section>
   );

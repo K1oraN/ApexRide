@@ -159,7 +159,7 @@ test('Parte 15: parcial, coberturas distintas e descoberta comunitária vazia', 
       exact: true,
     }),
   ).toBeVisible();
-  await page.goto('/explorar');
+  await page.goto('/descobertas');
   await page
     .getByText('Descobertas de trajetos semelhantes', { exact: true })
     .click();

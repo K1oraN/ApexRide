@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { ChoiceSelect } from '../components/design-system';
 import type { Mount } from '@apex-ride/ride-core/motion';
+import { useState } from 'react';
+import { Button, Checkbox } from '../components/design-system';
 import { useRide } from './context';
 import { useMotion } from './useMotion';
+import { SensorDiagnostics } from './SensorDiagnostics';
 export function MotionPreparation() {
   const { controller, snapshot: ride } = useRide();
   const s = useMotion();
+  const [attempted, setAttempted] = useState(false);
   const [fixed, setFixed] = useState(false);
   const [upright, setUpright] = useState(false);
   const [mount, setMount] = useState<Mount>('top-forward');
@@ -15,9 +19,18 @@ export function MotionPreparation() {
       aria-label="Sensores de movimento"
     >
       <h2>Sensores de movimento</h2>
-      <p role="status">{s.sensor.message}</p>
+      <div className="settings-caption">
+        <p role="status">
+          {s.sensor.status === 'idle'
+            ? 'Sensores desligados'
+            : s.sensor.status === 'working'
+              ? 'Sensores funcionando · leituras recebidas'
+              : s.sensor.message}
+        </p>
+      </div>
       {s.sensor.policyWarning && <p>{s.sensor.policyWarning}</p>}
-      <p>{s.message}</p>
+      {attempted && <p role="status">{s.message}</p>}
+      <SensorDiagnostics />
       {!preparing && (
         <p>
           Força G:{' '}
@@ -31,19 +44,8 @@ export function MotionPreparation() {
       )}
       {preparing && (
         <>
-          <p>
-            Fixe o celular em suporte estável, sem folgas, com a tela voltada
-            para cima (até 45° da horizontal). Não use na mão. Calibre somente
-            com a moto parada e vertical. Não altere a montagem após calibrar.
-          </p>
-          <p>
-            APIs detectadas: movimento{' '}
-            {s.sensor.capabilities.motion ? 'presente' : 'ausente'} · orientação{' '}
-            {s.sensor.capabilities.orientation ? 'presente' : 'ausente'}. O
-            recebimento de leituras será verificado após ativar.
-          </p>
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={
               s.sensor.active ||
               s.sensor.status === 'requesting' ||
@@ -52,79 +54,75 @@ export function MotionPreparation() {
             onClick={() => void controller.motion.activate()}
           >
             Ativar Sensores
-          </button>
-          <label className="account-field">
-            Montagem do celular
-            <select
-              value={mount}
-              disabled={s.calibrating}
-              onChange={(e) => {
-                setMount(e.target.value as Mount);
-                controller.motion.clear();
+          </Button>
+          <details className="ride-calibration" data-ride-setting="calibration">
+            <summary>Calibração opcional</summary>
+            <div className="account-field">
+              <span>Montagem do celular</span>
+              <ChoiceSelect
+                aria-label="Montagem do celular"
+                value={mount}
+                disabled={s.calibrating}
+                onChange={(e) => {
+                  setMount(e.target.value as Mount);
+                  controller.motion.clear();
+                }}
+              >
+                <option value="top-forward">
+                  Topo apontado para a frente da moto
+                </option>
+                <option value="right-forward">
+                  Borda direita apontada para a frente da moto
+                </option>
+              </ChoiceSelect>
+            </div>
+            <label className="motion-confirm">
+              <Checkbox
+                checked={fixed}
+                disabled={s.calibrating}
+                onChange={(e) => {
+                  setFixed(e.target.checked);
+                  if (!e.target.checked) controller.motion.clear();
+                }}
+              />
+              Celular firmemente fixado no suporte indicado
+            </label>
+            <label className="motion-confirm">
+              <Checkbox
+                checked={upright}
+                disabled={s.calibrating}
+                onChange={(e) => {
+                  setUpright(e.target.checked);
+                  if (!e.target.checked) controller.motion.clear();
+                }}
+              />
+              Confirmo que a moto está parada e vertical
+            </label>
+            <Button
+              variant="secondary"
+              disabled={
+                !fixed ||
+                !upright ||
+                s.calibrating ||
+                s.sensor.status !== 'working'
+              }
+              onClick={() => {
+                setAttempted(true);
+                controller.motion.calibrate(
+                  mount,
+                  fixed,
+                  upright,
+                  ride.gps.speedKmh,
+                );
               }}
             >
-              <option value="top-forward">
-                Topo apontado para a frente da moto
-              </option>
-              <option value="right-forward">
-                Borda direita apontada para a frente da moto
-              </option>
-            </select>
-          </label>
-          <label className="motion-confirm">
-            <input
-              type="checkbox"
-              checked={fixed}
-              disabled={s.calibrating}
-              onChange={(e) => {
-                setFixed(e.target.checked);
-                if (!e.target.checked) controller.motion.clear();
-              }}
-            />
-            Celular firmemente fixado no suporte indicado
-          </label>
-          <label className="motion-confirm">
-            <input
-              type="checkbox"
-              checked={upright}
-              disabled={s.calibrating}
-              onChange={(e) => {
-                setUpright(e.target.checked);
-                if (!e.target.checked) controller.motion.clear();
-              }}
-            />
-            Confirmo que a moto está parada e vertical
-          </label>
-          <p>
-            Estabilidade dos sensores não comprova que a moto está vertical. Sua
-            confirmação define essa referência. A força G é uma estimativa
-            limitada; a inclinação dinâmica está indisponível até validação
-            física.
-          </p>
-          <button
-            className="button"
-            disabled={
-              !fixed ||
-              !upright ||
-              s.calibrating ||
-              s.sensor.status !== 'working'
-            }
-            onClick={() =>
-              controller.motion.calibrate(
-                mount,
-                fixed,
-                upright,
-                ride.gps.speedKmh,
-              )
-            }
-          >
-            {s.calibrating
-              ? 'Avaliando estabilidade…'
-              : s.calibration?.valid
-                ? 'Recalibrar sensores'
-                : 'Calibrar sensores'}
-          </button>
-          <p>Opcional: você pode iniciar o Ride apenas com GPS.</p>
+              {s.calibrating
+                ? 'Avaliando estabilidade…'
+                : s.calibration?.valid
+                  ? 'Recalibrar sensores'
+                  : 'Calibrar sensores'}
+            </Button>
+          </details>
         </>
       )}
       {s.truncated && (

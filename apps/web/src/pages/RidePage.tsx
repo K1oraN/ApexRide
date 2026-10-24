@@ -1,46 +1,32 @@
-import { RIDE_MODES } from '@apex-ride/ride-core/modes';
-import { AdvancedResults } from '../ride/AdvancedResults';
-import { OfflinePanel } from '../offline/OfflinePanel';
-import {
-  ArrowLeft,
-  ChevronDown,
-  Gauge,
-  LocateFixed,
-  Route,
-  Square,
-  Timer,
-} from 'lucide-react';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { routeService } from '../services/routes';
-import '../styles/routes.css';
+import { ChoiceSelect } from '../components/design-system';
+import { LocateFixed, Pause, Play, Route, Square, Timer } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
-import {
-  RacingFlagIcon as Flag,
-  ModeIcon,
-  RideIcon,
-} from '../components/Brand';
+import { useAuth } from '../auth/useAuth';
+import { RacingFlagIcon as Flag, RideIcon } from '../components/Brand';
+import { Button, ButtonLink, Select } from '../components/design-system';
 import { RideMap } from '../components/maps/RideMap';
 import { GpsIndicator } from '../components/telemetry/GpsIndicator';
-import { useRide } from '../ride/context';
-import { rideGps, rideMetrics } from '../ride/controller';
-import { RideSummary } from '../ride/RideSummary';
-import { MotionPreparation } from '../ride/MotionPreparation';
-import { MotionForceCards } from '../ride/MotionForceCards';
-import { formatDuration } from '../ride/format';
-import { useAuth } from '../auth/useAuth';
-import { useGarage } from '../garage/context';
-import { MotorcyclePhoto } from '../garage/MotorcycleCard';
-import '../styles/ride-session.css';
-import { MetricCard } from '../components/telemetry/Metrics';
-import { SpeedDisplay } from '../ride/SpeedDisplay';
-import { SpeedSettings } from '../ride/SpeedSettings';
 import { rideModes, type RideMode } from '../data/demo';
-import { VideoPanel } from '../video/VideoPanel';
-import { authRequest } from '../services/auth';
 import { events } from '../events/service';
 import type { SocialEvent } from '../events/types';
-
+import { useGarage } from '../garage/context';
+import { MotorcyclePhoto } from '../garage/MotorcycleCard';
+import { OfflinePanel } from '../offline/OfflinePanel';
+import { useRide } from '../ride/context';
+import { rideGps, rideMetrics } from '../ride/controller';
+import { formatDuration } from '../ride/format';
+import { MotionPreparation } from '../ride/MotionPreparation';
+import { RideSummary } from '../ride/RideSummary';
+import { RideDashboard } from '../ride/RideDashboard';
+import { RideCircuitPanel } from '../ride/RideCircuitPanel';
+import { RideSectionNav } from '../ride/RideSectionNav';
+import { SpeedSettings } from '../ride/SpeedSettings';
+import { authRequest } from '../services/auth';
+import { routeService } from '../services/routes';
+import { ActiveVideoPanel, VideoPanel } from '../video/VideoPanel';
+import '../styles/ride-session.css';
+import '../styles/routes.css';
 export function RidePage() {
   const [params, setParams] = useSearchParams();
   const { controller, snapshot } = useRide();
@@ -118,7 +104,6 @@ export function RidePage() {
   const garage = useGarage();
   const gps = rideGps(snapshot);
   const activity = snapshot.activity;
-  const metrics = rideMetrics(snapshot);
   const bike =
     garage.motorcycles.find((b) => b.id === params.get('moto')) ??
     garage.motorcycles.find((b) => b.isPrimary) ??
@@ -129,46 +114,332 @@ export function RidePage() {
     rideModes.find(
       (mode) => mode.id === (activity?.payload.mode ?? params.get('modo')),
     ) ?? rideModes[2]!;
+  const [videoOpen, setVideoOpen] = useState(false);
   function selectMode(value: string) {
     const next = new URLSearchParams(params);
     next.set('modo', value as RideMode);
     setParams(next);
   }
-  if (activity && user?.id !== activity.ownerId)
-    return (
-      <section className="account-card panel">
-        <h1>Ride aguardando sua conta</h1>
-        <p>
-          Entre na conta que iniciou esta atividade para continuar ou salvar.
-        </p>
-        <Link className="text-link" to="/entrar">
-          Entrar na conta
-        </Link>
-      </section>
-    );
+  if (activity && user?.id !== activity.ownerId) return null;
   if (activity?.payload.endedAt)
     return (
-      <div className="ride-page panel">
-        <OfflinePanel />
+      <div className="ride-page ride-workspace">
+        <RideSectionNav />
         <RideSummary />
+        <OfflinePanel compact />
       </div>
     );
+  const preparing = !activity && snapshot.state !== 'waiting-gps';
+  const waiting = snapshot.state === 'waiting-gps';
+  const paused = snapshot.state === 'paused';
   return (
-    <div className="ride-page panel">
-      <OfflinePanel />
+    <div className={`ride-page ride-workspace ride-state-${snapshot.state}`}>
+      <RideSectionNav />
+      <div className="ride-workspace-heading">
+        <div>
+          <span className="eyebrow">SUA PRÓXIMA EXPERIÊNCIA</span>
+          <h1>
+            {activity || waiting ? 'RIDE ' : 'PREPARE SEU '}
+            <em>
+              {waiting
+                ? 'AGUARDANDO GPS'
+                : activity
+                  ? paused
+                    ? 'PAUSADO'
+                    : 'ATIVO'
+                  : 'RIDE'}
+            </em>
+          </h1>
+        </div>
+        <div className="ride-mode-choices">
+          {preparing ? (
+            <ChoiceSelect
+              aria-label="Modo de pilotagem"
+              value={mode.id}
+              disabled={busy}
+              onChange={(e) => selectMode(e.target.value)}
+            >
+              {rideModes.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.name}
+                </option>
+              ))}
+            </ChoiceSelect>
+          ) : (
+            <span className="chip">{mode.name}</span>
+          )}
+        </div>
+      </div>
+      {routeError && <p role="alert">{routeError}</p>}
+      {preparing && (
+        <section
+          className="ride-preparation panel ride-preflight"
+          aria-label="Preparação do Ride"
+        >
+          <h2>Moto e contexto</h2>
+          {garage.loading ? (
+            <p role="status">Carregando garagem…</p>
+          ) : garage.error && !garage.offline ? (
+            <p role="alert">
+              {garage.error}{' '}
+              <button
+                className="text-link"
+                onClick={() => void garage.refresh()}
+              >
+                Tentar carregar garagem
+              </button>
+            </p>
+          ) : !bike ? (
+            <div className="ride-no-bike">
+              <p>Escolha a moto que vai acompanhar você.</p>
+              <ButtonLink to="/garagem/nova" variant="secondary">
+                Cadastre uma moto para iniciar
+              </ButtonLink>
+            </div>
+          ) : (
+            <div className="ride-bike-selection">
+              <MotorcyclePhoto bike={bike} />
+              <label>
+                Moto da garagem
+                <Select
+                  aria-label="Moto da garagem"
+                  value={bike.id}
+                  disabled={busy}
+                  onChange={(e) => {
+                    const next = new URLSearchParams(params);
+                    next.set('moto', e.target.value);
+                    setParams(next);
+                  }}
+                >
+                  {garage.motorcycles.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.brand} {b.model}
+                      {b.isPrimary ? ' · Principal' : ''}
+                    </option>
+                  ))}
+                </Select>
+                <small>
+                  {bike.year} · {bike.displacementCc} cc
+                </small>
+              </label>
+            </div>
+          )}
+          <div className="ride-context-choice">
+            <span>Contexto da atividade</span>
+            <div aria-label="Contexto da atividade" role="group">
+              <Button
+                variant={
+                  !plan && !snapshot.selectedEvent ? 'primary' : 'secondary'
+                }
+                onClick={() => {
+                  controller.selectEvent(null);
+                  controller.selectRoute(null);
+                  const next = new URLSearchParams(params);
+                  next.delete('evento');
+                  next.delete('percurso');
+                  setParams(next);
+                }}
+              >
+                Livre
+              </Button>
+              <ButtonLink
+                variant={
+                  plan && !snapshot.selectedEvent ? 'primary' : 'secondary'
+                }
+                to="/explorar"
+              >
+                Com rota
+              </ButtonLink>
+              <ButtonLink
+                variant={snapshot.selectedEvent ? 'primary' : 'secondary'}
+                to="/comunidade/eventos"
+              >
+                Com evento
+              </ButtonLink>
+            </div>
+          </div>
+          <div className="ride-preflight-gps">
+            <GpsIndicator status={gps.status} />
+            <span>
+              GPS suficiente para iniciar · câmera e sensores opcionais
+            </span>
+          </div>
+          <div className="ride-start-actions">
+            <Button
+              variant="primary"
+              size="xl"
+              className="record-button"
+              disabled={
+                busy ||
+                !user ||
+                !bike ||
+                (Boolean(eventId) && snapshot.selectedEvent?.id !== eventId) ||
+                (Boolean(routeId) && snapshot.selectedRoute?.id !== routeId) ||
+                garage.loading ||
+                (Boolean(garage.error) && !garage.offline)
+              }
+              onClick={() =>
+                controller.start(
+                  user?.id ?? '',
+                  bike,
+                  mode.id,
+                  user?.privacy.activityVisibility ?? 'public',
+                )
+              }
+            >
+              <RideIcon />
+              <span>Iniciar Ride</span>
+              <Play size={18} aria-hidden />
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={
+                gps.active ? controller.stopPreview : controller.activateGps
+              }
+            >
+              {gps.active ? <Square /> : <LocateFixed />}
+              {gps.active ? 'Encerrar GPS' : 'Ativar GPS'}
+            </Button>
+          </div>
+          {garage.offline && (
+            <p>
+              Motos previamente autorizadas neste aparelho. A garagem será
+              validada pelo servidor ao sincronizar.
+            </p>
+          )}
+        </section>
+      )}
+      {(activity || waiting) && (
+        <section className="ride-status panel" aria-label="Estado da sessão">
+          <span className="ride-record-indicator" aria-hidden>
+            {snapshot.state === 'running' ? (
+              <Square fill="currentColor" />
+            ) : paused ? (
+              <Pause />
+            ) : (
+              <LocateFixed />
+            )}
+          </span>
+          <div>
+            <strong className="preview-state">
+              {snapshot.state === 'running'
+                ? 'Em andamento'
+                : paused
+                  ? 'Pausado'
+                  : 'Aguardando GPS'}
+            </strong>
+            <span>
+              {activity
+                ? `${activity.bike.brand} ${activity.bike.model} · ${mode.name}`
+                : 'O registro começa após uma posição válida'}
+            </span>
+          </div>
+          <div className="ride-status-clock">
+            <Timer size={16} aria-hidden />
+            <strong>
+              {activity ? formatDuration(rideMetrics(snapshot).activeMs) : '—'}
+            </strong>
+          </div>
+          <GpsIndicator status={gps.status} />
+        </section>
+      )}
+      {snapshot.error && <p role="alert">{snapshot.error}</p>}
+      {waiting && (
+        <Button variant="secondary" onClick={controller.cancelWaiting}>
+          Cancelar espera do GPS
+        </Button>
+      )}
+      <RideDashboard
+        mode={mode.id}
+        controls={
+          activity && (
+            <div className="ride-controls ride-active-controls">
+              <Button
+                variant={paused ? 'primary' : 'secondary'}
+                disabled={waiting}
+                onClick={paused ? controller.resume : controller.pause}
+              >
+                {paused ? <Play /> : <Pause />}
+                <span>{paused ? 'Continuar' : 'Pausar'}</span>
+              </Button>
+              <Button
+                variant="secondary"
+                className="ride-finish-button"
+                onClick={() => {
+                  if (window.confirm('Finalizar a atividade e abrir o resumo?'))
+                    controller.finish();
+                }}
+              >
+                <Flag />
+                <span>Finalizar</span>
+              </Button>
+            </div>
+          )
+        }
+      />
+
+      {plan && (
+        <section
+          className="panel route-progress"
+          aria-label="Acompanhamento da rota"
+        >
+          <h2>
+            <Route size={20} aria-hidden />
+            {plan.name}
+          </h2>
+          <p>
+            {snapshot.activity?.payload.route?.abandoned
+              ? 'Acompanhamento abandonado · GPS da sessão continua.'
+              : snapshot.routeProgress?.completed
+                ? 'Rota concluída · a sessão continua'
+                : snapshot.routeProgress?.determinate
+                  ? `${Math.round(snapshot.routeProgress.percent)}% aproximado · ${(snapshot.routeProgress.remaining / 1000).toFixed(1)} km restantes`
+                  : 'Progresso temporariamente indeterminado'}
+          </p>
+          <progress
+            max="100"
+            value={
+              snapshot.routeProgress?.determinate
+                ? snapshot.routeProgress.percent
+                : undefined
+            }
+          />
+          {!activity && !waiting && (
+            <button
+              className="text-link"
+              onClick={() => {
+                controller.selectRoute(null);
+                const next = new URLSearchParams(params);
+                next.delete('percurso');
+                setParams(next);
+              }}
+            >
+              Remover seleção
+            </button>
+          )}
+          {paused && (
+            <button className="text-link" onClick={controller.abandonRoute}>
+              Deixar de acompanhar rota
+            </button>
+          )}
+          <Link className="text-link action-link" to="/explorar/navegar">
+            Abrir navegação
+          </Link>
+        </section>
+      )}
       {snapshot.selectedEvent && (
         <section className="panel route-progress">
           <p>
-            Passeio:{' '}
+            Evento:{' '}
             <Link
-              className="text-link"
+              className="text-link action-link"
               to={`/comunidade/eventos/${snapshot.selectedEvent.id}`}
             >
               {snapshot.selectedEvent.title}
-            </Link>{' '}
-            · Localização social exige autorização separada.
+            </Link>
           </p>
-          {!activity && (
+          <small>Compartilhamento social exige autorização separada.</small>
+          {!activity && !waiting && (
             <button
               className="text-link"
               onClick={() => {
@@ -183,330 +454,41 @@ export function RidePage() {
           )}
         </section>
       )}
-      {routeError && <p role="alert">{routeError}</p>}
-      {plan && (
+      {(preparing || paused) && (
         <section
-          className="panel route-progress"
-          aria-label="Acompanhamento da rota"
+          className="ride-optional-settings"
+          aria-label="Configurações opcionais"
         >
-          <strong>{plan.name}</strong>
-          {snapshot.activity?.payload.route?.abandoned ? (
-            <p>Acompanhamento abandonado · GPS da sessão continua.</p>
-          ) : (
+          <details
+            data-ride-setting="video"
+            open={videoOpen}
+            onToggle={(e) => setVideoOpen(e.currentTarget.open)}
+          >
+            <summary>Vídeo opcional</summary>
+            <VideoPanel preparation />
+            <VideoPanel />
+          </details>
+          {preparing && (
             <>
-              <p>
-                {snapshot.routeProgress?.determinate
-                  ? `${Math.round(snapshot.routeProgress.percent)}% aproximado · ${(snapshot.routeProgress.remaining / 1000).toFixed(1)} km restantes`
-                  : 'Progresso temporariamente indeterminado'}
-              </p>
-              <progress
-                max="100"
-                value={snapshot.routeProgress?.percent ?? 0}
-              />
-              <p>
-                {snapshot.routeProgress?.completed
-                  ? 'Rota concluída · a sessão continua'
-                  : {
-                      'on-route': 'Na rota',
-                      'possible-deviation': 'Possível desvio',
-                      'off-route': 'Fora da rota',
-                      inaccurate: 'Localização imprecisa',
-                    }[snapshot.routeProgress?.status ?? 'inaccurate']}
-              </p>
-              {activity?.payload.mode === 'pista' &&
-                plan.verification === 'verified' && (
-                  <p>Voltas estimadas: {snapshot.laps.length}</p>
-                )}
-              {!activity ? (
-                <button
-                  className="text-link"
-                  onClick={() => {
-                    controller.selectRoute(null);
-                    const next = new URLSearchParams(params);
-                    next.delete('percurso');
-                    setParams(next);
-                  }}
-                >
-                  Remover seleção
-                </button>
-              ) : (
-                snapshot.state === 'paused' && (
-                  <button
-                    className="text-link"
-                    onClick={controller.abandonRoute}
-                  >
-                    Deixar de acompanhar rota
-                  </button>
-                )
-              )}
+              <details data-ride-setting="motion">
+                <summary>Diagnóstico e calibração de sensores</summary>
+                <MotionPreparation />
+              </details>
+              <details data-ride-setting="speed">
+                <summary>GPS Puro ou Assistido</summary>
+                <SpeedSettings />
+              </details>
             </>
           )}
         </section>
       )}
-      <div className="ride-page-heading">
-        <div className="ride-title">
-          <Link to="/" aria-label="Voltar ao início">
-            <ArrowLeft />
-          </Link>
-          <div>
-            <span className="eyebrow">
-              {activity ? 'SESSÃO DE PILOTAGEM' : 'PRÉVIA GPS'}
-            </span>
-            <h1>
-              MODO <em>{mode.name.toUpperCase()}</em>
-            </h1>
-            <p>{mode.subtitle}</p>
-          </div>
-        </div>
-        <label className="mode-selector">
-          <ModeIcon mode={mode.id} />
-          <span className="sr-only">Modo de pilotagem</span>
-          <select
-            aria-label="Modo de pilotagem"
-            value={mode.id}
-            disabled={busy}
-            onChange={(e) => selectMode(e.target.value)}
-          >
-            {rideModes.map((mode) => (
-              <option value={mode.id} key={mode.id}>
-                Modo {mode.name}
-              </option>
-            ))}
-          </select>
-          <ChevronDown size={18} />
-        </label>
-      </div>
-      <section
-        className="ride-preparation panel"
-        aria-label="Preparação do Ride"
-      >
-        <h2>
-          {activity
-            ? `${activity.bike.brand} ${activity.bike.model}`
-            : 'Prepare seu Ride'}
-        </h2>
-        {!activity &&
-          (!user ? (
-            <p>
-              <Link className="text-link" to="/entrar">
-                Entre na conta para iniciar uma sessão
-              </Link>
-            </p>
-          ) : garage.loading ? (
-            <p>Carregando garagem…</p>
-          ) : garage.error && !garage.offline ? (
-            <p role="alert">
-              {garage.error}{' '}
-              <button
-                className="text-link"
-                onClick={() => void garage.refresh()}
-              >
-                Tentar carregar garagem
-              </button>
-            </p>
-          ) : !bike ? (
-            <p>
-              <Link className="text-link" to="/garagem/nova">
-                Cadastre uma moto para iniciar
-              </Link>
-            </p>
-          ) : (
-            <div className="ride-bike-selection">
-              <MotorcyclePhoto bike={bike} />
-              <div>
-                <label>
-                  Moto da garagem
-                  <select
-                    aria-label="Moto da garagem"
-                    value={bike.id}
-                    disabled={busy}
-                    onChange={(e) => {
-                      const next = new URLSearchParams(params);
-                      next.set('moto', e.target.value);
-                      setParams(next);
-                    }}
-                  >
-                    {garage.motorcycles.map((b) => (
-                      <option key={b.id} value={b.id}>
-                        {b.brand} {b.model}
-                        {b.isPrimary ? ' · Principal' : ''}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <p>
-                  {bike.brand} {bike.model} · {bike.year} ·{' '}
-                  {bike.displacementCc} cc
-                </p>
-              </div>
-            </div>
-          ))}
-        <p>
-          {activity
-            ? `Registro local incremental. Tempo total: ${formatDuration(metrics.elapsedMs)}. Finalize para revisar e escolher salvar.`
-            : 'Configure a moto e o modo antes de se deslocar. O início aguarda uma posição GPS utilizável.'}
-        </p>
-        {snapshot.error && <p role="alert">{snapshot.error}</p>}
-        <SpeedSettings />
-        {!activity && garage.offline && (
-          <p>
-            Motos previamente autorizadas neste aparelho. A garagem será
-            validada pelo servidor ao sincronizar.
-          </p>
-        )}
+      {activity && !paused && <ActiveVideoPanel />}
+      <section className="panel ride-map-panel">
+        <RideMap gps={gps} plan={plan} />
       </section>
-      <VideoPanel preparation />
-      <MotionPreparation />
-      <div className="ride-status">
-        <span className="demo-live">
-          <span />
-          {activity ? 'SESSÃO GPS' : 'PRÉVIA GPS'}
-        </span>
-        <span className="preview-state">
-          {snapshot.state === 'running'
-            ? 'Em andamento'
-            : snapshot.state === 'paused'
-              ? 'Pausado'
-              : snapshot.state === 'waiting-gps'
-                ? 'Aguardando GPS'
-                : 'Sem gravação ativa'}
-        </span>
-        <GpsIndicator status={gps.status} />
-      </div>
-      <div className="ride-dashboard">
-        <div className="dashboard-side">
-          <MetricCard
-            icon={<Timer />}
-            label="Tempo de ride"
-            value={activity ? formatDuration(metrics.activeMs) : '—'}
-          />
-          <MetricCard
-            icon={<Route />}
-            label="Distância"
-            value={activity ? (metrics.distanceMeters / 1000).toFixed(2) : '—'}
-            unit="km"
-          />
-        </div>
-        <SpeedDisplay />
-        <div className="dashboard-side">
-          <MetricCard
-            icon={<Gauge />}
-            label="Vel. média"
-            value={metrics.averageKmh?.toFixed(1) ?? '—'}
-            unit="km/h"
-          />
-          <MetricCard
-            icon={<Gauge />}
-            label="Vel. máxima"
-            value={metrics.maximumKmh?.toFixed(1) ?? '—'}
-            unit="km/h"
-          />
-        </div>
-      </div>
-      {RIDE_MODES[mode.id].advanced && (
-        <>
-          <div className="lean-grid">
-            <MetricCard
-              icon={<RideIcon size={42} />}
-              label="Ângulo esquerdo"
-              value="—"
-              unit="°"
-              progress={null}
-            />
-            <div className="bike-alignment" aria-hidden>
-              <span />
-              <RideIcon size={65} />
-              <span />
-            </div>
-            <MetricCard
-              icon={<RideIcon size={42} />}
-              label="Ângulo direito"
-              value="—"
-              unit="°"
-              progress={null}
-            />
-          </div>
-          <MotionForceCards />
-        </>
-      )}
-      <AdvancedResults />
-      <div className="ride-preview-grid">
-        <section className="panel">
-          <RideMap gps={gps} plan={plan} />
-        </section>
-        <VideoPanel />
-      </div>
-      <div className="ride-controls">
-        <button
-          className="button pause-button"
-          disabled={snapshot.state === 'waiting-gps'}
-          onClick={
-            activity
-              ? snapshot.state === 'paused'
-                ? controller.resume
-                : controller.pause
-              : gps.active
-                ? controller.stopPreview
-                : controller.activateGps
-          }
-          aria-pressed={gps.active}
-          aria-describedby="gps-purpose"
-        >
-          {gps.active ? <Square fill="currentColor" /> : <LocateFixed />}
-          <span>
-            {activity
-              ? snapshot.state === 'paused'
-                ? 'Continuar'
-                : 'Pausar'
-              : gps.active
-                ? 'Encerrar GPS'
-                : 'Ativar GPS'}
-          </span>
-        </button>
-        <button
-          className="button record-button"
-          disabled={
-            busy ||
-            !user ||
-            !bike ||
-            (Boolean(eventId) && snapshot.selectedEvent?.id !== eventId) ||
-            (Boolean(routeId) && snapshot.selectedRoute?.id !== routeId) ||
-            garage.loading ||
-            (Boolean(garage.error) && !garage.offline)
-          }
-          onClick={() =>
-            controller.start(
-              user?.id ?? '',
-              bike,
-              mode.id,
-              user?.privacy.activityVisibility ?? 'public',
-            )
-          }
-        >
-          <Square fill="currentColor" />
-          <span>Iniciar Ride</span>
-        </button>
-        <button
-          className="button save-button"
-          disabled={!activity}
-          onClick={() => {
-            if (window.confirm('Finalizar a atividade e abrir o resumo?'))
-              controller.finish();
-          }}
-        >
-          <Flag />
-          <span>Finalizar</span>
-        </button>
-      </div>
-      {snapshot.state === 'waiting-gps' && (
-        <button className="text-link" onClick={controller.cancelWaiting}>
-          Cancelar espera do GPS
-        </button>
-      )}
+      {mode.id === 'pista' && <RideCircuitPanel />}
       <div className="gps-details">
-        <p role="status" aria-live="polite">
-          {gps.message}
-        </p>
+        <p role="status">{gps.message}</p>
         {gps.reading && (
           <p>
             Precisão horizontal: ±{Math.round(gps.reading.accuracy)} m · Última
@@ -523,21 +505,8 @@ export function RidePage() {
               Tentar GPS novamente
             </button>
           )}
-        <p id="gps-purpose">
-          O GPS só é solicitado por sua ação. Localização e atividade são
-          gravadas no aparelho; o envio aguarda sua confirmação no resumo. A
-          sessão é preservada ao navegar no Apex Ride. O provedor do mapa recebe
-          a região visualizada. Alta precisão pode aumentar o consumo de
-          bateria.
-        </p>
       </div>
-      <p className="ride-footnote">
-        Força G estimada quando calibrada; inclinação dinâmica indisponível.
-        Vídeo opcional conforme suporte do navegador. A recuperação inclui
-        somente gravações locais confirmadas; as amostras mais recentes ainda em
-        memória podem ser perdidas. O GPS pode ser interrompido com a tela
-        bloqueada ou em segundo plano; trechos ausentes não serão reconstruídos.
-      </p>
+      <OfflinePanel compact />
     </div>
   );
 }

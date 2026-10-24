@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
 import { BIKE_CATEGORIES, CC_BANDS } from '@apex-ride/ride-core/comparison';
+import { useEffect, useState } from 'react';
+import { Button, Combobox, SelectField } from '../components/design-system';
 import { similarityService } from './service';
 export function CommunityDiscovery() {
   const [open, setOpen] = useState(false),
@@ -56,41 +57,38 @@ export function CommunityDiscovery() {
         {open && (
           <>
             <div className="comparison-filters">
-              <label>
-                Região administrativa
-                <select
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                >
-                  <option value="">Selecione uma região disponível</option>
-                  {regions.map((r) => (
-                    <option key={r.id} value={r.id}>
-                      {r.city} / {r.state}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Categoria
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  {BIKE_CATEGORIES.map((c) => (
-                    <option key={c}>{c}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Cilindrada
-                <select value={band} onChange={(e) => setBand(e.target.value)}>
-                  {CC_BANDS.map(([a, b], i) => (
-                    <option value={i} key={i}>
-                      {i === 4 ? 'Acima de 1000 cc' : `${a}–${b} cc`}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <Combobox
+                label="Região administrativa"
+                value={region}
+                onChange={setRegion}
+                placeholder="Busque uma região disponível"
+                options={regions.map((r) => ({
+                  value: r.id,
+                  label: `${r.city} / ${r.state}`,
+                }))}
+                disabled={!regions.length}
+                hint="Somente regiões com dados disponíveis."
+              />
+              <SelectField
+                label="Categoria"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                {BIKE_CATEGORIES.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+              </SelectField>
+              <SelectField
+                label="Cilindrada"
+                value={band}
+                onChange={(e) => setBand(e.target.value)}
+              >
+                {CC_BANDS.map(([a, b], i) => (
+                  <option value={i} key={i}>
+                    {i === 4 ? 'Acima de 1000 cc' : `${a}–${b} cc`}
+                  </option>
+                ))}
+              </SelectField>
             </div>
             {!regions.length && (
               <p>
@@ -98,13 +96,14 @@ export function CommunityDiscovery() {
                 comunitária.
               </p>
             )}
-            <button
-              className="button"
+            <Button
+              variant="secondary"
+              loading={busy}
               disabled={busy || !region}
               onClick={() => void search()}
             >
               Consultar agregados autorizados
-            </button>
+            </Button>
             {message && <p role="status">{message}</p>}
           </>
         )}

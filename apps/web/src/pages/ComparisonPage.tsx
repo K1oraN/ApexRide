@@ -1,17 +1,19 @@
+import { ChoiceSelect } from '../components/design-system';
 import { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
 import { useAuth } from '../auth/useAuth';
+import { ComparisonResults } from '../comparison/ComparisonResults';
 import { comparisonService } from '../comparison/service';
 import type {
-  SelectionData,
-  ComparisonResult,
   CommunityStats,
+  ComparisonResult,
+  SelectionData,
 } from '../comparison/types';
-import { ComparisonResults } from '../comparison/ComparisonResults';
-import '../styles/history.css';
+import { Button, Checkbox, Input, Select } from '../components/design-system';
 import '../styles/comparison.css';
-import '../styles/routes.css';
+import '../styles/history.css';
 import '../styles/ride-session.css';
+import '../styles/routes.css';
 export function ComparisonPage() {
   const { id } = useParams(),
     { user } = useAuth();
@@ -131,10 +133,10 @@ function Comparison({ id }: { id: string }) {
   return (
     <div className="history-detail comparison-page">
       <div className="history-actions">
-        <Link className="text-link" to={`/explorar/${id}`}>
+        <Link className="text-link action-link" to={`/explorar/${id}`}>
           Voltar à rota
         </Link>
-        <Link className="text-link" to="/historico">
+        <Link className="text-link action-link" to="/historico">
           Voltar ao histórico
         </Link>
       </div>
@@ -158,17 +160,17 @@ function Comparison({ id }: { id: string }) {
       {(error || candidateError) && (
         <section className="panel history-panel">
           <p role="alert">{error || candidateError}</p>
-          <button className="button" onClick={() => setAttempt((n) => n + 1)}>
+          <Button variant="secondary" onClick={() => setAttempt((n) => n + 1)}>
             Tentar novamente
-          </button>
+          </Button>
         </section>
       )}
       <section className="panel history-panel">
         <h2>Filtros de comparação</h2>
         <div className="comparison-filters">
-          <label>
-            Atividades
-            <select
+          <div>
+            <span>Atividades</span>
+            <ChoiceSelect
               aria-label="Origem das atividades"
               value={params.get('scope') ?? 'own'}
               onChange={(e) => filter('scope', e.target.value)}
@@ -179,11 +181,11 @@ function Comparison({ id }: { id: string }) {
                   Terceiros autorizados · circuito verificado
                 </option>
               )}
-            </select>
-          </label>
+            </ChoiceSelect>
+          </div>
           <label>
             Categoria da moto
-            <select
+            <Select
               aria-label="Categoria da moto"
               value={params.get('category') ?? ''}
               onChange={(e) => filter('category', e.target.value)}
@@ -192,11 +194,11 @@ function Comparison({ id }: { id: string }) {
               {data?.categories.map((c) => (
                 <option key={c}>{c}</option>
               ))}
-            </select>
+            </Select>
           </label>
           <label>
             Faixa de cilindrada
-            <select
+            <Select
               aria-label="Faixa de cilindrada"
               value={params.get('ccBand') ?? ''}
               onChange={(e) => filter('ccBand', e.target.value)}
@@ -211,7 +213,7 @@ function Comparison({ id }: { id: string }) {
                       : `${min}–${max} cc`}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           {(['brand', 'model', 'city', 'state'] as const).map((key, i) => (
             <label key={key}>
@@ -223,7 +225,7 @@ function Comparison({ id }: { id: string }) {
                   'Estado da rota (UF)',
                 ][i]
               }
-              <input
+              <Input
                 maxLength={key === 'state' ? 2 : 120}
                 value={params.get(key) ?? ''}
                 onChange={(e) => filter(key, e.target.value)}
@@ -232,7 +234,7 @@ function Comparison({ id }: { id: string }) {
           ))}
           <label>
             Região da rota
-            <select
+            <Select
               aria-label="Região da rota"
               value={params.get('region') ?? ''}
               onChange={(e) => filter('region', e.target.value)}
@@ -243,11 +245,11 @@ function Comparison({ id }: { id: string }) {
                   <option key={r}>{r}</option>
                 ),
               )}
-            </select>
+            </Select>
           </label>
         </div>
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           onClick={() => {
             setParams({ atividades: selectionKey }, { replace: true });
             setStats(null);
@@ -255,7 +257,7 @@ function Comparison({ id }: { id: string }) {
           }}
         >
           Limpar filtros
-        </button>
+        </Button>
         <p>
           A localização é a do percurso. Motos sem classificação verificada
           permanecem Não classificadas.
@@ -271,8 +273,7 @@ function Comparison({ id }: { id: string }) {
           {data?.candidates.map((a) => (
             <article className="panel history-panel" key={a.id}>
               <label>
-                <input
-                  type="checkbox"
+                <Checkbox
                   aria-label={`Selecionar atividade ${a.id}`}
                   checked={selected.includes(a.id)}
                   disabled={
@@ -311,8 +312,8 @@ function Comparison({ id }: { id: string }) {
           ))}
         </div>
         <div className="history-actions">
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={!data || data.page <= 1}
             onClick={() => {
               const next = new URLSearchParams(params);
@@ -321,9 +322,9 @@ function Comparison({ id }: { id: string }) {
             }}
           >
             Anteriores
-          </button>
-          <button
-            className="button"
+          </Button>
+          <Button
+            variant="secondary"
             disabled={!data?.hasMore}
             onClick={() => {
               const next = new URLSearchParams(params);
@@ -332,7 +333,7 @@ function Comparison({ id }: { id: string }) {
             }}
           >
             Próximas
-          </button>
+          </Button>
         </div>
       </section>
       <section className="panel history-panel">
@@ -350,8 +351,8 @@ function Comparison({ id }: { id: string }) {
             </button>
           </div>
         ))}
-        <button
-          className="button button-primary"
+        <Button
+          variant="primary"
           disabled={
             selected.length < 2 ||
             selected.length > (data?.maxActivities ?? 4) ||
@@ -366,7 +367,7 @@ function Comparison({ id }: { id: string }) {
           }}
         >
           Comparar selecionadas
-        </button>
+        </Button>
         {run && !result && !error && (
           <p role="status">Validando e alinhando os trechos…</p>
         )}
@@ -386,13 +387,13 @@ function Comparison({ id }: { id: string }) {
           autorizada exibem valores aproximados. Fabricante e modelo não se
           aplicam aos agregados.
         </p>
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={busy}
           onClick={() => void community()}
         >
           Consultar estatísticas comunitárias
-        </button>
+        </Button>
         {stats &&
           (stats.available && stats.summary ? (
             <p>

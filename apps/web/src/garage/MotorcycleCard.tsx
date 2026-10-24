@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
-import { Bike } from 'lucide-react';
+import { RideIcon } from '../components/Brand';
+import { CardLink } from '../components/design-system';
+import { Chip } from '../components/ui';
 import { apiUrl } from '../services/auth';
 import type { Motorcycle } from '../services/motorcycles';
-import { Chip } from '../components/ui';
 export function MotorcyclePhoto({ bike }: { bike: Motorcycle }) {
   const [failed, setFailed] = useState<string | null>(null);
   const src = bike.photoUrl
@@ -25,7 +25,7 @@ export function MotorcyclePhoto({ bike }: { bike: Motorcycle }) {
         src ? 'Fotografia temporariamente indisponível' : 'Moto sem fotografia'
       }
     >
-      <Bike size={64} aria-hidden />
+      <RideIcon size={64} />
       <span>
         {src ? 'Fotografia indisponível' : 'Sua moto, sua próxima aventura'}
       </span>
@@ -34,7 +34,7 @@ export function MotorcyclePhoto({ bike }: { bike: Motorcycle }) {
 }
 export function MotorcycleCard({ bike }: { bike: Motorcycle }) {
   return (
-    <Link
+    <CardLink
       className="garage-preview panel motorcycle-card"
       to={`/garagem/${bike.id}`}
       aria-label={`Ver ${bike.brand} ${bike.model}`}
@@ -55,6 +55,6 @@ export function MotorcycleCard({ bike }: { bike: Motorcycle }) {
         </p>
         <small>Ver detalhes →</small>
       </div>
-    </Link>
+    </CardLink>
   );
 }

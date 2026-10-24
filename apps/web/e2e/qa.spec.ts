@@ -1,13 +1,18 @@
 import { test, expect } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
+import { authenticate } from './auth-fixtures';
 import { mockMapProvider } from './gps-fixtures';
 
 test('23C teclado, foco e preferência de movimento reduzido', async ({
   page,
 }) => {
   await mockMapProvider(page);
+  await authenticate(page);
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/');
+  await page.goto('/app');
+  await expect(
+    page.getByRole('navigation', { name: 'Navegação principal' }),
+  ).toBeVisible();
   await page.keyboard.press('Tab');
   const skip = page.getByRole('link', { name: 'Pular para o conteúdo' });
   await expect(skip).toBeFocused();
@@ -47,9 +52,10 @@ test('23F registra tempos locais de Início, Ride e Comunidade', async ({
   browserName,
 }) => {
   await mockMapProvider(page);
+  await authenticate(page);
   await page.setViewportSize({ width: 390, height: 844 });
   const records = [];
-  for (const path of ['/', '/ride', '/comunidade']) {
+  for (const path of ['/app', '/ride', '/comunidade']) {
     await page.goto(path);
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(

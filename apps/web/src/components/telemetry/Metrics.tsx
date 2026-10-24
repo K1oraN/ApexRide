@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react';
 import { Clock3, Gauge, Route, Signal } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { Card } from '../design-system';
 import { Progress } from '../ui';
 
 export function MetricCard({
@@ -18,7 +19,7 @@ export function MetricCard({
   className?: string;
 }) {
   return (
-    <div className={`metric-card ${className}`}>
+    <Card as="div" className={`metric-card ${className}`}>
       <span className="metric-icon">{icon}</span>
       <div>
         <span className="metric-label">{label}</span>
@@ -33,7 +34,7 @@ export function MetricCard({
           <Progress value={progress} label={`${label} — valor ilustrativo`} />
         )}
       </div>
-    </div>
+    </Card>
   );
 }
 

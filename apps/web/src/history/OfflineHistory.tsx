@@ -1,11 +1,12 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Link } from 'react-router';
 import { useAuth } from '../auth/useAuth';
+import { Button } from '../components/design-system';
 import { useOffline } from '../offline/context';
+import { formatDuration } from '../ride/format';
 import { localHistory, syncLabels, type Receipt } from './local-history';
 import { historyService } from './service';
 import type { HistoryRide } from './types';
-import { formatDuration } from '../ride/format';
 export function OfflineHistory({
   params,
   remote,
@@ -60,22 +61,22 @@ export function OfflineHistory({
     ),
     pages = Math.max(1, Math.ceil(rows.length / 12)),
     current = Math.min(page, pages);
+  if (available && !rows.length && !message) return null;
   return (
     <section className="panel history-panel" aria-label="Histórico no aparelho">
       <h2>No aparelho</h2>
-      <p>
-        {available
-          ? 'Prévia local separada do total remoto. Cópias já sincronizadas são reconciliadas pelo identificador da sessão.'
-          : 'O histórico remoto completo está indisponível. Esta lista contém somente cópias desta conta disponíveis neste aparelho.'}
-      </p>
-      <button
-        className="button"
+      <div className="settings-caption">
+        <span>{rows.length} sessão(ões) neste aparelho</span>
+      </div>
+      <Button
+        variant="secondary"
+        disabled={!rows.length}
         onClick={() =>
           void offline.sync.run(true).catch((e) => setMessage(e.message))
         }
       >
         Sincronizar agora
-      </button>
+      </Button>
       {message && <p role="status">{message}</p>}
       {rows.length ? (
         <>
@@ -118,23 +119,23 @@ export function OfflineHistory({
             })}
           </div>
           <div className="history-actions">
-            <button
-              className="button"
+            <Button
+              variant="secondary"
               disabled={current <= 1}
               onClick={() => setPage((n) => n - 1)}
             >
               Locais anteriores
-            </button>
+            </Button>
             <span>
               {current}/{pages}
             </span>
-            <button
-              className="button"
+            <Button
+              variant="secondary"
               disabled={current >= pages}
               onClick={() => setPage((n) => n + 1)}
             >
               Próximas locais
-            </button>
+            </Button>
           </div>
         </>
       ) : (

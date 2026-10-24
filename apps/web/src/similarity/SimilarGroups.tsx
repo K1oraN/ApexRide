@@ -30,20 +30,17 @@ export function SimilarGroups() {
       live = false;
     };
   }, []);
+  if (!groups.length) return null;
   return (
     <section className="panel history-panel" aria-label="Trajetos Semelhantes">
       <h2>Trajetos Semelhantes</h2>
-      <p>
-        Seus grupos privados exigem equivalência entre todos os membros. Trechos
-        parciais aparecem nos detalhes de cada atividade.
-      </p>
       {message && <p role="status">{message}</p>}
       {groups.map((g) => (
         <div key={g[0]}>
           <h3>Trajeto semelhante · {g.length} atividades</h3>
           {g.map((id, i) => (
             <Link
-              className="text-link"
+              className="text-link action-link"
               key={id}
               to={`/historico/${id}/semelhantes`}
             >

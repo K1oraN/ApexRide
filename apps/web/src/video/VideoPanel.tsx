@@ -1,8 +1,16 @@
+import { ChoiceSelect } from '../components/design-system';
+import { Camera, SwitchCamera } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import { Camera } from 'lucide-react';
 import { useAuth } from '../auth/useAuth';
+import {
+  Button,
+  Checkbox,
+  SegmentedControl,
+  Select,
+} from '../components/design-system';
 import { useRide } from '../ride/context';
 import { formatDuration } from '../ride/format';
+import '../styles/video.css';
 import { useRideVideo } from './context';
 import {
   presets,
@@ -10,7 +18,6 @@ import {
   type CameraFacing,
   type VideoQuality,
 } from './types';
-import '../styles/video.css';
 
 export function CameraPreview({ stream }: { stream: MediaStream | null }) {
   const ref = useRef<HTMLVideoElement>(null);
@@ -34,10 +41,12 @@ export function VideoStatus() {
       <strong className={snapshot.state === 'recording' ? 'video-rec' : ''}>
         {videoLabels[snapshot.state]}
       </strong>
-      <span>
-        ~{formatDuration(snapshot.estimatedMs)} estimados ·{' '}
-        {(snapshot.bytes / 1024 / 1024).toFixed(1)} MB confirmados
-      </span>
+      {snapshot.state !== 'disabled' && snapshot.state !== 'preview' && (
+        <span>
+          ~{formatDuration(snapshot.estimatedMs)} estimados ·{' '}
+          {(snapshot.bytes / 1024 / 1024).toFixed(1)} MB confirmados
+        </span>
+      )}
       {snapshot.error && (
         <p>{snapshot.error} Você pode continuar somente com telemetria.</p>
       )}
@@ -47,13 +56,13 @@ export function VideoStatus() {
             {(snapshot.pendingBytes / 1024 / 1024).toFixed(1)} MB ainda somente
             na memória. Fechar ou recarregar perde esses blocos.
           </p>
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={snapshot.busy}
             onClick={() => void video.retryPending()}
           >
             Tentar persistir vídeo novamente
-          </button>
+          </Button>
           <button
             className="text-link"
             disabled={snapshot.busy}
@@ -73,6 +82,29 @@ export function VideoStatus() {
     </div>
   );
 }
+export function ActiveVideoPanel() {
+  const { video, snapshot } = useRideVideo();
+  return (
+    <section
+      className="panel ride-video-running"
+      aria-label="Configuração de vídeo"
+    >
+      <h2>Vídeo do Ride</h2>
+      <VideoStatus />
+      {(snapshot.enabled || snapshot.stream || snapshot.busy) && (
+        <Button variant="secondary" onClick={() => void video.disable()}>
+          Continuar sem vídeo / encerrar câmera
+        </Button>
+      )}
+      {snapshot.stream && (
+        <details>
+          <summary>Prévia da câmera</summary>
+          <CameraPreview stream={snapshot.stream} />
+        </details>
+      )}
+    </section>
+  );
+}
 export function VideoPanel({ preparation = false }: { preparation?: boolean }) {
   const { user } = useAuth(),
     { snapshot: ride } = useRide(),
@@ -81,10 +113,12 @@ export function VideoPanel({ preparation = false }: { preparation?: boolean }) {
   const settings = snapshot.settings;
   useEffect(
     () => () => {
-      if (!video.controller.getSnapshot().activity) void video.disable();
+      const ride = video.controller.getSnapshot();
+      if (!ride.activity && ride.state !== 'waiting-gps') void video.disable();
     },
     [video],
   );
+  if (!preparation && !snapshot.stream) return null;
   if (!preparation)
     return (
       <section
@@ -109,32 +143,44 @@ export function VideoPanel({ preparation = false }: { preparation?: boolean }) {
       className="ride-preparation panel video-preparation"
       aria-label="Configuração de vídeo"
     >
-      <h2>Vídeo opcional · somente neste aparelho</h2>
+      <div className="settings-caption">
+        <h2>Configurar câmera</h2>
+      </div>
       <VideoStatus />
       {configurable && (
         <div className="video-settings">
-          <label>
-            Câmera
-            <select
-              aria-label="Câmera do vídeo"
-              disabled={snapshot.busy}
+          <div className="camera-choices">
+            <span>Câmera</span>
+            <SegmentedControl
+              label="Câmera do vídeo"
               value={settings.facing}
-              onChange={(e) =>
+              onChange={(value) =>
                 video.settings({
                   ...settings,
-                  facing: e.target.value as CameraFacing,
+                  facing: value as CameraFacing,
                   deviceId: undefined,
                 })
               }
-            >
-              <option value="environment">Traseira</option>
-              <option value="user">Frontal</option>
-            </select>
-          </label>
+              options={[
+                {
+                  value: 'environment',
+                  label: 'Traseira',
+                  icon: <Camera size={19} aria-hidden />,
+                  disabled: snapshot.busy,
+                },
+                {
+                  value: 'user',
+                  label: 'Frontal',
+                  icon: <SwitchCamera size={19} aria-hidden />,
+                  disabled: snapshot.busy,
+                },
+              ]}
+            />
+          </div>
           {snapshot.devices.length > 1 && (
             <label>
               Lente disponível
-              <select
+              <Select
                 aria-label="Lente disponível"
                 disabled={snapshot.busy}
                 value={settings.deviceId ?? ''}
@@ -151,12 +197,12 @@ export function VideoPanel({ preparation = false }: { preparation?: boolean }) {
                     {d.label || `Câmera ${i + 1}`}
                   </option>
                 ))}
-              </select>
+              </Select>
             </label>
           )}
-          <label>
-            Qualidade
-            <select
+          <div className="video-quality-choice">
+            <span>Qualidade</span>
+            <ChoiceSelect
               aria-label="Qualidade do vídeo"
               disabled={snapshot.busy}
               value={settings.quality}
@@ -172,11 +218,10 @@ export function VideoPanel({ preparation = false }: { preparation?: boolean }) {
                   {p.label}
                 </option>
               ))}
-            </select>
-          </label>
+            </ChoiceSelect>
+          </div>
           <label className="video-audio">
-            <input
-              type="checkbox"
+            <Checkbox
               checked={settings.audio}
               disabled={snapshot.busy}
               onChange={(e) =>
@@ -185,21 +230,16 @@ export function VideoPanel({ preparation = false }: { preparation?: boolean }) {
             />{' '}
             Gravar áudio (solicita microfone)
           </label>
-          {settings.audio && (
-            <p>
-              O áudio pode registrar conversas e sons de terceiros. Se o
-              microfone falhar, desative esta opção para tentar somente vídeo.
-            </p>
-          )}
-          <button
-            className="button"
+
+          <Button
+            variant="primary"
             disabled={!user || snapshot.busy}
             onClick={() => void video.prepare()}
           >
             {snapshot.stream
               ? 'Preparar câmera novamente'
               : 'Ativar vídeo e abrir prévia'}
-          </button>
+          </Button>
         </div>
       )}
       {(snapshot.enabled || snapshot.stream || snapshot.busy) && (
@@ -222,24 +262,13 @@ export function VideoPanel({ preparation = false }: { preparation?: boolean }) {
           . Qualidade solicitada: {presets[settings.quality].label}.
         </p>
       )}
-      <p>
-        Configure ou troque a câmera com a moto parada, antes de iniciar ou
-        durante uma pausa. A prévia não grava. O Ride inicia o vídeo quando a
-        câmera estiver pronta.
-      </p>
+
       <details>
-        <summary>Armazenamento e privacidade</summary>
+        <summary>Espaço no aparelho</summary>
         <p>{snapshot.storage || 'Espaço será consultado antes da gravação.'}</p>
         <button className="text-link" onClick={() => void video.monitor(true)}>
           Solicitar persistência local
         </button>
-        <p>
-          Somente neste aparelho, sem upload. Filmagens podem envolver a
-          privacidade de terceiros e estão sujeitas à legislação aplicável.
-          Vídeo, GPS e sensores consomem bateria e podem aquecer o aparelho.
-          Bloqueio de tela ou troca de aplicativo interrompem a captura; retome
-          explicitamente durante uma pausa.
-        </p>
       </details>
     </section>
   );

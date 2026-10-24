@@ -59,7 +59,6 @@
 .gps-map-notice button {
   display: block;
   margin: 8px auto 0;
-  min-height: 36px;
 }
 .gps-rider-marker {
   display: grid;
@@ -97,9 +96,6 @@
 .gps-details p + p {
   margin-top: 4px;
 }
-.gps-details .text-link {
-  min-height: 40px;
-}
 .gps-details time {
   white-space: nowrap;
 }
@@ -108,11 +104,6 @@
     right: 6px;
     bottom: 45px;
     gap: 4px;
-  }
-  .gps-map .map-controls .icon-button {
-    width: 36px;
-    height: 36px;
-    min-height: 36px;
   }
   .gps-map .map-disclaimer {
     font-size: 8px;

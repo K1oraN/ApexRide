@@ -10,7 +10,7 @@ import { registerRouteMutations } from './mutations.js';
 export const selectRoute = (
   full = false,
 ) => `SELECT r.id,r.owner_id AS "ownerId",r.kind,r.name,r.description,r.city,r.state,r.category,r.status,r.verification,r.version,r.reason,
- r.distance_meters AS "distanceMeters",r.duration_seconds AS "durationSeconds",r.source,r.direction,r.updated_at AS "updatedAt",
+ r.distance_meters AS "distanceMeters",r.duration_seconds AS "durationSeconds",r.source,r.direction,r.updated_at AS "updatedAt",${full ? 'r.import_metadata' : 'NULL'} AS "importMetadata",
  public.ST_AsGeoJSON(${full ? 'r.geometry' : 'public.ST_SimplifyPreserveTopology(r.geometry,0.001)'})::json AS geometry,
  public.ST_AsGeoJSON(r.start_line)::json AS "startLine",
  (SELECT count(*)::int FROM route_favorites f WHERE f.route_id=r.id) AS favorites,
@@ -70,6 +70,12 @@ export async function routeRoutes(
       );
     if (q.city) where.push(`lower(r.city)=lower(${param(q.city)})`);
     if (q.state) where.push(`r.state=${param(q.state.toUpperCase())}`);
+    if (q.category) where.push(`lower(r.category)=lower(${param(q.category)})`);
+    if (q.minDistance > q.maxDistance)
+      throw new AuthError(400, 'Intervalo de distância inválido.');
+    if (q.minDistance) where.push(`r.distance_meters>=${param(q.minDistance)}`);
+    if (q.maxDistance < 5000000)
+      where.push(`r.distance_meters<=${param(q.maxDistance)}`);
     let distance = '';
     if (q.center) {
       const p = `public.ST_SetSRID(public.ST_MakePoint(${param(q.center[0])},${param(q.center[1])}),4326)::public.geography`;

@@ -1,8 +1,17 @@
+import { ArrowLeft, Plus } from 'lucide-react';
+import { RideIcon } from '../components/Brand';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
-import { Plus, Bike, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../auth/useAuth';
 import { Field } from '../components/AccountFields';
+import {
+  Button,
+  ButtonLink,
+  Checkbox,
+  Dialog,
+  EmptyState,
+  PageHeader,
+} from '../components/design-system';
 import { Chip } from '../components/ui';
 import { useGarage } from '../garage/context';
 import { MotorcycleCard, MotorcyclePhoto } from '../garage/MotorcycleCard';
@@ -18,19 +27,19 @@ export function GaragePage() {
   const location = useLocation();
   return (
     <div className="garage-page">
-      <div className="garage-heading">
-        <div>
-          <span className="eyebrow">APEX RIDE</span>
-          <h1>Minha Garagem</h1>
-          <p>Suas motos. Suas próximas aventuras.</p>
-        </div>
-        {user && (
-          <Link className="button button-primary" to="/garagem/nova">
-            <Plus size={20} />
-            Adicionar Moto
-          </Link>
-        )}
-      </div>
+      <PageHeader
+        title="Minha"
+        accent="Garagem"
+        description="Suas motos. Suas próximas aventuras."
+        action={
+          user && motorcycles.length > 0 ? (
+            <ButtonLink variant="primary" size="lg" to="/garagem/nova">
+              <Plus size={20} />
+              Adicionar Moto
+            </ButtonLink>
+          ) : undefined
+        }
+      />
       {location.state?.message && (
         <p className="form-message" role="status">
           {location.state.message}
@@ -40,24 +49,21 @@ export function GaragePage() {
         <p role="status">Carregando garagem…</p>
       ) : !user ? (
         <section className="garage-empty panel">
-          <Bike size={52} />
+          <RideIcon size={52} />
           <h2>Sua garagem começa aqui</h2>
           <p>
             Entre na sua conta para cadastrar e gerenciar suas motocicletas.
           </p>
-          <Link
-            className="button button-primary"
-            to="/entrar?retorno=%2Fgaragem"
-          >
+          <ButtonLink variant="primary" to="/entrar?retorno=%2Fgaragem">
             Entrar na conta
-          </Link>
+          </ButtonLink>
         </section>
       ) : error ? (
         <section className="garage-empty panel">
           <p role="alert">{error}</p>
-          <button className="button" onClick={() => void refresh()}>
+          <Button variant="secondary" onClick={() => void refresh()}>
             Tentar novamente
-          </button>
+          </Button>
         </section>
       ) : motorcycles.length ? (
         <div className="motorcycle-grid">
@@ -66,16 +72,18 @@ export function GaragePage() {
           ))}
         </div>
       ) : (
-        <section className="garage-empty panel">
-          <Bike size={52} />
-          <h2>Sua garagem está vazia.</h2>
-          <p>
-            Cadastre sua primeira moto para começar sua jornada no Apex Ride.
-          </p>
-          <Link className="button button-primary" to="/garagem/nova">
-            Cadastrar primeira moto
-          </Link>
-        </section>
+        <EmptyState
+          className="garage-empty"
+          title="Sua garagem está vazia."
+          icon={<RideIcon size={32} />}
+          action={
+            <ButtonLink variant="primary" size="lg" to="/garagem/nova">
+              Cadastrar primeira moto
+            </ButtonLink>
+          }
+        >
+          Cadastre sua primeira moto para começar sua jornada no Apex Ride.
+        </EmptyState>
       )}
     </div>
   );
@@ -157,16 +165,16 @@ function MotorcycleView({
       <section className="account-card panel">
         <h1>Moto indisponível</h1>
         <p role="alert">{error}</p>
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           onClick={() => {
             setLoading(true);
             setRetry(retry + 1);
           }}
         >
           Tentar novamente
-        </button>
-        <Link className="text-link" to="/garagem">
+        </Button>
+        <Link className="text-link action-link" to="/garagem">
           Voltar para a garagem
         </Link>
       </section>
@@ -174,7 +182,7 @@ function MotorcycleView({
   if (edit || !id) return <MotorcycleForm key={id ?? 'new'} bike={bike} />;
   return (
     <section className="motorcycle-detail panel">
-      <Link className="text-link" to="/garagem">
+      <Link className="text-link action-link" to="/garagem">
         <ArrowLeft size={18} />
         Voltar para a garagem
       </Link>
@@ -194,61 +202,61 @@ function MotorcycleView({
         </p>
       )}
       <div className="garage-actions">
-        <Link className="button button-primary" to={`/garagem/${id}/editar`}>
+        <ButtonLink variant="secondary" to={`/garagem/${id}/editar`}>
           Editar moto
-        </Link>
+        </ButtonLink>
         {!bike!.isPrimary && (
-          <button
-            className="button button-outline"
+          <Button
+            variant="outline"
             disabled={busy}
             onClick={() => void action(false)}
           >
             {busy ? 'Salvando…' : 'Definir como principal'}
-          </button>
+          </Button>
         )}
-        <button
-          className="button"
+        <Button
+          variant="destructive"
           disabled={busy}
           onClick={() => setConfirming(true)}
         >
           Excluir moto
-        </button>
+        </Button>
       </div>
-      {confirming && (
+      <Dialog
+        open={confirming}
+        dismissible={!busy}
+        onClose={() => {
+          if (!busy) setConfirming(false);
+        }}
+        title={`Excluir ${bike!.brand} ${bike!.model}?`}
+      >
+        <p>
+          A moto e sua fotografia serão removidas da garagem. Se ela for a
+          principal, outra moto será selecionada.
+        </p>
         <div
-          className="garage-confirm panel"
+          className="ui-dialog-actions"
           role="group"
           aria-label="Confirmar exclusão"
-          onKeyDown={(e) => {
-            if (e.key === 'Escape' && !busy) setConfirming(false);
-          }}
         >
-          <h2>
-            Excluir {bike!.brand} {bike!.model}?
-          </h2>
-          <p>
-            A moto e sua fotografia serão removidas da garagem. Se ela for a
-            principal, outra moto será selecionada.
-          </p>
-          <div className="garage-actions">
-            <button
-              ref={confirmButton}
-              className="button button-outline"
-              disabled={busy}
-              onClick={() => setConfirming(false)}
-            >
-              Cancelar
-            </button>
-            <button
-              className="button button-primary"
-              disabled={busy}
-              onClick={() => void action(true)}
-            >
-              {busy ? 'Excluindo…' : 'Confirmar exclusão'}
-            </button>
-          </div>
+          <Button
+            ref={confirmButton}
+            variant="outline"
+            disabled={busy}
+            onClick={() => setConfirming(false)}
+          >
+            Cancelar
+          </Button>
+          <Button
+            variant="destructive"
+            loading={busy}
+            disabled={busy}
+            onClick={() => void action(true)}
+          >
+            {busy ? 'Excluindo…' : 'Confirmar exclusão'}
+          </Button>
         </div>
-      )}
+      </Dialog>
     </section>
   );
 }
@@ -359,7 +367,7 @@ function MotorcycleForm({ bike }: { bike: Motorcycle | null }) {
   return (
     <section className="account-card panel motorcycle-form">
       <Link
-        className="text-link"
+        className="text-link action-link"
         to={savedId ? `/garagem/${savedId}` : '/garagem'}
       >
         <ArrowLeft size={18} />
@@ -458,9 +466,9 @@ function MotorcycleForm({ bike }: { bike: Motorcycle | null }) {
             bike && !removePhoto && <MotorcyclePhoto bike={bike} />
           )}
           {file && (
-            <button
+            <Button
               type="button"
-              className="button button-outline"
+              variant="destructive"
               onClick={() => {
                 setFile(null);
                 setPreview(null);
@@ -468,12 +476,11 @@ function MotorcycleForm({ bike }: { bike: Motorcycle | null }) {
               }}
             >
               Descartar foto selecionada
-            </button>
+            </Button>
           )}
           {bike?.photoUrl && (
             <label className="check-field">
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={removePhoto}
                 onChange={(e) => {
                   setRemovePhoto(e.target.checked);
@@ -487,13 +494,9 @@ function MotorcycleForm({ bike }: { bike: Motorcycle | null }) {
               Remover fotografia atual ao salvar
             </label>
           )}
-          <button
-            className="button button-primary"
-            type="submit"
-            disabled={busy}
-          >
+          <Button variant="primary" type="submit" disabled={busy}>
             {busy ? phase : 'Salvar moto'}
-          </button>
+          </Button>
         </fieldset>
         {error && (
           <p className="form-error" role="alert">

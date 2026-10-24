@@ -4,10 +4,10 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from 'react';
-import { useRide } from '../ride/context';
 import { useAuth } from '../auth/useAuth';
-import { LiveLocationController } from './live-controller';
+import { useRide } from '../ride/context';
 import { LiveContext } from './live-context';
+import { LiveLocationController } from './live-controller';
 export function LiveProvider({ children }: { children: ReactNode }) {
   const { controller: ride } = useRide(),
     { user } = useAuth();
@@ -21,8 +21,9 @@ export function LiveProvider({ children }: { children: ReactNode }) {
           return a && !a.payload.endedAt ? a.payload.clientId : null;
         },
         () =>
-          !!ride.getSnapshot().activity &&
-          !ride.getSnapshot().activity?.payload.endedAt,
+          (!!ride.getSnapshot().activity &&
+            !ride.getSnapshot().activity?.payload.endedAt) ||
+          ride.navigationGpsShared(),
       ),
   );
   const state = useSyncExternalStore(

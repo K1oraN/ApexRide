@@ -99,7 +99,7 @@ export function PublicRidePage() {
           <p role="status">Carregando resumo público…</p>
         </>
       )}
-      <Link className="text-link" to="/">
+      <Link className="text-link action-link" to="/">
         Conhecer o Apex Ride
       </Link>
     </section>

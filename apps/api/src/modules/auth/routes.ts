@@ -48,7 +48,10 @@ const genericMail = {
     'Se houver uma conta elegível, você receberá um e-mail com as instruções.',
 };
 const credentialsError = () =>
-  new v.AuthError(401, 'E-mail ou senha inválidos, ou acesso indisponível.');
+  new v.AuthError(
+    401,
+    'E-mail, usuário ou senha inválidos, ou acesso indisponível.',
+  );
 
 export async function authRoutes(
   app: FastifyInstance,
@@ -211,6 +214,7 @@ export async function authRoutes(
   app.get('/auth/config', async () => ({
     status: 'ok',
     emailVerificationRequired: config.auth.emailVerificationRequired,
+    passwordRecoveryAvailable: config.auth.mailMode === 'smtp',
     legal: {
       termsVersion: config.auth.termsVersion,
       privacyVersion: config.auth.privacyVersion,
@@ -298,13 +302,25 @@ export async function authRoutes(
   app.post('/auth/login', async (request, reply) => {
     await limit(request, 'login-ip', 30, 15);
     const b = v.body(request.body, ['email', 'password']);
-    const email = v.email(b.email),
+    // Keep the existing request contract; the email field also accepts a username.
+    const identifier = v.text(b.email, 3, 254).toLowerCase();
+    const byEmail = identifier.includes('@');
+    const identity = byEmail ? v.email(identifier) : v.username(identifier),
       password = v.text(b.password, 1, 128, false);
-    await limit(request, 'login-account', 10, 15, email);
+    // Both aliases share the same account limiter; changing the login identifier
+    // must not double the number of guesses allowed against an existing account.
+    const rateIdentity = byEmail
+      ? identity
+      : ((
+          await db().query('SELECT email FROM users WHERE username=$1', [
+            identity,
+          ])
+        ).rows[0]?.email ?? identity);
+    await limit(request, 'login-account', 10, 15, rateIdentity);
     const session = await transaction(async (client) => {
       const result = await client.query(
-        'SELECT * FROM users WHERE email=$1 FOR UPDATE',
-        [email],
+        `SELECT * FROM users WHERE ${byEmail ? 'email' : 'username'}=$1 FOR UPDATE`,
+        [identity],
       );
       const user = result.rows[0] as UserRow | undefined;
       const valid = await verifyPassword(

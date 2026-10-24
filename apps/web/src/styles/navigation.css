@@ -1,0 +1,228 @@
+.navigation-page {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.navigation-title {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+.navigation-title span {
+  color: #b8c2ce;
+}
+.navigation-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.navigation-heading h1 {
+  min-width: 0;
+}
+.navigation-plan-card {
+  padding: 18px;
+}
+.navigation-plan-card > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  list-style: none;
+}
+.navigation-plan-card > summary > svg {
+  color: var(--red);
+  flex-shrink: 0;
+}
+.navigation-plan-card > summary small {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.navigation-plan-card .destination-search {
+  margin-top: 12px;
+}
+.navigation-plan-card .destination-search > details {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+.destination-search > details > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.destination-search .coordinate-form {
+  padding-top: 12px;
+}
+.destination-provider-status {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px;
+  background: #070c10;
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.destination-provider-status > svg {
+  flex-shrink: 0;
+}
+.destination-provider-status .guide-link {
+  margin-left: auto;
+}
+.navigation-waypoints {
+  list-style: none;
+  padding: 0;
+  counter-reset: points;
+}
+.navigation-waypoints li {
+  counter-increment: points;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #070c10;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+.navigation-waypoints li::before {
+  content: counter(points);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  background: #ef1b3020;
+  color: #ff4658;
+  flex-shrink: 0;
+}
+.navigation-waypoints li > span {
+  flex: 1;
+  min-width: 150px;
+  font-size: 12px;
+}
+.navigation-waypoints .route-tools {
+  margin: 0;
+  gap: 6px;
+}
+.navigation-waypoints .button {
+  padding: 8px 10px;
+  min-height: 40px;
+  font-size: 12px;
+}
+.navigation-name-field {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+}
+.navigation-calculate {
+  width: 100%;
+  min-height: 54px;
+}
+.navigation-page h1 {
+  font-size: clamp(24px, 4vw, 34px);
+  margin: 0;
+}
+.navigation-page p {
+  color: #b4bfcd;
+  line-height: 1.5;
+}
+.navigation-instruction {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border-left: 4px solid #737c89;
+}
+.navigation-instruction.reliable {
+  border-color: #ff1930;
+}
+.navigation-instruction strong {
+  display: block;
+  font-size: clamp(24px, 4vw, 38px);
+}
+.navigation-instruction span {
+  display: block;
+  margin-top: 10px;
+  font-size: 22px;
+}
+.navigation-instruction > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.navigation-instruction > svg {
+  flex-shrink: 0;
+}
+.navigation-page > *,
+.navigation-page .gps-map {
+  min-width: 0;
+}
+.navigation-summary {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.navigation-summary span {
+  display: block;
+  color: #b4bfcd;
+  font-size: 14px;
+}
+.navigation-summary strong {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(18px, 3vw, 28px);
+}
+.navigation-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 12px;
+}
+.navigation-actions .button {
+  min-height: 56px;
+}
+.navigation-primary-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.navigation-primary-actions .button {
+  min-height: 56px;
+}
+.navigation-waypoints {
+  display: grid;
+  gap: 12px;
+  padding-left: 22px;
+}
+.navigation-page summary {
+  cursor: pointer;
+  min-height: 44px;
+}
+.navigation-page .gps-map {
+  width: 100%;
+  aspect-ratio: auto;
+  height: 400px;
+  min-height: 400px;
+}
+@media (max-width: 430px) {
+  .navigation-page[data-active='true'] .gps-map {
+    height: 280px;
+    min-height: 280px;
+  }
+  .navigation-summary {
+    padding: 14px;
+    gap: 8px;
+  }
+  .navigation-summary span {
+    font-size: 12px;
+  }
+  .navigation-instruction {
+    padding: 18px;
+  }
+}

@@ -1,8 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { apiUrl } from '../services/auth';
 import { useAuth } from '../auth/useAuth';
+import { Button, ButtonLink } from '../components/design-system';
+import { apiUrl } from '../services/auth';
 import { Composer } from '../social/Composer';
+import '../styles/events.css';
+import { EventForm } from './EventForm';
+import { EventMap } from './EventMap';
+import { EventInvites, EventParticipants } from './EventParticipants';
+import { useLiveLocation } from './live-context';
 import { events } from './service';
 import {
   eventDate,
@@ -10,15 +16,10 @@ import {
   statusLabel,
   type EventMapData,
 } from './types';
-import { EventMap } from './EventMap';
-import { EventForm } from './EventForm';
-import { EventParticipants, EventInvites } from './EventParticipants';
-import { useLiveLocation } from './live-context';
-import '../styles/events.css';
 export function EventCreatePage() {
   return (
     <div className="events-page">
-      <Link className="text-link" to="/comunidade/eventos">
+      <Link className="text-link action-link" to="/comunidade/eventos">
         Voltar aos eventos
       </Link>
       <EventForm />
@@ -81,14 +82,14 @@ export function EventDetailsPage() {
   const e = data?.event;
   return (
     <div className="events-page">
-      <Link className="text-link" to="/comunidade/eventos">
+      <Link className="text-link action-link" to="/comunidade/eventos">
         Voltar aos eventos
       </Link>
       {error && <p role="alert">{error}</p>}
       {!user ? (
-        <Link className="button" to="/entrar">
+        <ButtonLink variant="secondary" to="/entrar">
           Entrar para consultar evento
-        </Link>
+        </ButtonLink>
       ) : !data || !e ? (
         !error && <p role="status">Carregando evento…</p>
       ) : (
@@ -161,8 +162,8 @@ export function EventDetailsPage() {
                 <div className="event-actions">
                   {['scheduled', 'ongoing'].includes(e.status) && (
                     <>
-                      <button
-                        className="button button-primary"
+                      <Button
+                        variant="primary"
                         disabled={
                           busy ||
                           [
@@ -180,52 +181,52 @@ export function EventDetailsPage() {
                         }
                       >
                         Confirmar presença
-                      </button>
-                      <button
-                        className="button"
+                      </Button>
+                      <Button
+                        variant="secondary"
                         disabled={busy}
                         onClick={() =>
                           void action('rsvp', 'POST', { status: 'interested' })
                         }
                       >
                         Marcar interesse
-                      </button>
+                      </Button>
                       {e.participation_status &&
                         !['cancelled', 'removed', 'rejected'].includes(
                           e.participation_status,
                         ) && (
-                          <button
-                            className="button"
+                          <Button
+                            variant="outline"
                             disabled={busy}
                             onClick={() => void action('rsvp', 'DELETE')}
                           >
                             Cancelar presença
-                          </button>
+                          </Button>
                         )}
                     </>
                   )}
                   {(e.confirmed || e.can_manage) && (
-                    <button
-                      className="button"
+                    <Button
+                      variant="secondary"
                       onClick={() => setParticipants((x) => !x)}
                     >
                       Ver participantes
-                    </button>
+                    </Button>
                   )}
                   {e.confirmed && e.status === 'ongoing' && (
-                    <Link
-                      className="button"
+                    <ButtonLink
+                      variant="secondary"
                       to={`/comunidade/eventos/${id}/mapa`}
                     >
                       Abrir mapa social
-                    </Link>
+                    </ButtonLink>
                   )}
                   {e.event_type === 'ride' &&
                     e.confirmed &&
                     ['scheduled', 'ongoing'].includes(e.status) && (
-                      <Link className="button" to={`/ride?evento=${id}`}>
+                      <ButtonLink variant="secondary" to={`/ride?evento=${id}`}>
                         Iniciar Ride neste passeio
-                      </Link>
+                      </ButtonLink>
                     )}
                 </div>
                 <p>Confirmar presença ou iniciar Ride não ativa GPS social.</p>
@@ -248,7 +249,7 @@ export function EventDetailsPage() {
                   <p>
                     Rota:{' '}
                     <Link
-                      className="text-link"
+                      className="text-link action-link"
                       to={`/explorar/${data.route.plan.id}`}
                     >
                       {data.route.plan.name}
@@ -268,7 +269,7 @@ export function EventDetailsPage() {
                 </p>
                 {e.group_id && (
                   <Link
-                    className="text-link"
+                    className="text-link action-link"
                     to={`/comunidade/grupos/${e.group_id}`}
                   >
                     Consultar grupo organizador
@@ -287,28 +288,28 @@ export function EventDetailsPage() {
                   <section className="panel social-summary">
                     <h2>Organizar evento</h2>
                     <div className="event-actions">
-                      <button className="button" onClick={() => setEdit(true)}>
+                      <Button variant="secondary" onClick={() => setEdit(true)}>
                         Editar evento
-                      </button>
-                      <button
-                        className="button"
+                      </Button>
+                      <Button
+                        variant="destructive"
                         onClick={() => setConfirm('cancel')}
                       >
                         Cancelar evento
-                      </button>
-                      <button
-                        className="button"
+                      </Button>
+                      <Button
+                        variant="destructive"
                         onClick={() => setConfirm('finish')}
                       >
                         Encerrar evento
-                      </button>
+                      </Button>
                       {e.visibility === 'public' && (
-                        <button
-                          className="button"
+                        <Button
+                          variant="secondary"
                           onClick={() => setPublish(true)}
                         >
                           Divulgar no feed
-                        </button>
+                        </Button>
                       )}
                     </div>
                     {confirm && (
@@ -318,17 +319,17 @@ export function EventDetailsPage() {
                           evento interromperá todos os compartilhamentos
                           associados.
                         </p>
-                        <button
-                          className="button button-primary"
+                        <Button
+                          variant="primary"
                           disabled={busy}
                           onClick={() => void action(confirm)}
                         >
                           {confirm === 'cancel'
                             ? 'Confirmar cancelamento'
                             : 'Confirmar encerramento'}
-                        </button>
+                        </Button>
                         <button
-                          className="text-link"
+                          className="text-link action-link"
                           onClick={() => setConfirm('')}
                         >
                           Voltar
@@ -351,8 +352,8 @@ export function EventDetailsPage() {
                 />
               )}
               {e.visibility === 'public' && (
-                <button
-                  className="button"
+                <Button
+                  variant="secondary"
                   onClick={() => {
                     if (!navigator.clipboard) {
                       setMessage(
@@ -371,7 +372,7 @@ export function EventDetailsPage() {
                   }}
                 >
                   Copiar link público do evento
-                </button>
+                </Button>
               )}
             </>
           )}

@@ -1,13 +1,17 @@
-﻿import { expect, test } from '@playwright/test';
+import { chooseOption } from './choices';
+import { openRideSetting } from './ride-settings';
+import { expect, test } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
+import { authenticate } from './auth-fixtures';
 import { mockMapProvider } from './gps-fixtures';
 
 test.beforeEach(async ({ page }) => {
   await mockMapProvider(page);
+  await authenticate(page);
 });
 
 const routes = [
-  { path: '/', name: 'inicio' },
+  { path: '/app', name: 'inicio' },
   { path: '/explorar', name: 'explorar' },
   { path: '/ride', name: 'ride' },
   { path: '/comunidade', name: 'comunidade' },
@@ -17,13 +21,15 @@ const routes = [
 test('Início não apresenta medições fictícias como telemetria', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/app');
   await expect(
-    page.getByRole('img', { name: 'Velocidade GPS indisponível' }),
+    page.getByRole('region', { name: 'Status do sistema' }),
   ).toBeVisible();
-  await expect(page.locator('.home-telemetry')).toContainText('INICIE UM RIDE');
-  await expect(page.locator('.home-telemetry')).toContainText('Indisponível');
-  await expect(page.locator('.home-map')).toContainText('MAPA ILUSTRATIVO');
+  await expect(page.locator('.home-status')).toContainText('Não iniciado');
+  await expect(page.locator('.home-status')).toContainText('Não configurados');
+  await expect(
+    page.locator('.home-telemetry, .home-map, .speedometer'),
+  ).toHaveCount(0);
   await expect(
     page
       .getByRole('navigation', { name: 'Navegação principal' })
@@ -31,7 +37,7 @@ test('Início não apresenta medições fictícias como telemetria', async ({
   ).toHaveCount(5);
 });
 
-for (const width of [320, 360, 375, 390, 430, 768, 1440]) {
+for (const width of [320, 360, 375, 390, 430, 768, 1024, 1440]) {
   test(`páginas sem overflow ou erros em ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     const errors: string[] = [];
@@ -54,11 +60,11 @@ for (const width of [320, 360, 375, 390, 430, 768, 1440]) {
     });
     for (const route of routes) {
       await page.goto(route.path);
+      await expect(page.locator('h1')).toHaveCount(1);
       if (route.name === 'explorar')
         await expect(
           page.getByText('Carregando percursos…', { exact: true }),
         ).toHaveCount(0);
-      await expect(page.locator('h1')).toHaveCount(1);
       await expect(
         page.getByText('Pré-lançamento · homologação pendente'),
       ).toBeVisible();
@@ -103,10 +109,12 @@ for (const width of [320, 360, 375, 390, 430, 768, 1440]) {
             ),
           ),
       ).toBe(true);
-      if (route.name !== 'garagem') {
-        await mkdir('../../.local/screenshots', { recursive: true });
+      {
+        await mkdir('../../.local/screenshots/refinamento2', {
+          recursive: true,
+        });
         await page.screenshot({
-          path: `../../.local/screenshots/${route.name}-${width}.png`,
+          path: `../../.local/screenshots/refinamento2/${route.name}-${width}.png`,
           fullPage: true,
         });
       }
@@ -126,7 +134,7 @@ for (const width of [320, 360, 375, 390, 430, 768, 1440]) {
 test('navegação, histórico e acesso pelo avatar sem recarregar documento', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/app');
   await page.evaluate(() => {
     (window as Window & { navigationMarker?: string }).navigationMarker = 'spa';
   });
@@ -136,12 +144,10 @@ test('navegação, histórico e acesso pelo avatar sem recarregar documento', as
     ['Ride', '/ride'],
     ['Comunidade', '/comunidade'],
     ['Garagem', '/garagem'],
-    ['Início', '/'],
+    ['Início', '/app'],
   ] as const) {
     await nav.getByRole('link', { name, exact: true }).click();
-    await expect(page).toHaveURL(
-      new RegExp(`${path === '/' ? '/$' : path + '$'}`),
-    );
+    await expect(page).toHaveURL(new RegExp(`${path}$`));
     await expect(nav.getByRole('link', { name, exact: true })).toHaveAttribute(
       'aria-current',
       'page',
@@ -153,10 +159,12 @@ test('navegação, histórico e acesso pelo avatar sem recarregar documento', as
       ),
     ).toBe('spa');
   }
-  await page.getByRole('link', { name: 'Entrar na sua conta' }).click();
-  await expect(page).toHaveURL(/\/entrar$/);
+  await page
+    .getByRole('link', { name: 'Abrir perfil de Piloto de teste' })
+    .click();
+  await expect(page).toHaveURL(/\/perfil$/);
   await page.goBack();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/app$/);
 });
 
 test('Explorar consulta dados reais, preserva filtros e não solicita GPS', async ({
@@ -175,17 +183,12 @@ test('Explorar consulta dados reais, preserva filtros e não solicita GPS', asyn
   ).toBeVisible();
   await page.getByRole('button', { name: 'Circuitos', exact: true }).click();
   await expect(page.getByRole('article')).toHaveCount(0);
-  await page.getByRole('button', { name: 'Ao vivo', exact: true }).click();
-  await expect(
-    page.getByText('Nenhuma transmissão ativa', { exact: true }),
-  ).toBeVisible();
-  await page
-    .getByRole('button', { name: 'Filtrar rotas', exact: true })
-    .click();
+  await page.getByRole('button', { name: 'Rotas', exact: true }).click();
+  await page.getByRole('button', { name: 'Filtros', exact: true }).click();
   await expect(page.getByLabel('Cidade', { exact: true })).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(
-    page.getByRole('button', { name: 'Filtrar rotas', exact: true }),
+    page.getByRole('button', { name: 'Filtros', exact: true }),
   ).toHaveAttribute('aria-expanded', 'false');
   await expect(
     page.getByRole('region', { name: 'Mapa de percursos cadastrados' }),
@@ -204,16 +207,19 @@ test('Ride não solicita hardware automaticamente e não confirma gravação ou 
     if (navigator.mediaDevices) navigator.mediaDevices.getUserMedia = blocked;
   });
   await page.goto('/ride');
-  await expect(page.getByRole('heading', { name: 'MODO MISTO' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'PREPARE SEU RIDE' }),
+  ).toBeVisible();
   await expect(page.getByText('GPS', { exact: false }).last()).toContainText(
     'GPS',
   );
   await expect(
     page.getByRole('button', { name: 'Finalizar', exact: true }),
-  ).toBeDisabled();
+  ).toHaveCount(0);
+  await openRideSetting(page, 'video');
   await expect(
     page.getByRole('button', { name: 'Ativar vídeo e abrir prévia' }),
-  ).toBeDisabled();
+  ).toBeEnabled();
   await expect(
     page.getByRole('button', {
       name: 'Iniciar Ride',
@@ -221,51 +227,37 @@ test('Ride não solicita hardware automaticamente e não confirma gravação ou 
   ).toBeDisabled();
   await expect(page.getByRole('button', { name: 'Ativar GPS' })).toBeVisible();
   await expect(page.locator('.gauge-value')).toHaveText('—');
-  await page
-    .getByLabel('Modo de pilotagem', { exact: true })
-    .selectOption('passeio');
+  await chooseOption(page, 'Modo de pilotagem', 'passeio');
   await expect(
-    page.getByRole('heading', { name: 'MODO PASSEIO' }),
+    page.getByRole('heading', { name: 'PREPARE SEU RIDE' }),
   ).toBeVisible();
   await page.reload();
   await expect(
-    page.getByRole('heading', { name: 'MODO PASSEIO' }),
+    page.getByRole('heading', { name: 'PREPARE SEU RIDE' }),
   ).toBeVisible();
-  await expect(page.locator('.preview-state')).toHaveText('Sem gravação ativa');
+  await expect(
+    page.getByText('Sem gravação ativa', { exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: 'Iniciar Ride', exact: true }),
+  ).toBeDisabled();
 });
 
-test('Comunidade vazia usa dados reais e exige login para interagir', async ({
+test('Comunidade autenticada usa dados reais e mantém acesso a grupos', async ({
   page,
 }) => {
   await page.goto('/comunidade');
-  await expect(
-    page.getByRole('link', { name: 'Entrar na conta', exact: true }),
-  ).toHaveAttribute('href', '/entrar');
   await expect(
     page.getByText('Nenhuma publicação por aqui ainda.'),
   ).toBeVisible();
   await expect(page.locator('article.post')).toHaveCount(0);
   await expect(
     page.getByRole('button', { name: 'Seguindo', exact: true }),
-  ).toBeDisabled();
-  await expect(
-    page.getByRole('link', { name: 'Entre para participar', exact: true }),
-  ).toHaveAttribute('href', '/entrar');
+  ).toBeEnabled();
   const groups = page.getByRole('link', { name: 'Grupos', exact: true });
   await expect(groups).toHaveAttribute('href', '/comunidade/grupos');
   await groups.click();
   await expect(
     page.getByRole('heading', { name: 'GRUPOS', exact: true }),
   ).toBeVisible();
-  await expect(
-    page.getByText(
-      'Nenhum grupo encontrado. Ajuste os filtros ou crie uma comunidade.',
-    ),
-  ).toBeVisible();
-  await expect(
-    page.getByRole('link', {
-      name: 'Entre para participar ou criar grupos',
-      exact: true,
-    }),
-  ).toHaveAttribute('href', '/entrar');
 });

@@ -1,25 +1,39 @@
-import { Suspense, useEffect, useRef } from 'react';
 import {
   Bell,
+  BookOpen,
   ChevronDown,
   Compass,
   House,
   MapPin,
+  Menu,
+  Settings,
+  ScanSearch,
   UsersRound,
 } from 'lucide-react';
+import { Suspense, useEffect, useRef, useSyncExternalStore } from 'react';
+import { useNavigation } from '../navigation/context';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { useAuth } from '../auth/useAuth';
-import { Avatar, Popover } from './ui';
-import { HelmetIcon, Logo, RideIcon } from './Brand';
-import { useRide } from '../ride/context';
 import { LiveBanner } from '../events/LiveBanner';
+import { useRide } from '../ride/context';
+import { HelmetIcon, Logo, RideIcon } from './Brand';
+import { ButtonLink, EmptyState } from './design-system';
+import { Avatar, Popover } from './ui';
+import { PageErrorBoundary } from './PageErrorBoundary';
+import '../styles/guide.css';
 
 export function Layout() {
   const { snapshot: ride } = useRide();
+  const navigation = useNavigation();
+  const navigating = useSyncExternalStore(
+    navigation.subscribe,
+    navigation.getSnapshot,
+  );
   const { user, status, error, refresh } = useAuth();
   const location = useLocation();
   const main = useRef<HTMLElement>(null);
   const previousPath = useRef(location.pathname);
+  const region = [user?.city, user?.state].filter(Boolean).join(', ');
   useEffect(() => {
     if (previousPath.current === location.pathname) return;
     previousPath.current = location.pathname;
@@ -32,25 +46,49 @@ export function Layout() {
         Pular para o conteúdo
       </a>
       <header className="app-header">
-        <Link to="/" className="brand-link" aria-label="Apex Ride — Início">
+        <Link to="/app" className="brand-link" aria-label="Apex Ride — Início">
           <Logo />
         </Link>
         <div className="header-tools">
+          <Popover
+            key={location.pathname}
+            label="Mais opções"
+            className="app-more-menu"
+            trigger={<Menu size={23} />}
+          >
+            <nav aria-label="Mais opções" className="app-menu-links">
+              <Link to="/guia">
+                <BookOpen size={20} />
+                Guia
+              </Link>
+              <Link to="/configuracoes">
+                <Settings size={20} />
+                Configurações
+              </Link>
+              <Link to="/descobertas">
+                <ScanSearch size={20} />
+                Descobertas
+              </Link>
+            </nav>
+          </Popover>
           <Popover
             label="Localização"
             className="location-menu"
             trigger={
               <>
                 <MapPin size={18} />
-                <span>Alagoas, BR</span>
+                <span>{region || 'Minha região'}</span>
                 <ChevronDown size={15} />
               </>
             }
           >
-            <p>Alagoas, Brasil</p>
+            <p>{region || 'Você ainda não definiu sua região.'}</p>
             <small>
-              Região ilustrativa. Nenhuma localização GPS é consultada.
+              Informação do seu perfil. O GPS não é consultado aqui.
             </small>
+            <ButtonLink to="/configuracoes" variant="ghost">
+              {region ? 'Editar região' : 'Definir região'}
+            </ButtonLink>
           </Popover>
           <Popover
             label="Notificações"
@@ -58,12 +96,13 @@ export function Layout() {
             trigger={
               <>
                 <Bell size={27} />
-                <span className="notification-dot" />
               </>
             }
           >
-            <p>Prévia de notificações</p>
-            <small>Nenhuma notificação real nesta demonstração.</small>
+            <EmptyState title="Notificações" icon={<Bell size={24} />}>
+              As notificações ainda não estão disponíveis. Nenhum alerta foi
+              gerado.
+            </EmptyState>
           </Popover>
           <Link
             className="profile-link"
@@ -88,6 +127,14 @@ export function Layout() {
         Pré-lançamento · homologação pendente
       </div>
       <LiveBanner />
+      {navigating.active &&
+        !location.pathname.startsWith('/explorar/navegar') && (
+          <div className="session-warning">
+            <Link className="text-link action-link" to="/explorar/navegar">
+              Navegação ativa · Voltar às orientações
+            </Link>
+          </div>
+        )}
       {status === 'error' && (
         <div className="session-warning">
           <span>{error}</span>
@@ -100,7 +147,7 @@ export function Layout() {
         ride.state !== 'saved' &&
         location.pathname !== '/ride' && (
           <div className="session-warning">
-            <Link className="text-link" to="/ride">
+            <Link className="text-link action-link" to="/ride">
               Ride{' '}
               {ride.state === 'running'
                 ? 'em andamento'
@@ -112,15 +159,17 @@ export function Layout() {
           </div>
         )}
       <main id="conteudo" className="page-content" tabIndex={-1} ref={main}>
-        <Suspense
-          fallback={
-            <p className="page-loading" role="status">
-              Carregando página…
-            </p>
-          }
-        >
-          <Outlet />
-        </Suspense>
+        <PageErrorBoundary key={location.pathname}>
+          <Suspense
+            fallback={
+              <p className="page-loading" role="status">
+                Carregando página…
+              </p>
+            }
+          >
+            <Outlet />
+          </Suspense>
+        </PageErrorBoundary>
       </main>
       <BottomNav />
     </div>
@@ -129,9 +178,37 @@ export function Layout() {
 
 function BottomNav() {
   const location = useLocation();
+  const { snapshot } = useRide();
+  const state =
+    snapshot.state === 'running'
+      ? 'active'
+      : snapshot.state === 'paused'
+        ? 'paused'
+        : ['finished', 'saving'].includes(snapshot.state)
+          ? 'finishing'
+          : snapshot.state === 'waiting-gps' || location.pathname === '/ride'
+            ? 'preparing'
+            : 'inactive';
+  const label = {
+    active: 'ATIVO',
+    paused: 'PAUSADO',
+    finishing: 'FINALIZAR',
+    preparing: snapshot.state === 'waiting-gps' ? 'GPS…' : 'RIDE',
+    inactive: 'RIDE',
+  }[state];
+  const description = {
+    active: 'Ride em andamento',
+    paused: 'Ride pausado',
+    finishing: 'Ride aguardando conclusão',
+    preparing:
+      snapshot.state === 'waiting-gps'
+        ? 'Ride aguardando GPS'
+        : 'Preparação do Ride',
+    inactive: 'Nenhum Ride em andamento',
+  }[state];
   return (
     <nav className="bottom-nav" aria-label="Navegação principal">
-      <NavLink to="/" end>
+      <NavLink to="/app" end>
         <House />
         <span>Início</span>
       </NavLink>
@@ -142,13 +219,17 @@ function BottomNav() {
       <NavLink
         to="/ride"
         aria-label="Ride"
+        aria-describedby="ride-nav-status"
+        data-ride-state={state}
         className={({ isActive }) => `ride-nav ${isActive ? 'active' : ''}`}
       >
         <span className="ride-nav-circle">
           <RideIcon size={35} />
-          <strong>RIDE</strong>
+          <strong>{label}</strong>
         </span>
-        <span className="sr-only">Ride</span>
+        <span id="ride-nav-status" className="sr-only">
+          {description}
+        </span>
       </NavLink>
       <NavLink
         to="/comunidade"

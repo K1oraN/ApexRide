@@ -1,3 +1,5 @@
+import { chooseOption } from './choices';
+import { openRideSetting } from './ride-settings';
 import { expect, test } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import { prepare, begin, finish } from './ride-fixtures';
@@ -12,9 +14,7 @@ test('Parte 09: modos, eventos passivos, gráficos reais e persistência privada
     2.5, 0, 0, 0, 0, 0,
   ];
   for (const mode of ['passeio', 'pista', 'misto']) {
-    await page
-      .getByLabel('Modo de pilotagem', { exact: true })
-      .selectOption(mode);
+    await chooseOption(page, 'Modo de pilotagem', mode);
     await expect(page.locator('.force-grid')).toHaveCount(
       mode === 'passeio' ? 0 : 1,
     );
@@ -72,7 +72,7 @@ test('Parte 09: modos, eventos passivos, gráficos reais e persistência privada
           fullPage: true,
         });
       }
-      await page.getByLabel('Série de velocidade').selectOption('assisted');
+      await chooseOption(page, 'Série de velocidade', 'assisted');
       await expect(
         page.getByText('Medição indisponível: dados insuficientes.', {
           exact: true,
@@ -103,9 +103,14 @@ test('GPS Assistido, preferência por conta, troca ativa e série separada', asy
 }) => {
   await mockMotion(page);
   await prepare(page);
-  const selection = page.getByLabel('Velocidade da telemetria');
-  await expect(selection).toHaveValue('assisted');
-  await selection.selectOption('pure');
+  await openRideSetting(page, 'speed');
+  const selection = page.getByRole('group', {
+    name: 'Velocidade da telemetria',
+  });
+  await expect(
+    selection.getByRole('radio', { name: 'GPS Assistido Automático' }),
+  ).toBeChecked();
+  await selection.getByRole('radio', { name: 'GPS Puro' }).check();
   await expect
     .poll(
       async () =>
@@ -114,8 +119,13 @@ test('GPS Assistido, preferência por conta, troca ativa e série separada', asy
     )
     .toBe('pure');
   await page.reload();
-  await expect(selection).toHaveValue('pure');
-  await selection.selectOption('assisted');
+  await openRideSetting(page, 'speed');
+  await expect(
+    selection.getByRole('radio', { name: 'GPS Puro' }),
+  ).toBeChecked();
+  await selection
+    .getByRole('radio', { name: 'GPS Assistido Automático' })
+    .check();
   await expect
     .poll(
       async () =>
@@ -123,6 +133,8 @@ test('GPS Assistido, preferência por conta, troca ativa e série separada', asy
           .speedMode,
     )
     .toBe('assisted');
+  await openRideSetting(page, 'motion');
+  await openRideSetting(page, 'calibration');
   const sensors = page.getByRole('region', { name: 'Sensores de movimento' });
   await sensors.getByRole('button', { name: 'Ativar Sensores' }).click();
   await page.evaluate(() => window.__motionTest.start());
@@ -169,14 +181,33 @@ test('GPS Assistido, preferência por conta, troca ativa e série separada', asy
     )
     .toBeGreaterThan(36);
   const starts = await page.evaluate(() => window.__gpsTest.starts);
-  await selection.selectOption('pure');
+  await page
+    .getByRole('navigation', { name: 'Área Ride' })
+    .getByRole('link', { name: 'Telemetria', exact: true })
+    .click();
+  // A preferência exige uma pausa para evitar configuração durante pilotagem.
+  await page
+    .getByRole('navigation', { name: 'Área Ride' })
+    .getByRole('link', { name: 'Painel', exact: true })
+    .click();
+  await page.getByRole('button', { name: 'Pausar', exact: true }).click();
+  await page
+    .getByRole('navigation', { name: 'Área Ride' })
+    .getByRole('link', { name: 'Telemetria', exact: true })
+    .click();
+  await selection.getByRole('radio', { name: 'GPS Puro' }).check();
+  await page
+    .getByRole('navigation', { name: 'Área Ride' })
+    .getByRole('link', { name: 'Painel', exact: true })
+    .click();
+  await page.getByRole('button', { name: 'Continuar', exact: true }).click();
   await page.evaluate(() => window.__gpsTest.emit());
   await expect(page.locator('.speed-source')).toHaveText(
     'GPS Puro selecionado',
   );
   await expect(page.locator('.gauge-value')).toHaveText('36');
   await expect(page.locator('.preview-state')).toHaveText('Em andamento');
-  expect(await page.evaluate(() => window.__gpsTest.starts)).toBe(starts);
+  expect(await page.evaluate(() => window.__gpsTest.starts)).toBe(starts + 1);
   await finish(page);
   await page.evaluate((timer) => window.clearInterval(timer), gpsPulse);
   await page
@@ -209,9 +240,7 @@ test('três modos: preparação, pausa, navegação, resumo e persistência com 
   for (const mode of ['passeio', 'pista', 'misto']) {
     const startsBefore = await page.evaluate(() => window.__gpsTest.starts);
     await page.getByLabel('Moto da garagem').selectOption(bikes[1]!);
-    await page
-      .getByLabel('Modo de pilotagem', { exact: true })
-      .selectOption(mode);
+    await chooseOption(page, 'Modo de pilotagem', mode);
     const posts: string[] = [];
     page.on('request', (req) => {
       if (req.method() === 'POST' && req.url().endsWith('/api/rides'))
@@ -226,8 +255,11 @@ test('três modos: preparação, pausa, navegação, resumo e persistência com 
       }),
     ).toBe(true);
     await expect(
-      page.getByLabel('Modo de pilotagem', { exact: true }),
-    ).toBeDisabled();
+      page.getByRole('radiogroup', { name: 'Modo de pilotagem', exact: true }),
+    ).toHaveCount(0);
+    await expect(page.locator('.ride-mode-choices')).toContainText(
+      mode === 'passeio' ? 'Passeio' : mode === 'pista' ? 'Pista' : 'Misto',
+    );
     await page.waitForTimeout(1100);
     await page.evaluate(() => window.__gpsTest.emit({ longitude: -35.7349 }));
     await page.getByRole('button', { name: 'Pausar', exact: true }).click();
@@ -263,15 +295,20 @@ test('três modos: preparação, pausa, navegação, resumo e persistência com 
     );
     await finish(page);
     expect(posts).toHaveLength(0);
-    await expect(page.getByLabel('Visibilidade da atividade')).toHaveValue(
-      'private',
-    );
+    await expect(
+      page
+        .getByRole('radiogroup', {
+          name: 'Visibilidade da atividade',
+          exact: true,
+        })
+        .getByRole('radio', { name: 'Privado', exact: true }),
+    ).toBeChecked();
     await expect(
       page.getByText(/3 pontos GPS aceitos · 2 segmentos/),
     ).toBeVisible();
     await expect(page.getByLabel('Início do percurso')).toBeVisible();
     await expect(page.getByLabel('Fim do percurso')).toBeVisible();
-    await page.getByLabel('Visibilidade da atividade').selectOption('public');
+    await chooseOption(page, 'Visibilidade da atividade', 'public');
     await page
       .getByRole('button', { name: 'Salvar atividade', exact: true })
       .click();
@@ -432,6 +469,8 @@ test('sensores simulados: gesto iPhone, calibração, G, pausa, resumo e Postgre
 }) => {
   await mockMotion(page);
   await prepare(page);
+  await openRideSetting(page, 'motion');
+  await openRideSetting(page, 'calibration');
   const sensors = page.getByRole('region', { name: 'Sensores de movimento' });
   expect(await page.evaluate(() => window.__motionTest.requests)).toEqual([]);
   await sensors.getByRole('button', { name: 'Ativar Sensores' }).click();
@@ -520,6 +559,8 @@ test('permissão de movimento negada permite sessão GPS e resumo sem valores ar
 }) => {
   await mockMotion(page, true);
   await prepare(page);
+  await openRideSetting(page, 'motion');
+  await openRideSetting(page, 'calibration');
   const sensors = page.getByRole('region', { name: 'Sensores de movimento' });
   await sensors.getByRole('button', { name: 'Ativar Sensores' }).click();
   await expect(sensors.getByRole('status')).toContainText(

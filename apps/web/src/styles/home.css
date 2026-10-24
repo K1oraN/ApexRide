@@ -1,0 +1,492 @@
+/* Dashboard composition; shared controls and tokens remain in the design system. */
+.home-dashboard {
+  display: grid;
+  gap: 16px;
+}
+.home-dashboard > * {
+  min-width: 0;
+}
+.home-banner {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 270px;
+}
+.home-banner > img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 70% 58%;
+}
+.home-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, #05080bea, #05080b9c 46%, #05080b15 80%),
+    linear-gradient(0deg, #05080b80, transparent 60%);
+}
+.home-banner-copy {
+  padding: 28px;
+  max-width: 550px;
+}
+.home-banner-copy .eyebrow {
+  font-size: 12px;
+  color: #d1d7df;
+  letter-spacing: 0.18em;
+  overflow-wrap: anywhere;
+}
+.app-shell .home-dashboard .home-banner-copy h2 {
+  font:
+    italic 900 clamp(30px, 4vw, 44px)/1.04 Arial,
+    sans-serif;
+  letter-spacing: 0.015em;
+  margin-block: 10px;
+}
+.home-banner-copy h2 em {
+  color: #ff3345;
+  font-style: inherit;
+}
+.home-banner-copy p {
+  color: #d1d7df;
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+.home-banner-copy .button {
+  gap: 14px;
+}
+.home-quick-ride {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+}
+.home-quick-icon,
+.home-recent-icon {
+  color: var(--red);
+  background: #ed122713;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+.home-quick-ride > div {
+  flex: 1;
+  min-width: 0;
+}
+.home-quick-ride h2 {
+  font-size: 20px;
+  line-height: 1.3;
+}
+.home-quick-ride p,
+.home-data-note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.home-quick-ride .button {
+  flex-shrink: 0;
+}
+.home-status,
+.home-motorcycle,
+.home-performance,
+.home-progress {
+  padding: 16px;
+}
+.home-section-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+}
+.home-section-title h2 {
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.3;
+}
+.home-section-title > span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.home-section-title .text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  font-size: 14px;
+}
+.home-status-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.home-status-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface-gradient);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  min-width: 0;
+}
+.home-status-item > svg {
+  color: var(--red);
+}
+.home-status-item > div {
+  min-width: 0;
+}
+.home-status-item h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.home-status-item .ui-badge {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  line-height: 1.4;
+  font-size: 12px;
+  white-space: normal;
+}
+.home-status-item .ui-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: currentColor;
+}
+.home-bike-card {
+  display: grid;
+  grid-template-columns: 44% minmax(0, 1fr);
+  align-items: center;
+  overflow: hidden;
+  background: #080c11;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.home-bike-card .motorcycle-photo {
+  position: static;
+  width: 100%;
+  height: 175px;
+  min-height: 0;
+  border-radius: 0;
+  object-fit: cover;
+}
+.home-bike-card .motorcycle-photo-empty {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  background: var(--surface-gradient);
+}
+.home-bike-card .motorcycle-photo-empty span {
+  display: none;
+}
+.home-bike-copy {
+  padding: 20px;
+  min-width: 0;
+}
+.home-bike-copy h3 {
+  font-size: 25px;
+  line-height: 1.2;
+  margin-block: 10px 6px;
+  overflow-wrap: anywhere;
+}
+.home-bike-copy p {
+  color: var(--muted);
+  font-size: 15px;
+}
+.home-bike-copy .text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+.home-performance-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.home-performance-grid > * {
+  min-width: 0;
+}
+.home-performance-grid .ui-card {
+  height: 100%;
+  padding: 18px;
+}
+.home-performance-grid .ui-stat-value {
+  font-size: 25px;
+  font-family: var(--font-heading);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.home-performance-grid .ui-stat-label {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.home-period {
+  width: 175px;
+}
+.home-period select {
+  min-height: 44px;
+  width: 100%;
+  font-size: 14px;
+}
+.home-data-note {
+  margin-top: 12px;
+}
+.home-data-note .button {
+  min-height: 36px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+.home-recent-list {
+  display: grid;
+  gap: 10px;
+}
+.home-dashboard .home-recent-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  min-width: 0;
+}
+.home-dashboard .home-recent-card > div {
+  padding: 0;
+  min-width: 0;
+  flex: 1;
+}
+.home-recent-card h3 {
+  font-size: 20px;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  overflow-wrap: anywhere;
+}
+.home-recent-card p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.home-recent-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.home-recent-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.home-progress .gamification-progress {
+  padding: 0;
+}
+.home-progress > .text-link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 10px;
+  min-height: 44px;
+  font-size: 14px;
+}
+.home-inline-empty {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+}
+.home-inline-empty > svg {
+  color: var(--red);
+}
+.home-inline-empty > div {
+  flex: 1;
+  min-width: 0;
+}
+.home-inline-empty h3 {
+  font-size: 19px;
+  line-height: 1.4;
+}
+.home-inline-empty p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.home-community-link {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 14px;
+  gap: 8px;
+}
+@media (min-width: 1000px) {
+  .home-dashboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .home-banner,
+  .home-quick-ride,
+  .home-status,
+  .home-performance,
+  .home-community-link,
+  .home-motorcycle {
+    grid-column: 1 / -1;
+  }
+  .home-banner {
+    min-height: 300px;
+  }
+  .home-recent {
+    grid-column: 1;
+  }
+  .home-progress {
+    grid-column: 2;
+    align-self: start;
+  }
+}
+@media (max-width: 700px) {
+  .home-dashboard {
+    gap: 14px;
+  }
+  .home-banner {
+    min-height: 250px;
+  }
+  .home-banner-copy {
+    padding: 22px;
+  }
+  .home-banner-copy h2 {
+    font-size: 30px;
+  }
+  .home-banner-copy p {
+    font-size: 14px;
+    max-width: 27ch;
+  }
+  .home-banner-copy p br {
+    display: none;
+  }
+  .home-quick-ride {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    padding: 14px;
+    gap: 12px;
+  }
+  .home-quick-ride h2 {
+    font-size: 18px;
+  }
+  .home-quick-ride .button {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .home-quick-icon {
+    width: 40px;
+    height: 40px;
+  }
+  .home-status-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .home-status-item {
+    padding: 12px;
+    gap: 10px;
+  }
+  .home-status-item > svg {
+    width: 23px;
+  }
+  .home-status-item h3 {
+    margin-bottom: 6px;
+  }
+  .home-section-title > span {
+    display: none;
+  }
+  .home-performance-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .home-performance-grid .ui-card {
+    padding: 14px;
+  }
+  .home-performance-grid .ui-stat-value {
+    font-size: 23px;
+  }
+  .home-bike-copy {
+    padding: 14px;
+  }
+  .home-bike-copy h3 {
+    font-size: 22px;
+  }
+  .home-bike-card .motorcycle-photo {
+    height: 170px;
+  }
+  .home-inline-empty {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    flex-wrap: wrap;
+    padding: 12px;
+  }
+  .home-inline-empty .button {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .home-dashboard .home-recent-card {
+    padding: 14px;
+    gap: 12px;
+  }
+  .home-recent-card h3 {
+    font-size: 18px;
+  }
+  .home-recent-card > svg {
+    display: none;
+  }
+  .home-recent-meta {
+    gap: 6px 12px;
+  }
+  .home-recent-icon {
+    width: 42px;
+    height: 52px;
+  }
+}
+@media (max-width: 359px) {
+  .home-banner-copy {
+    padding: 20px 16px;
+  }
+  .home-banner-copy h2 {
+    font-size: 28px;
+  }
+  .home-status,
+  .home-motorcycle,
+  .home-performance,
+  .home-progress {
+    padding: 12px;
+  }
+  .home-status-item {
+    padding: 10px 8px;
+    gap: 6px;
+  }
+  .home-status-item > svg {
+    width: 20px;
+  }
+  .home-bike-card {
+    grid-template-columns: 34% minmax(0, 1fr);
+  }
+  .home-bike-copy h3 {
+    font-size: 20px;
+  }
+  .home-recent-icon {
+    display: none;
+  }
+}

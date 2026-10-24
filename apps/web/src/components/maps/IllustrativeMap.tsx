@@ -1,6 +1,7 @@
-import { useState } from 'react';
 import { Flag, LocateFixed, Map, MapPin, Minus, Plus } from 'lucide-react';
+import { useState } from 'react';
 import { photos } from '../../data/demo';
+import { Select } from '../design-system';
 
 export function IllustrativeMap({
   variant = 'explore',
@@ -135,10 +136,10 @@ export function IllustrativeMap({
       {variant === 'explore' && (
         <label className="map-style">
           <span className="sr-only">Estilo do mapa ilustrativo</span>
-          <select value={style} onChange={(e) => setStyle(e.target.value)}>
+          <Select value={style} onChange={(e) => setStyle(e.target.value)}>
             <option value="satellite">Satélite</option>
             <option value="relief">Relevo</option>
-          </select>
+          </Select>
         </label>
       )}
     </div>

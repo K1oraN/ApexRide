@@ -1,17 +1,28 @@
-import { Navigate } from 'react-router';
-import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
+import { ChoiceSelect } from '../components/design-system';
 import type {
   Coordinate,
   RouteData,
   RouteRecord,
 } from '@apex-ride/ride-core/routes';
-import { lineLength } from '@apex-ride/ride-core/routes';
-import { RouteMap } from '../components/maps/RouteMap';
-import { routeService } from '../services/routes';
+import { lineLength, validCoordinate } from '@apex-ride/ride-core/routes';
+import { useEffect, useState } from 'react';
+import { Link, Navigate, useNavigate, useParams } from 'react-router';
 import { useAuth } from '../auth/useAuth';
-import '../styles/routes.css';
+import {
+  Button,
+  ButtonLink,
+  Input,
+  Textarea,
+} from '../components/design-system';
+import { RouteMap } from '../components/maps/RouteMap';
 import { CircuitResults } from '../gamification/CircuitResults';
+import { routeService } from '../services/routes';
+import { DestinationSearch } from '../routes/DestinationSearch';
+import { GpxImporter } from '../routes/GpxImporter';
+import { ElevationProfile } from '../routes/ElevationProfile';
+import { exportGpx } from '../routes/gpx';
+import '../styles/routes.css';
+import '../styles/explore.css';
 const blank: RouteData = {
   name: '',
   description: '',
@@ -28,6 +39,37 @@ const blank: RouteData = {
 export function RouteEditorPage() {
   const { id } = useParams(),
     navigate = useNavigate();
+  const { user } = useAuth();
+  const [profilePoint, setProfilePoint] = useState<Coordinate | undefined>();
+  const [recoverable, setRecoverable] = useState<{
+    data: RouteData;
+    kind: string;
+    method: string;
+  } | null>(() => {
+    try {
+      const raw = sessionStorage.getItem(
+        `apex.route.draft.${user?.id ?? 'none'}.${id ?? 'new'}`,
+      );
+      const parsed = raw ? JSON.parse(raw) : null;
+      if (
+        parsed?.data &&
+        typeof parsed.data.name === 'string' &&
+        typeof parsed.data.description === 'string' &&
+        ['route', 'circuit'].includes(parsed.kind) &&
+        ['osrm', 'manual'].includes(parsed.method) &&
+        Array.isArray(parsed.data.waypoints) &&
+        parsed.data.waypoints.length <= 25 &&
+        parsed.data.waypoints.every(validCoordinate) &&
+        Array.isArray(parsed.data.geometry?.coordinates) &&
+        parsed.data.geometry.coordinates.length <= 10000
+      )
+        return parsed;
+    } catch {
+      /* Optional local draft. */
+    }
+    return null;
+  });
+  const storageKey = `apex.route.draft.${user?.id ?? 'none'}.${id ?? 'new'}`;
   const [data, setData] = useState<RouteData>(blank),
     [kind, setKind] = useState('route'),
     [method, setMethod] = useState('osrm'),
@@ -36,6 +78,17 @@ export function RouteEditorPage() {
   const [error, setError] = useState(''),
     [busy, setBusy] = useState(false),
     [loaded, setLoaded] = useState(!id);
+  useEffect(() => {
+    if (!loaded || recoverable || !data.waypoints.length) return;
+    try {
+      sessionStorage.setItem(
+        storageKey,
+        JSON.stringify({ data, kind, method }),
+      );
+    } catch {
+      /* Keep the working draft in memory. */
+    }
+  }, [data, kind, method, loaded, storageKey, recoverable]);
   useEffect(() => {
     let live = true;
     if (id)
@@ -70,6 +123,7 @@ export function RouteEditorPage() {
       },
       source: method === 'manual' ? 'manual' : 'osrm',
       durationSeconds: null,
+      importMetadata: null,
     }));
   }
   function touch(p: Coordinate) {
@@ -104,6 +158,11 @@ export function RouteEditorPage() {
     setError('');
     try {
       const r = await routeService.save(data, kind, id);
+      try {
+        sessionStorage.removeItem(storageKey);
+      } catch {
+        /* Ignore unavailable storage. */
+      }
       navigate('/explorar/' + r.route.id);
     } catch (e) {
       setError((e as Error).message);
@@ -120,7 +179,7 @@ export function RouteEditorPage() {
   return (
     <section className="account-card panel route-editor">
       <h1>{id ? 'Editar percurso' : 'Criar percurso'}</h1>
-      <Link className="text-link" to="/explorar">
+      <Link className="text-link action-link" to="/explorar">
         Voltar para Explorar
       </Link>
       {error && <p role="alert">{error}</p>}
@@ -128,69 +187,32 @@ export function RouteEditorPage() {
         <p>Carregando editor…</p>
       ) : (
         <>
-          <label>
-            Tipo
-            <select
-              aria-label="Tipo"
-              disabled={!!id || busy}
-              value={kind}
-              onChange={(e) => {
-                setKind(e.target.value);
-                setData((d) => ({ ...d, startLine: null, direction: null }));
-              }}
-            >
-              <option value="route">Rota</option>
-              <option value="circuit">Sugerir circuito fechado</option>
-            </select>
-          </label>
-          <label>
-            Nome
-            <input
-              required
-              maxLength={120}
-              value={data.name}
-              onChange={(e) => setData({ ...data, name: e.target.value })}
-            />
-          </label>
-          <label>
-            Descrição
-            <textarea
-              maxLength={4000}
-              value={data.description}
-              onChange={(e) =>
-                setData({ ...data, description: e.target.value })
-              }
-            />
-          </label>
-          <label>
-            Cidade
-            <input
-              maxLength={120}
-              value={data.city}
-              onChange={(e) => setData({ ...data, city: e.target.value })}
-            />
-          </label>
-          <label>
-            Estado (UF)
-            <input
-              maxLength={2}
-              value={data.state}
-              onChange={(e) =>
-                setData({ ...data, state: e.target.value.toUpperCase() })
-              }
-            />
-          </label>
-          <label>
-            Categoria
-            <input
-              maxLength={60}
-              value={data.category}
-              onChange={(e) => setData({ ...data, category: e.target.value })}
-            />
-          </label>
-          <label>
-            Traçado
-            <select
+          {recoverable && (
+            <div className="panel destination-panel">
+              <p>
+                Há um rascunho local desta conta. Restaurar substitui o
+                planejamento aberto; revise antes de salvar.
+              </p>
+              <Button
+                onClick={() => {
+                  setData(recoverable.data);
+                  setKind(recoverable.kind);
+                  setMethod(recoverable.method);
+                  setRecoverable(null);
+                }}
+              >
+                Restaurar rascunho local
+              </Button>
+              <Button variant="ghost" onClick={() => setRecoverable(null)}>
+                Continuar sem restaurar
+              </Button>
+            </div>
+          )}
+
+          <h2>1 · Definir percurso</h2>
+          <div>
+            <span>Traçado</span>
+            <ChoiceSelect
               aria-label="Traçado"
               disabled={busy}
               value={method}
@@ -205,6 +227,7 @@ export function RouteEditorPage() {
                     coordinates: m === 'manual' ? d.waypoints : [],
                   },
                   durationSeconds: null,
+                  importMetadata: null,
                 }));
               }}
             >
@@ -212,18 +235,58 @@ export function RouteEditorPage() {
               <option value="manual">
                 Desenho manual · sem validação viária
               </option>
-            </select>
-          </label>
+            </ChoiceSelect>
+          </div>
+          <DestinationSearch
+            disabled={busy}
+            onSelect={(coordinate) => touch(coordinate)}
+          />
+          <GpxImporter
+            disabled={busy}
+            onImport={(segment, name) => {
+              const coordinates = segment.map((p) => p.coordinate);
+              setData((d) => ({
+                ...d,
+                name: d.name || name,
+                waypoints: [coordinates[0]!, coordinates.at(-1)!],
+                geometry: { type: 'LineString', coordinates },
+                source: 'manual',
+                durationSeconds: null,
+                startLine: null,
+                direction: null,
+                importMetadata: {
+                  source: 'gpx',
+                  version: 1,
+                  altitudes: segment.map((p) => p.altitude),
+                },
+              }));
+              setMethod('manual');
+              setError('');
+            }}
+          />
           <p>
             Toque no mapa: o primeiro ponto é a origem, o último é o destino. Os
             demais são paradas. Reordene antes de calcular.
           </p>
+          <h2>2 · Revisar trajeto</h2>
           <RouteMap
             routes={shapes}
             selected="draft"
             onPoint={busy ? undefined : touch}
             waypoints={data.waypoints}
             gateLine={data.startLine}
+            centerPoint={profilePoint}
+            points={
+              profilePoint
+                ? [
+                    {
+                      id: 'profile',
+                      coordinate: profilePoint,
+                      label: 'Ponto do perfil',
+                    },
+                  ]
+                : []
+            }
           />
           <ol>
             {data.waypoints.map((p, i) => (
@@ -234,8 +297,8 @@ export function RouteEditorPage() {
                     ? 'Destino'
                     : `Parada ${i}`}{' '}
                 <div className="route-tools">
-                  <button
-                    className="button"
+                  <Button
+                    variant="secondary"
                     aria-label={`Mover ponto ${i + 1} para cima`}
                     disabled={!i || busy}
                     onClick={() => {
@@ -245,9 +308,9 @@ export function RouteEditorPage() {
                     }}
                   >
                     ↑
-                  </button>
-                  <button
-                    className="button"
+                  </Button>
+                  <Button
+                    variant="secondary"
                     aria-label={`Mover ponto ${i + 1} para baixo`}
                     disabled={i === data.waypoints.length - 1 || busy}
                     onClick={() => {
@@ -257,31 +320,31 @@ export function RouteEditorPage() {
                     }}
                   >
                     ↓
-                  </button>
-                  <button
-                    className="button"
+                  </Button>
+                  <Button
+                    variant="destructive"
                     disabled={busy}
                     onClick={() =>
                       points(data.waypoints.filter((_, n) => n !== i))
                     }
                   >
                     Remover
-                  </button>
+                  </Button>
                 </div>
               </li>
             ))}
           </ol>
           {method === 'osrm' ? (
             <>
-              <button
-                className="button"
+              <Button
+                variant="secondary"
                 disabled={
                   busy || data.waypoints.length < 2 || !navigator.onLine
                 }
                 onClick={() => void calculate()}
               >
                 Calcular caminho
-              </button>
+              </Button>
               <p>
                 O perfil rodoviário depende do provedor e pode não contemplar
                 restrições específicas de motocicletas. O resultado não garante
@@ -290,9 +353,18 @@ export function RouteEditorPage() {
             </>
           ) : (
             <p>
-              Desenho manual: percurso definido por você, sem validação contra a
-              malha viária. Não há duração estimada.
+              {data.importMetadata
+                ? 'GPX importado: geometria fornecida pelo arquivo'
+                : 'Desenho manual: percurso definido por você'}
+              , sem validação contra a malha viária. Não há duração estimada.
             </p>
+          )}
+          {data.importMetadata && (
+            <ElevationProfile
+              coordinates={data.geometry.coordinates}
+              altitudes={data.importMetadata.altitudes}
+              onPoint={setProfilePoint}
+            />
           )}
           {kind === 'circuit' && (
             <>
@@ -300,8 +372,8 @@ export function RouteEditorPage() {
                 Cadastre somente uma área fechada apropriada. Publicação e
                 verificação para voltas são revisões distintas.
               </p>
-              <button
-                className="button"
+              <Button
+                variant="secondary"
                 disabled={busy}
                 onClick={() => {
                   setGatePoints([]);
@@ -309,7 +381,7 @@ export function RouteEditorPage() {
                 }}
               >
                 Definir linha de largada/chegada
-              </button>
+              </Button>
               <p>
                 {gate
                   ? 'Toque em dois extremos da linha transversal à pista.'
@@ -317,9 +389,10 @@ export function RouteEditorPage() {
                     ? 'Linha definida.'
                     : 'Linha ainda não definida.'}
               </p>
-              <label>
-                Direção do cruzamento
-                <select
+              <div>
+                <span>Direção do cruzamento</span>
+                <ChoiceSelect
+                  aria-label="Direção do cruzamento"
                   value={data.direction ?? ''}
                   onChange={(e) =>
                     setData({
@@ -337,8 +410,8 @@ export function RouteEditorPage() {
                   <option value="-1">
                     Do lado esquerdo para o direito da linha orientada A → B
                   </option>
-                </select>
-              </label>
+                </ChoiceSelect>
+              </div>
             </>
           )}
           {data.geometry.coordinates.length >= 2 && (
@@ -356,8 +429,84 @@ export function RouteEditorPage() {
               moderação.
             </p>
           )}
-          <button
-            className="button button-primary"
+          <details open>
+            <summary>3 · Informações do percurso</summary>
+            <div className="editor-info">
+              <div>
+                <span>Tipo</span>
+                <ChoiceSelect
+                  aria-label="Tipo"
+                  disabled={!!id || busy}
+                  value={kind}
+                  onChange={(e) => {
+                    setKind(e.target.value);
+                    setData((d) => ({
+                      ...d,
+                      startLine: null,
+                      direction: null,
+                    }));
+                  }}
+                >
+                  <option value="route">Rota</option>
+                  <option value="circuit">Sugerir circuito fechado</option>
+                </ChoiceSelect>
+              </div>
+              <label>
+                Nome
+                <Input
+                  required
+                  maxLength={120}
+                  value={data.name}
+                  onChange={(e) => setData({ ...data, name: e.target.value })}
+                />
+              </label>
+              <label>
+                Descrição
+                <Textarea
+                  maxLength={4000}
+                  value={data.description}
+                  onChange={(e) =>
+                    setData({ ...data, description: e.target.value })
+                  }
+                />
+              </label>
+              <label>
+                Cidade
+                <Input
+                  maxLength={120}
+                  value={data.city}
+                  onChange={(e) => setData({ ...data, city: e.target.value })}
+                />
+              </label>
+              <label>
+                Estado (UF)
+                <Input
+                  maxLength={2}
+                  value={data.state}
+                  onChange={(e) =>
+                    setData({ ...data, state: e.target.value.toUpperCase() })
+                  }
+                />
+              </label>
+              <label>
+                Categoria
+                <Input
+                  maxLength={60}
+                  value={data.category}
+                  onChange={(e) =>
+                    setData({ ...data, category: e.target.value })
+                  }
+                />
+              </label>
+            </div>
+          </details>
+          <h2>4 · Salvar para depois</h2>
+          <p>
+            O percurso será privado até a aprovação de uma solicitação de
+            publicação.
+          </p>
+          <Button
+            variant="primary"
             disabled={
               busy ||
               !data.name.trim() ||
@@ -367,7 +516,7 @@ export function RouteEditorPage() {
             onClick={() => void save()}
           >
             {busy ? 'Processando…' : 'Salvar rascunho privado'}
-          </button>
+          </Button>
         </>
       )}
     </section>
@@ -381,6 +530,7 @@ export function RouteDetailPage() {
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false),
     [refresh, setRefresh] = useState(0);
+  const [profilePoint, setProfilePoint] = useState<Coordinate | undefined>();
   useEffect(() => {
     let live = true;
     void routeService
@@ -409,7 +559,7 @@ export function RouteDetailPage() {
   }
   return (
     <section className="account-card panel route-detail">
-      <Link className="text-link" to="/explorar">
+      <Link className="text-link action-link" to="/explorar">
         Voltar para Explorar
       </Link>
       {error && <p role="alert">{error}</p>}
@@ -417,7 +567,10 @@ export function RouteDetailPage() {
         <>
           <h1>{route.name}</h1>
           {user && route.kind === 'circuit' && <CircuitResults id={route.id} />}
-          <Link className="text-link" to={`/explorar/${route.id}/comparar`}>
+          <Link
+            className="text-link action-link"
+            to={`/explorar/${route.id}/comparar`}
+          >
             Comparar atividades nesta rota
           </Link>
           <p>{route.description}</p>
@@ -430,6 +583,23 @@ export function RouteDetailPage() {
             selected={route.id}
             waypoints={route.waypoints ?? []}
             gateLine={route.startLine}
+            centerPoint={profilePoint}
+            points={
+              profilePoint
+                ? [
+                    {
+                      id: 'profile',
+                      coordinate: profilePoint,
+                      label: 'Ponto do perfil',
+                    },
+                  ]
+                : []
+            }
+          />
+          <ElevationProfile
+            coordinates={route.geometry.coordinates}
+            altitudes={route.importMetadata?.altitudes}
+            onPoint={setProfilePoint}
           />
           <dl>
             <dt>Distância</dt>
@@ -454,7 +624,9 @@ export function RouteDetailPage() {
             <dt>Fonte</dt>
             <dd>
               {route.source === 'manual'
-                ? 'Desenho manual · sem validação viária'
+                ? route.importMetadata
+                  ? 'GPX importado · sem validação viária'
+                  : 'Desenho manual · sem validação viária'
                 : 'OSRM · perfil rodoviário'}
             </dd>
             {route.durationSeconds !== null && (
@@ -491,10 +663,33 @@ export function RouteDetailPage() {
           </ol>
           {route.reason && <p>Moderação: {route.reason}</p>}
           <div className="route-tools">
+            {route.kind === 'route' && (
+              <ButtonLink
+                variant="primary"
+                to={`/explorar/navegar?percurso=${route.id}`}
+              >
+                Navegar neste percurso
+              </ButtonLink>
+            )}
+            {route.status === 'approved' && (
+              <Button
+                onClick={() => {
+                  void navigator.clipboard
+                    ?.writeText(`${location.origin}/explorar/${route.id}`)
+                    .catch(() =>
+                      setError(
+                        'Copie o endereço desta página para compartilhar.',
+                      ),
+                    );
+                }}
+              >
+                Copiar link aprovado
+              </Button>
+            )}
             {route.status === 'approved' && (
               <>
-                <button
-                  className="button"
+                <Button
+                  variant="secondary"
                   disabled={busy}
                   onClick={() => {
                     if (!user) {
@@ -507,33 +702,55 @@ export function RouteDetailPage() {
                   }}
                 >
                   {route.favorite ? 'Desfavoritar' : 'Favoritar'}
-                </button>
-                <Link
-                  className="button button-primary"
-                  to={`/ride?percurso=${route.id}`}
-                >
+                </Button>
+                <ButtonLink variant="primary" to={`/ride?percurso=${route.id}`}>
                   Seguir rota
-                </Link>
+                </ButtonLink>
               </>
             )}
             {route.ownerId === user?.id && (
               <>
-                <Link className="button" to={`/explorar/${route.id}/editar`}>
+                <Button
+                  onClick={() => {
+                    const blob = new Blob(
+                      [
+                        exportGpx(
+                          route.name,
+                          route.geometry.coordinates,
+                          route.importMetadata?.altitudes,
+                        ),
+                      ],
+                      { type: 'application/gpx+xml' },
+                    );
+                    const url = URL.createObjectURL(blob);
+                    const anchor = document.createElement('a');
+                    anchor.href = url;
+                    anchor.download = 'percurso-apex.gpx';
+                    anchor.click();
+                    setTimeout(() => URL.revokeObjectURL(url), 1000);
+                  }}
+                >
+                  Exportar meu percurso em GPX
+                </Button>
+                <ButtonLink
+                  variant="secondary"
+                  to={`/explorar/${route.id}/editar`}
+                >
                   Editar
-                </Link>
+                </ButtonLink>
                 {['draft', 'rejected'].includes(route.status) && (
-                  <button
-                    className="button"
+                  <Button
+                    variant="secondary"
                     disabled={busy}
                     onClick={() =>
                       void act(() => routeService.submit(route.id))
                     }
                   >
                     Solicitar publicação
-                  </button>
+                  </Button>
                 )}
-                <button
-                  className="button"
+                <Button
+                  variant="secondary"
                   disabled={busy || route.status === 'archived'}
                   onClick={() => {
                     if (
@@ -545,7 +762,7 @@ export function RouteDetailPage() {
                   }}
                 >
                   Arquivar
-                </button>
+                </Button>
               </>
             )}
           </div>

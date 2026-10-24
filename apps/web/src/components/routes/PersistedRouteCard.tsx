@@ -1,7 +1,7 @@
-import { Heart, Route, Clock3, ChevronRight } from 'lucide-react';
+import { ChevronRight, Clock3, Heart, Route } from 'lucide-react';
 import { Link } from 'react-router';
-import { Chip, Photo } from '../ui';
 import type { RouteRecord } from '../../services/routes';
+import { Chip } from '../ui';
 export function PersistedRouteCard({
   route,
   featured = false,
@@ -13,14 +13,32 @@ export function PersistedRouteCard({
   compact?: boolean;
   onFavorite: (route: RouteRecord) => void;
 }) {
+  const coordinates = route.geometry.coordinates;
+  const xs = coordinates.map((p) => p[0]),
+    ys = coordinates.map((p) => p[1]);
+  const minX = Math.min(...xs),
+    minY = Math.min(...ys),
+    spanX = Math.max(0.00001, Math.max(...xs) - minX),
+    spanY = Math.max(0.00001, Math.max(...ys) - minY);
+  const scale = Math.min(280 / spanX, 130 / spanY);
+  const path = coordinates
+    .map(
+      (p, index) =>
+        `${index ? 'L' : 'M'}${(20 + (p[0] - minX) * scale).toFixed(1)},${(150 - (p[1] - minY) * scale).toFixed(1)}`,
+    )
+    .join(' ');
   return (
     <article
       className={`route-card panel ${featured ? 'route-featured' : ''} ${compact ? 'route-compact' : ''}`}
     >
-      <Photo
-        src="/assets/coastal-road.webp"
-        alt="Imagem ilustrativa de estrada; não é foto deste percurso"
-      />
+      <svg
+        className="route-preview-art"
+        viewBox="0 0 320 170"
+        role="img"
+        aria-label={`Geometria cadastrada de ${route.name} · miniatura sem mapa de fundo`}
+      >
+        <path d={path} />
+      </svg>
       <button
         className={`favorite-button ${route.favorite ? 'is-favorite' : ''}`}
         aria-label={`${route.favorite ? 'Desfavoritar' : 'Favoritar'} ${route.name}`}
@@ -41,6 +59,10 @@ export function PersistedRouteCard({
         )}
         <div className="route-metrics">
           <span>
+            <Heart aria-hidden />
+            {route.favorites} favorito(s)
+          </span>
+          <span>
             <Route />
             {(route.distanceMeters / 1000).toLocaleString('pt-BR', {
               maximumFractionDigits: 1,
@@ -55,6 +77,17 @@ export function PersistedRouteCard({
         </div>
         {!compact && (
           <div className="chips">
+            {route.status !== 'approved' && (
+              <Chip>
+                {route.status === 'draft'
+                  ? 'Rascunho privado'
+                  : route.status === 'pending'
+                    ? 'Em análise'
+                    : route.status === 'rejected'
+                      ? 'Rejeitado'
+                      : 'Arquivado'}
+              </Chip>
+            )}
             <Chip accent>{route.kind === 'circuit' ? 'Circuito' : 'Rota'}</Chip>
             <Chip>{route.category}</Chip>
             {route.kind === 'circuit' && (

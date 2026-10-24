@@ -5,7 +5,6 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { AuthContext, type AuthState } from './context';
 import { deviceContext } from '../offline/device';
 import { offlineRepository } from '../offline/repository';
 import {
@@ -15,61 +14,55 @@ import {
   getSession,
   type User,
 } from '../services/auth';
+import { AuthContext, type AuthState } from './context';
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [status, setStatus] = useState<AuthState['status']>('loading');
   const [error, setError] = useState<string | null>(null);
   const accountChannel = useRef<BroadcastChannel | null>(null);
+  const generation = useRef(0);
   const endSession = useCallback(() => {
+    generation.current++;
     void deviceContext.forget().catch(() => {});
     clearSession();
     setUser(null);
     setStatus('ready');
     setError(null);
   }, []);
-  const restore = useCallback(
-    () =>
-      getSession()
-        .then((data) => {
-          void deviceContext.remember(data.user).catch(() => {});
-          setUser(data.user);
+  const restore = useCallback(() => {
+    const ticket = ++generation.current;
+    return getSession()
+      .then((data) => {
+        if (ticket !== generation.current) return;
+        void deviceContext.remember(data.user).catch(() => {});
+        setUser(data.user);
+        setStatus('ready');
+        setError(null);
+      })
+      .catch((error: unknown) => {
+        if (ticket !== generation.current) return;
+        setUser(null);
+        if (error instanceof ApiError && error.status === 401) {
+          void deviceContext.forget().catch(() => {});
           setStatus('ready');
           setError(null);
-        })
-        .catch(async (error: unknown) => {
-          setUser(null);
-          if (error instanceof ApiError && error.status === 401) {
-            void deviceContext.forget().catch(() => {});
-            setStatus('ready');
-            setError(null);
-          } else {
-            const cached = await deviceContext.user().catch(() => null);
-            if (
-              cached &&
-              error instanceof ApiError &&
-              (error.status === 0 || error.status >= 500)
-            ) {
-              setUser(cached);
-              setStatus('ready');
-              setError(
-                'Contexto local do dispositivo. Autenticação será confirmada antes de sincronizar.',
-              );
-              return;
-            }
-            setStatus('error');
-            setError(
-              error instanceof Error ? error.message : 'API indisponível.',
-            );
-          }
-        }),
-    [],
-  );
+        } else {
+          setStatus('error');
+          setError(
+            error instanceof Error ? error.message : 'API indisponível.',
+          );
+        }
+      });
+  }, []);
   const refresh = useCallback(async () => {
     setStatus('loading');
     setError(null);
     await restore();
   }, [restore]);
   useEffect(() => {
+    const invalidate = () => {
+      generation.current++;
+    };
     void restore();
     if (typeof BroadcastChannel !== 'undefined') {
       accountChannel.current = new BroadcastChannel('apex-account');
@@ -85,11 +78,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       window.removeEventListener('apex:session-ended', endSession);
       accountChannel.current?.close();
       accountChannel.current = null;
+      invalidate();
     };
   }, [restore, endSession]);
   const login = async (email: string, password: string) => {
+    const ticket = ++generation.current;
     const data = await authService.login(email, password);
+    if (ticket !== generation.current) return;
     await deviceContext.remember(data.user).catch(() => {});
+    if (ticket !== generation.current) return;
     accountChannel.current?.postMessage('account-changed');
     setUser(data.user);
     setStatus('ready');

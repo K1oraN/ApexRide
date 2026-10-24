@@ -13,6 +13,7 @@ import { AuthError } from '../auth/validation.js';
 import { invalid, routeData } from './validation.js';
 import { selectRoute } from './routes.js';
 import { calculateRoute } from './routing.js';
+import { geocode } from './geocoding.js';
 export function registerRouteMutations(
   app: FastifyInstance,
   db: () => Pool,
@@ -47,6 +48,57 @@ export function registerRouteMutations(
   cleanup.unref();
   app.addHook('onClose', async () => clearInterval(cleanup));
   let inFlight = 0;
+  app.get('/routes/providers', async (req) => {
+    await principal(req);
+    return {
+      routing: Boolean(config.routing.url),
+      geocoding: Boolean(config.geocoding?.authorized && config.geocoding.key),
+      geocoder: 'MapTiler',
+      elevation: false,
+    };
+  });
+  app.post('/routes/geocode', async (req) => {
+    const { user } = await principal(req, true);
+    const key = `geo:${user.id}`;
+    const now = Date.now();
+    const times = (rate.get(key) ?? []).filter((time) => time > now - 60000);
+    if (times.length >= 20 || inFlight >= 4)
+      throw new AuthError(429, 'Aguarde antes de pesquisar outro endereço.');
+    rate.set(key, [...times, now]);
+    inFlight++;
+    try {
+      return await geocode(
+        config.geocoding,
+        (req.body as { query?: unknown })?.query,
+      );
+    } finally {
+      inFlight--;
+    }
+  });
+  app.post('/routes/directions', async (req) => {
+    const { user } = await principal(req, true);
+    const now = Date.now();
+    const times = (rate.get(user.id) ?? []).filter(
+      (time) => time > now - 60000,
+    );
+    if (times.length >= 6 || inFlight >= 4)
+      throw new AuthError(
+        429,
+        'Limite de cálculo atingido. Aguarde um minuto.',
+      );
+    rate.set(user.id, [...times, now]);
+    inFlight++;
+    try {
+      return await calculateRoute(
+        config.routing,
+        (req.body as { waypoints?: unknown })?.waypoints,
+        fetch,
+        true,
+      );
+    } finally {
+      inFlight--;
+    }
+  });
   app.post('/routes/calculate', async (req) => {
     const { user } = await principal(req, true);
     const now = Date.now();
@@ -97,6 +149,11 @@ export function registerRouteMutations(
           ],
         );
         await waypoints(c, routeId, b.waypoints);
+        if (b.importMetadata)
+          await c.query(
+            'UPDATE routes SET import_metadata=$2::jsonb WHERE id=$1',
+            [routeId, JSON.stringify(b.importMetadata)],
+          );
         return (
           await c.query(`${selectRoute(true)} WHERE r.id=$2`, [
             user.id,
@@ -140,6 +197,10 @@ export function registerRouteMutations(
         await c.query('DELETE FROM route_waypoints WHERE route_id=$1', [
           routeId,
         ]);
+        await c.query(
+          'UPDATE routes SET import_metadata=$2::jsonb WHERE id=$1',
+          [routeId, b.importMetadata ? JSON.stringify(b.importMetadata) : null],
+        );
         await waypoints(c, routeId, b.waypoints);
         return (
           await c.query(`${selectRoute(true)} WHERE r.id=$2`, [

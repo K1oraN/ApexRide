@@ -1,17 +1,18 @@
-﻿import { useEffect, useRef, useState } from 'react';
+﻿import type { Coordinate, Line } from '@apex-ride/ride-core/routes';
+import { LocateFixed, Map as MapIcon, Minus, Plus } from 'lucide-react';
 import {
-  Map,
   AttributionControl,
+  Map,
   Marker,
-  type GeoJSONSource,
   setWorkerUrl,
+  type GeoJSONSource,
 } from 'maplibre-gl';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
-import { LocateFixed, Plus, Minus, Map as MapIcon } from 'lucide-react';
-import type { Coordinate, Line } from '@apex-ride/ride-core/routes';
-import { MAP_CONFIG } from './mapConfig';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { useEffect, useRef, useState } from 'react';
 import '../../styles/gps.css';
+import { Button, Select } from '../design-system';
+import { MAP_CONFIG } from './mapConfig';
 setWorkerUrl(workerUrl);
 interface Shape {
   id: string;
@@ -36,9 +37,11 @@ export function RouteMap({
   waypoints = [],
   gateLine = null,
   onBounds,
-  caption = 'ALAGOAS',
+  caption = 'EXPLORE O BRASIL',
   description = 'Explore percursos cadastrados.',
   points = [],
+  centerPoint,
+  follow = false,
 }: {
   routes: Shape[];
   selected?: string | undefined;
@@ -50,6 +53,8 @@ export function RouteMap({
   caption?: string;
   description?: string | undefined;
   points?: MapPoint[];
+  centerPoint?: Coordinate | undefined;
+  follow?: boolean;
 }) {
   const canvas = useRef<HTMLDivElement>(null),
     map = useRef<Map | null>(null),
@@ -72,8 +77,8 @@ export function RouteMap({
       instance = new Map({
         container: canvas.current!,
         style: MAP_CONFIG.styleUrl,
-        center: [-36.4, -9.5],
-        zoom: 7,
+        center: [-47, -14],
+        zoom: 3.5,
         attributionControl: false,
         dragRotate: false,
         pitchWithRotate: false,
@@ -123,7 +128,7 @@ export function RouteMap({
         paint: {
           'line-color': [
             'case',
-            ['==', ['get', 'id'], selected ?? ''],
+            ['==', ['get', 'id'], selected ?? routes[0]?.id ?? ''],
             '#ff202b',
             '#f2a65a',
           ],
@@ -224,7 +229,12 @@ export function RouteMap({
     map.current.setPaintProperty('routes', 'line-color', [
       'coalesce',
       ['get', 'color'],
-      ['case', ['==', ['get', 'id'], selected ?? ''], '#ff202b', '#f2a65a'],
+      [
+        'case',
+        ['==', ['get', 'id'], selected ?? routes[0]?.id ?? ''],
+        '#ff202b',
+        '#f2a65a',
+      ],
     ]);
   }, [routes, selected, ready]);
   useEffect(() => {
@@ -247,6 +257,13 @@ export function RouteMap({
       })
       .catch(() => setError(true));
   }, [points, ready]);
+  useEffect(() => {
+    if (ready && centerPoint)
+      map.current?.jumpTo({
+        center: centerPoint,
+        ...(follow ? { zoom: 16 } : { zoom: 12 }),
+      });
+  }, [centerPoint, follow, ready]);
   useEffect(() => {
     if (
       ready &&
@@ -285,8 +302,8 @@ export function RouteMap({
     const r = routes.find((r) => r.id === selected) ?? routes[0];
     if (!r) {
       map.current?.jumpTo({
-        center: points[0]?.coordinate ?? [-36.4, -9.5],
-        zoom: points.length ? 12 : 7,
+        center: points[0]?.coordinate ?? [-47, -14],
+        zoom: points.length ? 12 : 3.5,
       });
       return;
     }
@@ -317,6 +334,31 @@ export function RouteMap({
       }
     }
   }, [selected, ready, routes, attempt]);
+  useEffect(() => {
+    if (!ready || selected || centerPoint || !routes.length) return;
+    const key = `${attempt}:results:${routes.map((route) => route.id).join(',')}`;
+    if (centered.current === key) return;
+    centered.current = key;
+    const coordinates = routes.flatMap((route) => route.geometry.coordinates);
+    if (!coordinates.length) return;
+    const bounds = coordinates.reduce(
+      (box, point) => {
+        box[0] = Math.min(box[0]!, point[0]);
+        box[1] = Math.min(box[1]!, point[1]);
+        box[2] = Math.max(box[2]!, point[0]);
+        box[3] = Math.max(box[3]!, point[1]);
+        return box;
+      },
+      [Infinity, Infinity, -Infinity, -Infinity],
+    );
+    map.current?.fitBounds(
+      [
+        [bounds[0]!, bounds[1]!],
+        [bounds[2]!, bounds[3]!],
+      ],
+      { padding: 45, maxZoom: 14, duration: 0 },
+    );
+  }, [routes, ready, selected, centerPoint, attempt]);
   return (
     <div
       className="illustrative-map map-explore gps-map"
@@ -360,13 +402,14 @@ export function RouteMap({
       </div>
       <label className="map-style">
         <span className="sr-only">Estilo do mapa</span>
-        <select aria-label="Estilo do mapa" disabled value="dark">
+        <Select aria-label="Estilo do mapa" disabled value="dark">
           <option value="dark">Mapa escuro</option>
-        </select>
+        </Select>
       </label>
       {onBounds && (
-        <button
-          className="button route-map-search"
+        <Button
+          variant="secondary"
+          className="route-map-search"
           onClick={() => {
             const b = map.current?.getBounds();
             if (b)
@@ -378,7 +421,7 @@ export function RouteMap({
           }}
         >
           Buscar nesta região
-        </button>
+        </Button>
       )}
       {(!ready || error) && (
         <div className="gps-map-notice" role="status">

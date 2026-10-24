@@ -236,6 +236,43 @@ describe.skipIf(!databaseUrl)(
         ' '.repeat(2) + 'é'.repeat(90) + ' '.repeat(2),
       );
     });
+    it('login aceita username normalizado e mantém erro genérico', async () => {
+      await register();
+      const session = await login(' JOAO_PILOTO ');
+      expect(
+        (await call('GET', '/api/auth/me', undefined, session)).json().user
+          .username,
+      ).toBe(payload.username);
+      for (const email of [
+        payload.username,
+        'ausente_piloto',
+        payload.email,
+        'ausente@example.com',
+      ]) {
+        const result = await call('POST', '/api/auth/login', {
+          email,
+          password: 'senha incorreta',
+        });
+        expect(result.statusCode).toBe(401);
+        expect(result.json().message).toBe(
+          'E-mail, usuário ou senha inválidos, ou acesso indisponível.',
+        );
+      }
+    });
+    it('username e e-mail compartilham o limite de tentativas da conta', async () => {
+      await account();
+      await pool.query(
+        'UPDATE auth_rate_limits SET attempts=10 WHERE key_hash=$1',
+        [digest(`login-account:${payload.email}`)],
+      );
+      for (const email of [payload.username, payload.email]) {
+        const result = await call('POST', '/api/auth/login', {
+          email,
+          password: secretPassword,
+        });
+        expect(result.statusCode).toBe(429);
+      }
+    });
     it('login emite cookie protegido, segredo hasheado e sessão restaurável', async () => {
       await register();
       const response = await call('POST', '/api/auth/login', {

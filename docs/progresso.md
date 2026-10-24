@@ -1,5 +1,42 @@
 ﻿# Controle de progresso — Apex Ride
 
+**Refinamento oficial — Etapa 5, 24/10/2026:** Ride reorganizado em preparação,
+pilotagem e resumo; diagnóstico individual de sensores; sessões, circuitos,
+biblioteca e estúdio como páginas internas. Coleta, contratos, vídeos locais e
+sincronização preservados. Sem VPS/deploy ou início da Etapa 6. Evidências e
+limites no [relatório de Ride e telemetria](refinamento/etapa-05-ride-telemetria.md).
+Ajustes aprovados: Guia único no menu Mais opções, Configurações e Descobertas;
+filtros com escolhas curtas em cartões, paginação alinhada e Missões no desempenho.
+Os registros anteriores são históricos.
+
+**Refinamento oficial — Etapa 4, 24/10/2026:** Explorar, editor, navegação, GPX
+e elevação implementados. OpenFreeMap validado com tiles reais; OSRM/MapTiler
+dependem de configuração autorizada e homologação externa. Sem VPS/deploy
+ou início da Etapa 5. Veja o
+[relatório de Explorar e navegação](refinamento/etapa-04-explorar-navegacao.md).
+Os registros anteriores abaixo são históricos.
+
+**Refinamento oficial — Etapa 3, 24/10/2026:** Home autenticada reorganizada
+com dados existentes de Garagem, Histórico, XP, conquistas e estado global do
+Ride. Status comprovados, períodos funcionais, duas atividades recentes,
+tratamento offline e falhas parciais. Revisão visual de Login/Cadastro mobile
+e recuperação de falhas de página. Evidências no
+[relatório da Etapa 3](refinamento/etapa-03-home-dashboard.md).
+Sem VPS/deploy ou início da Etapa 4. Os registros anteriores são históricos.
+
+**Refinamento oficial — Etapa 2, 24/10/2026:** design system compartilhado,
+hierarquia de botões, formulários, filtros, ícones, cards, header e cinco abas
+refinados sobre a estrutura da Etapa 1. Backend, banco e cálculos preservados.
+Capturas, testes e limites no [relatório da Etapa 2](refinamento/etapa-02-design-system.md).
+Sem VPS/deploy e sem início da Etapa 3. O registro seguinte da Etapa 1 é histórico.
+
+**Refinamento oficial — Etapa 1, 23/10/2026:** landing pública, telas de conta
+separadas e proteção das entradas internas implementadas sobre a base existente.
+Início do painel em `/app`; login real aceita e-mail ou usuário. Relatório,
+testes e limites em [Etapa 1](refinamento/etapa1-acesso.md). Sem deploy e sem
+início da Etapa 2; homologação produtiva continua pendente. Os registros abaixo
+descrevem as entregas anteriores.
+
 **Fechamento da Parte 23 em 23/10/2026: auditoria local concluída; decisão NO-GO
 para produção.** Os registros abaixo preservam o alcance histórico de cada
 entrega. Consulte a [matriz final das 23 partes](qa-matriz.md),

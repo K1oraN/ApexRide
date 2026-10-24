@@ -1,14 +1,15 @@
+import { LogOut, ShieldCheck } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useParams } from 'react-router';
-import { ShieldCheck, LogOut } from 'lucide-react';
 import { useAuth } from '../auth/useAuth';
 import { Logo } from '../components/Brand';
+import { Button, ButtonLink } from '../components/design-system';
 import { authRequest } from '../services/auth';
 import { AdminAuth } from './AdminAuth';
 import { AdminDashboard } from './Dashboard';
 import { AdminWorkspace } from './Workspace';
-import { errorText, type AdminAccess } from './service';
 import './admin.css';
+import { errorText, type AdminAccess } from './service';
 const navigation = [
   ['', 'Visão geral', 'dashboard.read'],
   ['users', 'Usuários', 'users.read'],
@@ -112,14 +113,14 @@ export function AdminPage() {
         Pular para o conteúdo
       </a>
       <header className="admin-header">
-        <Link to="/" aria-label="Apex Ride — Início">
+        <Link to="/app" aria-label="Apex Ride — Início">
           <Logo />
         </Link>
         <span>
           <ShieldCheck size={20} />
           Administração interna
         </span>
-        <Link className="text-link" to="/">
+        <Link className="text-link action-link" to="/app">
           Voltar ao Apex Ride
         </Link>
       </header>
@@ -129,17 +130,17 @@ export function AdminPage() {
         <section className="account-card panel">
           <h1>Área administrativa protegida</h1>
           <p>Entre na sua conta para validar seu acesso.</p>
-          <Link className="button button-primary" to="/entrar">
+          <ButtonLink variant="primary" to="/entrar">
             Entrar
-          </Link>
+          </ButtonLink>
         </section>
       ) : error ? (
         <section className="account-card panel">
           <h1>Acesso administrativo indisponível</h1>
           <p role="alert">{error}</p>
-          <button className="button" onClick={() => void refresh()}>
+          <Button variant="secondary" onClick={() => void refresh()}>
             Revalidar acesso
-          </button>
+          </Button>
         </section>
       ) : access && (!access.verified || reauth) ? (
         <AdminAuth
@@ -161,11 +162,11 @@ export function AdminPage() {
                 </NavLink>
               ))}
             </nav>
-            <button className="button" onClick={() => setReauth(true)}>
+            <Button variant="secondary" onClick={() => setReauth(true)}>
               Reautenticar
-            </button>
-            <button
-              className="button"
+            </Button>
+            <Button
+              variant="secondary"
               onClick={() =>
                 void authRequest('/admin/logout', 'POST', {})
                   .then(() => refresh())
@@ -174,7 +175,7 @@ export function AdminPage() {
             >
               <LogOut size={16} />
               Encerrar sessão administrativa
-            </button>
+            </Button>
           </aside>
           <main
             id="admin-content"

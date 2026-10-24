@@ -1,14 +1,16 @@
+import { ChevronRight, X } from 'lucide-react';
 import {
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
-  type ReactNode,
   type ComponentType,
+  type ReactNode,
 } from 'react';
-import { ChevronRight, X } from 'lucide-react';
 import { Link } from 'react-router';
 import { photos } from '../data/demo';
+import { Button } from './design-system';
 
 export function Avatar({
   name,
@@ -73,7 +75,7 @@ export function SectionTitle({
         {aside}
         {to && (
           <Link
-            className="text-link"
+            className="text-link action-link"
             to={to}
             aria-label={
               action
@@ -100,15 +102,15 @@ export function UnavailableButton({
   label?: string;
 }) {
   return (
-    <button
+    <Button
       type="button"
       className={`button ${className}`}
       disabled
-      title="Demonstração: funcionalidade disponível em uma próxima etapa"
+      title="Recurso ainda não disponível nesta versão"
       aria-label={label}
     >
       {children}
-    </button>
+    </Button>
   );
 }
 
@@ -174,6 +176,35 @@ export function Popover({
   const id = useId();
   const wrapper = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
+  const content = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (!open) return;
+    const place = () => {
+      const anchor = wrapper.current?.getBoundingClientRect();
+      const element = content.current;
+      if (!anchor || !element) return;
+      const width = element.getBoundingClientRect().width;
+      const left = Math.max(
+        16,
+        Math.min(anchor.right - width, innerWidth - width - 16),
+      );
+      element.style.right = 'auto';
+      element.style.left = `${left - anchor.left}px`;
+      const below = innerHeight - anchor.bottom - 24;
+      const above = anchor.top - 24;
+      const flip = below < 160 && above > below;
+      element.style.maxHeight = `${Math.max(80, Math.min(600, flip ? above : below))}px`;
+      element.style.top = flip ? 'auto' : `${anchor.height + 8}px`;
+      element.style.bottom = flip ? `${anchor.height + 8}px` : 'auto';
+    };
+    place();
+    window.addEventListener('resize', place);
+    window.addEventListener('scroll', place, true);
+    return () => {
+      window.removeEventListener('resize', place);
+      window.removeEventListener('scroll', place, true);
+    };
+  }, [open]);
   useEffect(() => {
     if (!open) return;
     const closeOutside = (event: PointerEvent) => {
@@ -206,7 +237,7 @@ export function Popover({
         {trigger}
       </button>
       {open && (
-        <div id={id} className="popover-content">
+        <div ref={content} id={id} className="popover-content">
           <div className="popover-title">
             <strong>{label}</strong>
             <button

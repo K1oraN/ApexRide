@@ -95,6 +95,82 @@ async function seed(
   return id;
 }
 describe.skipIf(!url)('Parte 11 PostgreSQL/PostGIS', () => {
+  it('Etapa 4: GPX privado persiste altitude sem Ride ou XP; edição limpa metadados', async () => {
+    const data = fixture();
+    const metadata = {
+      source: 'gpx',
+      version: 1,
+      altitudes: data.geometry.coordinates.map(() => 100),
+    };
+    const result = await call(
+      'POST',
+      '/routes',
+      { ...data, importMetadata: metadata },
+      alice,
+    );
+    expect(result.statusCode).toBe(201);
+    const route = result.json().route;
+    expect(route).toMatchObject({ status: 'draft', importMetadata: metadata });
+    expect(
+      (await call('GET', `/routes/${route.id}`, undefined, bob)).statusCode,
+    ).toBe(404);
+    expect((await pool.query('SELECT count(*) FROM rides')).rows[0].count).toBe(
+      '0',
+    );
+    expect(
+      (await pool.query('SELECT count(*) FROM xp_ledger')).rows[0].count,
+    ).toBe('0');
+    const edited = await call('PATCH', `/routes/${route.id}`, data, alice);
+    expect(edited.statusCode).toBe(200);
+    expect(edited.json().route.importMetadata).toBeNull();
+  });
+  it('Etapa 4: novos filtros consultam PostGIS e endpoints de provedores exigem autenticação/CSRF', async () => {
+    const id = await seed();
+    await pool.query(
+      "UPDATE routes SET state='SP',city='Santos',category='Turismo' WHERE id=$1",
+      [id],
+    );
+    expect(
+      (
+        await call(
+          'GET',
+          '/routes?state=SP&city=Santos&category=turismo&minDistance=1000&maxDistance=1200',
+        )
+      ).json().routes,
+    ).toHaveLength(1);
+    expect(
+      (await call('GET', '/routes?minDistance=1200')).json().routes,
+    ).toHaveLength(0);
+    expect(
+      (await call('GET', '/routes?minDistance=2000&maxDistance=1000'))
+        .statusCode,
+    ).toBe(400);
+    expect((await call('GET', '/routes/providers')).statusCode).toBe(401);
+    expect(
+      (
+        await call('POST', '/routes/directions', {
+          waypoints: fixture().waypoints,
+        })
+      ).statusCode,
+    ).toBe(401);
+    expect(
+      (await call('POST', '/routes/geocode', { query: 'Maceió' })).statusCode,
+    ).toBe(401);
+    expect(
+      (
+        await call(
+          'POST',
+          '/routes/directions',
+          { waypoints: fixture().waypoints },
+          alice,
+        )
+      ).statusCode,
+    ).toBe(503);
+    expect(
+      (await call('POST', '/routes/geocode', { query: 'Maceió' }, alice))
+        .statusCode,
+    ).toBe(503);
+  });
   it('11D recalcula voltas no servidor, persiste qualidade e ignora voltas forjadas', async () => {
     const data = circuitFixture();
     const created = await call('POST', '/circuits', data, alice);

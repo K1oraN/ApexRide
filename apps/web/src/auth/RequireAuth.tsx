@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router';
+import { Button } from '../components/design-system';
 import { useAuth } from './useAuth';
 export function RequireAuth() {
   const { user, status, error, refresh } = useAuth();
@@ -11,22 +12,23 @@ export function RequireAuth() {
     );
   if (status === 'error')
     return (
-      <section className="account-card panel">
+      <section className="account-card panel auth-connection">
         <h1>Conexão indisponível</h1>
         <p role="alert">{error}</p>
-        <button
-          className="button button-primary"
-          onClick={() => void refresh()}
-        >
+        <p>
+          Seus registros locais permanecem neste aparelho. Reconecte para
+          confirmar sua sessão.
+        </p>
+        <Button variant="primary" onClick={() => void refresh()}>
           Tentar novamente
-        </button>
+        </Button>
       </section>
     );
   if (!user)
     return (
       <Navigate
         replace
-        to={`/entrar?retorno=${encodeURIComponent(location.pathname + location.search)}`}
+        to={`/entrar?retorno=${encodeURIComponent(location.pathname + location.search + location.hash)}`}
       />
     );
   return <Outlet key={user.id} />;

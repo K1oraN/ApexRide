@@ -1,3 +1,4 @@
+import { chooseOption } from './choices';
 import { expect, test } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import { mkdir } from 'node:fs/promises';
@@ -23,7 +24,7 @@ test('cadastro, login, recarga, perfil, privacidade e logout com API e PostgreSQ
   await expect(page).toHaveURL(/\/entrar\?retorno=/);
   await page.getByRole('link', { name: 'Criar conta', exact: true }).click();
   await page
-    .getByLabel('Nome de exibição', { exact: true })
+    .getByLabel('Nome completo', { exact: true })
     .fill('Ana Motociclista');
   await page.getByLabel('Nome de usuário', { exact: true }).fill(username);
   await page.getByLabel('E-mail', { exact: true }).fill(email);
@@ -44,8 +45,6 @@ test('cadastro, login, recarga, perfil, privacidade e logout com API e PostgreSQ
     'As senhas precisam ser iguais.',
   );
   await page.getByLabel('Confirmar senha', { exact: true }).fill(password);
-  await page.getByLabel('Cidade (opcional)').fill('Maceió');
-  await page.getByLabel('Estado (opcional)').selectOption('AL');
   const registration = page.waitForResponse(
     (r) =>
       r.url().endsWith('/api/auth/register') && r.request().method() === 'POST',
@@ -54,7 +53,10 @@ test('cadastro, login, recarga, perfil, privacidade e logout com API e PostgreSQ
   expect((await registration).status()).toBe(201);
   await expect(page.getByRole('status')).toContainText('Conta criada');
   await page.getByRole('link', { name: 'Voltar para entrar' }).click();
-  await page.getByLabel('E-mail', { exact: true }).fill(email);
+  await page.getByLabel('E-mail ou usuário', { exact: true }).fill(username);
+  await page.getByLabel('Senha', { exact: true }).fill('senha errada');
+  await page.getByRole('button', { name: 'Entrar', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('inválidos');
   await page.getByLabel('Senha', { exact: true }).fill(password);
   await page.getByRole('button', { name: 'Entrar', exact: true }).click();
   await expect(page).toHaveURL(/\/perfil$/);
@@ -86,14 +88,19 @@ test('cadastro, login, recarga, perfil, privacidade e logout com API e PostgreSQ
     .getByRole('link', { name: 'Configurações de privacidade' })
     .click();
   await expect(
-    page.getByLabel('Visibilidade padrão de atividades futuras'),
-  ).toHaveValue('public');
-  await page
-    .getByRole('combobox', { name: 'Visibilidade do perfil', exact: true })
-    .selectOption('private');
-  await page
-    .getByLabel('Visibilidade padrão de atividades futuras')
-    .selectOption('private');
+    page
+      .getByRole('radiogroup', {
+        name: 'Visibilidade padrão de atividades futuras',
+        exact: true,
+      })
+      .getByRole('radio', { name: 'Público', exact: true }),
+  ).toBeChecked();
+  await chooseOption(page, 'Visibilidade do perfil', 'private');
+  await chooseOption(
+    page,
+    'Visibilidade padrão de atividades futuras',
+    'private',
+  );
   await page.getByRole('button', { name: 'Salvar privacidade' }).click();
   await expect(page.getByRole('status')).toHaveText(
     'Preferências de privacidade salvas.',
@@ -101,8 +108,10 @@ test('cadastro, login, recarga, perfil, privacidade e logout com API e PostgreSQ
   expect((await page.request.get(`/api/users/${username}`)).status()).toBe(404);
   await page.reload();
   await expect(
-    page.getByRole('combobox', { name: 'Visibilidade do perfil', exact: true }),
-  ).toHaveValue('private');
+    page
+      .getByRole('radiogroup', { name: 'Visibilidade do perfil', exact: true })
+      .getByRole('radio', { name: 'Privado', exact: true }),
+  ).toBeChecked();
   await expect(page.getByText('Localização ao vivo: desativada')).toBeVisible();
   await page.getByRole('link', { name: 'Meu perfil', exact: true }).click();
   await expect(
@@ -149,15 +158,22 @@ for (const width of [320, 390, 768])
     }
   });
 
-test('recuperação usa API real e mantém resposta genérica; rede indisponível apresenta nova tentativa', async ({
+test('recuperação informa envio desabilitado em teste; API mantém resposta genérica e falha de rede oferece nova tentativa', async ({
   page,
 }) => {
   await page.goto('/recuperar-senha');
-  await page
-    .getByLabel('E-mail', { exact: true })
-    .fill('desconhecido@example.com');
-  await page.getByRole('button', { name: 'Enviar instruções' }).click();
   await expect(page.getByRole('status')).toContainText(
+    'O envio de e-mails não está habilitado',
+  );
+  await expect(
+    page.getByRole('button', { name: 'Enviar instruções' }),
+  ).toBeDisabled();
+  const response = await page.request.post('/api/auth/password/forgot', {
+    headers: { 'X-Apex-Request': '1' },
+    data: { email: 'desconhecido@example.com' },
+  });
+  expect(response.status()).toBe(202);
+  expect((await response.json()).message).toContain(
     'Se houver uma conta elegível',
   );
   await page.route('**/api/auth/me', (route) => route.abort());

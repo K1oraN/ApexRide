@@ -1,5 +1,12 @@
 # Sessões de pilotagem — Parte 06
 
+**Interface atual, Etapa 5:** `/ride` separa preparação compacta, pilotagem e
+resumo. `/ride/sessoes` reutiliza este Histórico; `/ride/circuitos` apresenta
+voltas estimadas; `/ride/telemetria` recebe gráficos e eventos. Vídeo e sensores
+ficam recolhidos e opcionais. Os contratos e cálculos descritos abaixo são
+históricos; a persistência/recuperação evoluiu em [offline](offline.md).
+Veja o [relatório atual](refinamento/etapa-05-ride-telemetria.md).
+
 Implementação de 23/10/2026, exclusivamente Parte 06. Para usar, execute
 `pnpm db:migrate`, `pnpm dev`, faça login e abra `/ride`. Cadastre uma moto na
 Garagem se necessário. HTTPS é obrigatório no telefone; localhost é permitido

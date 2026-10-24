@@ -1,4 +1,4 @@
-import { Mountain } from 'lucide-react';
+import { Motorbike, Mountain } from 'lucide-react';
 import type { RideMode } from '../data/demo';
 
 export function RacingFlagIcon({ size = 28 }: { size?: number }) {
@@ -79,21 +79,63 @@ export function RideIcon({
   className?: string;
 }) {
   return (
+    <Motorbike size={size} strokeWidth={2} aria-hidden className={className} />
+  );
+}
+
+export function LeanLeftIcon({ size = 28 }: { size?: number }) {
+  return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 48 40"
+      viewBox="0 0 40 40"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2.8"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
-      className={className}
     >
-      <circle cx="10" cy="28" r="7" />
-      <circle cx="38" cy="28" r="7" />
-      <path d="m10 28 11-13 8 13H10l8-8h14M24 10h8l6 18M30 10l3-4h5M17 13h7M7 16l9 2" />
+      <path d="M20 5v29M8 34h24" strokeDasharray="3 4" />
+      <path d="m20 33-11-23M9 10l-1 8M9 10l7 4M13 29a10 10 0 0 1 7-4" />
+      <circle cx="20" cy="33" r="2" fill="currentColor" />
+    </svg>
+  );
+}
+export function LeanRightIcon({ size = 28 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 40 40"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M20 5v29M8 34h24" strokeDasharray="3 4" />
+      <path d="m20 33 11-23M31 10l1 8M31 10l-7 4M27 29a10 10 0 0 0-7-4" />
+      <circle cx="20" cy="33" r="2" fill="currentColor" />
+    </svg>
+  );
+}
+export function ForceGIcon({ size = 28 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 40 40"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <circle cx="20" cy="20" r="11" />
+      <path d="M20 3v6M20 31v6M3 20h6M31 20h6M24 16a6 6 0 1 0 1 7v-3h-5" />
     </svg>
   );
 }

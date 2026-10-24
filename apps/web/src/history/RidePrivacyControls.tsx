@@ -1,12 +1,14 @@
+import { ChoiceSelect } from '../components/design-system';
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../auth/useAuth';
+import { comparisonService } from '../comparison/service';
+import { Button, Checkbox, Input, Textarea } from '../components/design-system';
 import { useOffline } from '../offline/context';
 import { useRide } from '../ride/context';
-import { historyService } from './service';
-import type { HistoryDetail } from './detail-types';
-import { comparisonService } from '../comparison/service';
 import { videoRepository } from '../video/repository';
+import type { HistoryDetail } from './detail-types';
+import { historyService } from './service';
 export function RidePrivacyControls({
   ride,
   onSaved,
@@ -126,8 +128,7 @@ export function RidePrivacyControls({
       {
         <div className="history-edit comparison-privacy">
           <label>
-            <input
-              type="checkbox"
+            <Checkbox
               checked={
                 comparisonChoice?.enabled ?? ride.comparison_enabled ?? false
               }
@@ -143,8 +144,7 @@ export function RidePrivacyControls({
           </p>
           {ride.route_snapshot?.kind === 'circuit' && ride.mode === 'pista' && (
             <label>
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={
                   comparisonChoice?.technical ??
                   ride.comparison_technical ??
@@ -167,7 +167,7 @@ export function RidePrivacyControls({
         <div className="history-edit">
           <label>
             Título
-            <input
+            <Input
               maxLength={120}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -175,15 +175,15 @@ export function RidePrivacyControls({
           </label>
           <label>
             Descrição
-            <textarea
+            <Textarea
               maxLength={4000}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </label>
-          <label>
-            Visibilidade
-            <select
+          <div>
+            <span>Visibilidade</span>
+            <ChoiceSelect
               aria-label="Visibilidade da atividade salva"
               value={visibility}
               onChange={(e) =>
@@ -192,15 +192,11 @@ export function RidePrivacyControls({
             >
               <option value="public">Pública</option>
               <option value="private">Privada</option>
-            </select>
-          </label>
-          <button
-            className="button button-primary"
-            disabled={busy}
-            onClick={() => void save()}
-          >
+            </ChoiceSelect>
+          </div>
+          <Button variant="primary" disabled={busy} onClick={() => void save()}>
             Salvar alterações
-          </button>
+          </Button>
         </div>
       </details>
       <p>
@@ -209,30 +205,37 @@ export function RidePrivacyControls({
         telemetria detalhada não são publicados.
       </p>
       <div className="history-actions">
-        <button className="button" disabled={busy} onClick={() => void share()}>
+        <Button
+          variant="secondary"
+          disabled={busy}
+          onClick={() => void share()}
+        >
           Copiar link público
-        </button>
+        </Button>
         {typeof navigator.share === 'function' && (
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={busy}
             onClick={() => void share(true)}
           >
             Compartilhar
-          </button>
+          </Button>
         )}
         {allowed && (
-          <Link className="text-link" to={`/compartilhar/rides/${ride.id}`}>
+          <Link
+            className="text-link action-link"
+            to={`/compartilhar/rides/${ride.id}`}
+          >
             Abrir resumo público
           </Link>
         )}
-        <button
-          className="button"
+        <Button
+          variant="destructive"
           disabled={busy}
           onClick={() => void remove()}
         >
           Excluir atividade
-        </button>
+        </Button>
       </div>
       {message && <p role="status">{message}</p>}
     </section>

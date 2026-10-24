@@ -1,5 +1,10 @@
 # GPS Assistido Automático — Parte 08
 
+**Interface da Etapa 5:** a escolha fica em **GPS Puro ou Assistido** durante
+o preparo, em cartões de escolha, e na página interna de Telemetria durante pausa/preparação. O seletor
+em Configurações também fica bloqueado enquanto a sessão estiver gravando ou
+aguardando GPS. O estimador e o contrato `speed-1` não foram alterados.
+
 Implementação de 23/10/2026. Estimativa experimental para apresentação de velocidade,
 sem certificação de precisão e sem homologação física Android/iPhone. Não implementa
 tempos de aceleração/frenagem, voltas, vídeos, rankings ou outras funções da Parte 09.

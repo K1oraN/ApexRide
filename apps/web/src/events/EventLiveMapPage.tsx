@@ -1,13 +1,15 @@
+import { ChoiceSelect } from '../components/design-system';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { useRide } from '../ride/context';
 import { useAuth } from '../auth/useAuth';
+import { Button, Checkbox, Select } from '../components/design-system';
+import { useRide } from '../ride/context';
 import { authRequest } from '../services/auth';
+import '../styles/events.css';
+import { EventMap } from './EventMap';
 import { useLiveLocation } from './live-context';
 import { events } from './service';
-import { EventMap } from './EventMap';
 import type { EventMapData, LivePosition } from './types';
-import '../styles/events.css';
 export function EventLiveMapPage() {
   const { id = '' } = useParams(),
     { user } = useAuth(),
@@ -142,7 +144,7 @@ export function EventLiveMapPage() {
   }
   return (
     <div className="events-page">
-      <Link className="text-link" to={`/comunidade/eventos/${id}`}>
+      <Link className="text-link action-link" to={`/comunidade/eventos/${id}`}>
         Voltar ao evento
       </Link>
       <h1>Mapa social do encontro</h1>
@@ -166,14 +168,14 @@ export function EventLiveMapPage() {
               O marcador azul permanece neste aparelho. Isso não autoriza o
               envio a outras pessoas.
             </p>
-            <button className="button" onClick={() => ride.activateGps()}>
+            <Button variant="secondary" onClick={() => ride.activateGps()}>
               Mostrar minha localização neste aparelho
-            </button>
+            </Button>
             <p>{snapshot.gps.message}</p>
             {snapshot.gps.active && !snapshot.activity && !session && (
-              <button className="button" onClick={() => ride.stopPreview()}>
+              <Button variant="secondary" onClick={() => ride.stopPreview()}>
                 Encerrar GPS local
-              </button>
+              </Button>
             )}
           </section>
           <section className="panel social-summary">
@@ -203,12 +205,9 @@ export function EventLiveMapPage() {
                     ? `Última confirmação do servidor: ${Math.floor((now - state.lastAck) / 1000)} s atrás`
                     : 'Aguardando nova leitura GPS após seu consentimento.'}
                 </p>
-                <button
-                  className="button button-primary"
-                  onClick={() => controller.stop()}
-                >
+                <Button variant="primary" onClick={() => controller.stop()}>
                   Parar compartilhamento
-                </button>
+                </Button>
                 <p>
                   Para alterar o público ou prorrogar, pare e autorize uma nova
                   sessão.
@@ -216,9 +215,10 @@ export function EventLiveMapPage() {
               </div>
             ) : (
               <fieldset className="account-form" disabled={state.starting}>
-                <label className="account-field">
-                  Quem pode ver minha localização
-                  <select
+                <div className="account-field">
+                  <span>Quem pode ver minha localização</span>
+                  <ChoiceSelect
+                    aria-label="Quem pode ver minha localização"
                     value={audience}
                     onChange={(e) => {
                       setAudience(e.target.value);
@@ -227,11 +227,11 @@ export function EventLiveMapPage() {
                   >
                     <option value="organizers">Somente organizadores</option>
                     <option value="confirmed">Participantes confirmados</option>
-                  </select>
-                </label>
+                  </ChoiceSelect>
+                </div>
                 <label className="account-field">
                   Duração do compartilhamento
-                  <select
+                  <Select
                     value={duration}
                     onChange={(e) => {
                       setDuration(Number(e.target.value));
@@ -243,11 +243,12 @@ export function EventLiveMapPage() {
                         {n} minutos
                       </option>
                     ))}
-                  </select>
+                  </Select>
                 </label>
-                <label className="account-field">
-                  Precisão da localização
-                  <select
+                <div className="account-field">
+                  <span>Precisão da localização</span>
+                  <ChoiceSelect
+                    aria-label="Precisão da localização"
                     value={precision}
                     onChange={(e) => {
                       setPrecision(e.target.value);
@@ -260,8 +261,8 @@ export function EventLiveMapPage() {
                     <option value="precise">
                       Mais precisa · precisão informada pelo GPS
                     </option>
-                  </select>
-                </label>
+                  </ChoiceSelect>
+                </div>
                 <p>
                   Os destinatários autorizados poderão ver sua localização
                   durante o prazo escolhido, limitado ao encerramento do evento.
@@ -269,23 +270,22 @@ export function EventLiveMapPage() {
                   momento. Não há promessa de anonimato.
                 </p>
                 <label className="check-field">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={confirm}
                     onChange={(e) => setConfirm(e.target.checked)}
                   />
                   Autorizo compartilhar minha localização neste evento com o
                   público, prazo e precisão acima.
                 </label>
-                <button
-                  className="button button-primary"
+                <Button
+                  variant="primary"
                   disabled={!confirm}
                   onClick={() => void start()}
                 >
                   {state.starting
                     ? 'Autorizando…'
                     : 'Ativar localização ao vivo'}
-                </button>
+                </Button>
               </fieldset>
             )}
             <p>

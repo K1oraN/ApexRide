@@ -39,6 +39,10 @@ export default defineConfig(({ mode, isPreview }) => {
       host: '127.0.0.1',
       port: 5173,
       strictPort: true,
+      // Editors may truncate before rewriting; publish HMR after the write settles.
+      watch: {
+        awaitWriteFinish: { stabilityThreshold: 250, pollInterval: 25 },
+      },
       proxy: {
         '/api': { target: env.WEB_API_PROXY_TARGET ?? 'http://127.0.0.1:3001' },
       },

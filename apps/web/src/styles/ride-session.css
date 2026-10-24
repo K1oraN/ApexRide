@@ -37,12 +37,6 @@
 .motion-preparation select {
   max-width: 100%;
   width: 100%;
-  min-height: 44px;
-  padding: 8px;
-  background: var(--panel-light);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 8px;
 }
 .motion-preparation .account-field {
   margin: 12px 0;

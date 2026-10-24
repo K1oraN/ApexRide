@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { useAuth } from '../auth/useAuth';
+import { Button, ButtonLink, Checkbox } from '../components/design-system';
 import { Avatar } from '../components/ui';
 import { apiUrl } from '../services/auth';
-import { social } from '../social/service';
 import { Feed, Report } from '../social/Feed';
+import { social } from '../social/service';
+import '../styles/groups.css';
+import '../styles/social.css';
 import { GroupForm } from './GroupForm';
 import {
   GroupAudit,
@@ -13,12 +16,10 @@ import {
   GroupReports,
 } from './GroupManagement';
 import { roleNames, type Group } from './types';
-import '../styles/social.css';
-import '../styles/groups.css';
 export function GroupCreatePage() {
   return (
     <div className="groups-page">
-      <Link className="text-link" to="/comunidade/grupos">
+      <Link className="text-link action-link" to="/comunidade/grupos">
         Voltar aos grupos
       </Link>
       <GroupForm />
@@ -101,22 +102,22 @@ function Details({ id }: { id: string }) {
   };
   return (
     <div className="groups-page">
-      <Link className="text-link" to="/comunidade/grupos">
+      <Link className="text-link action-link" to="/comunidade/grupos">
         Voltar aos grupos
       </Link>
       {loading && <p role="status">Carregando grupo…</p>}
       {error && (
         <p role="alert">
           {error}
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             onClick={() => {
               setError('');
               setRevision((n) => n + 1);
             }}
           >
             Tentar novamente
-          </button>
+          </Button>
         </p>
       )}
       {g && !loading && (
@@ -148,12 +149,12 @@ function Details({ id }: { id: string }) {
             <p className="post-text">{g.description}</p>
             <p>{g.categories.join(' · ')}</p>
             {member && (
-              <Link
-                className="button"
+              <ButtonLink
+                variant="secondary"
                 to={`/comunidade/eventos?groupId=${g.id}&filter=all`}
               >
                 Eventos do grupo
-              </Link>
+              </ButtonLink>
             )}
             <p>
               {g.member_count !== null ? `${g.member_count} membros · ` : ''}
@@ -170,24 +171,24 @@ function Details({ id }: { id: string }) {
               <>
                 <div className="social-controls">
                   {g.member_status === 'pending' ? (
-                    <button
-                      className="button"
+                    <Button
+                      variant="outline"
                       disabled={busy}
                       onClick={() => void act('leave')}
                     >
                       Cancelar solicitação
-                    </button>
+                    </Button>
                   ) : member ? (
-                    <button
-                      className="button"
+                    <Button
+                      variant="secondary"
                       disabled={busy}
                       onClick={() => setConfirm('leave')}
                     >
                       Sair do grupo
-                    </button>
+                    </Button>
                   ) : (
-                    <button
-                      className="button button-primary"
+                    <Button
+                      variant="primary"
                       disabled={busy || !accepted || g.status !== 'active'}
                       onClick={() => void act('join')}
                     >
@@ -195,15 +196,18 @@ function Details({ id }: { id: string }) {
                       g.join_policy === 'approval'
                         ? 'Solicitar entrada'
                         : 'Entrar no grupo'}
-                    </button>
+                    </Button>
                   )}
                   {canInvite && (
-                    <button className="button" onClick={() => setTab('invite')}>
+                    <Button
+                      variant="secondary"
+                      onClick={() => setTab('invite')}
+                    >
                       Convidar
-                    </button>
+                    </Button>
                   )}
-                  <button
-                    className="button"
+                  <Button
+                    variant="secondary"
                     onClick={() => {
                       void navigator.clipboard
                         .writeText(location.origin + `/comunidade/grupos/${id}`)
@@ -218,7 +222,7 @@ function Details({ id }: { id: string }) {
                     }}
                   >
                     Copiar link do grupo
-                  </button>
+                  </Button>
                 </div>
                 {(!member || g.accepted_rules_version !== g.rules_version) && (
                   <div className="social-summary">
@@ -229,30 +233,29 @@ function Details({ id }: { id: string }) {
                       ))}
                     </ol>
                     <label>
-                      <input
-                        type="checkbox"
+                      <Checkbox
                         checked={accepted}
                         onChange={(e) => setAccepted(e.target.checked)}
                       />
                       Li e aceito as regras atuais
                     </label>
                     {member && (
-                      <button
-                        className="button"
+                      <Button
+                        variant="secondary"
                         disabled={busy || !accepted}
                         onClick={() => void act('accept-rules')}
                       >
                         Aceitar regras atualizadas
-                      </button>
+                      </Button>
                     )}
                   </div>
                 )}
                 <Report id={id} kind="group" />
               </>
             ) : (
-              <Link className="button" to="/entrar">
+              <ButtonLink variant="secondary" to="/entrar">
                 Entrar para participar
-              </Link>
+              </ButtonLink>
             )}
           </section>
           <div className="social-controls">
@@ -270,14 +273,14 @@ function Details({ id }: { id: string }) {
                   ]
                 : []),
             ].map(([key, name]) => (
-              <button
-                className="button"
+              <Button
+                variant="secondary"
                 key={key}
                 aria-pressed={tab === key}
                 onClick={() => setTab(key!)}
               >
                 {name}
-              </button>
+              </Button>
             ))}
           </div>
           {tab === 'posts' &&
@@ -357,8 +360,8 @@ function Details({ id }: { id: string }) {
                     denúncias.
                   </p>
                   <div className="social-controls">
-                    <button
-                      className="button"
+                    <Button
+                      variant="secondary"
                       onClick={() =>
                         setConfirm(
                           g.status === 'archived' ? 'restore' : 'archive',
@@ -368,13 +371,13 @@ function Details({ id }: { id: string }) {
                       {g.status === 'archived'
                         ? 'Restaurar grupo'
                         : 'Arquivar grupo'}
-                    </button>
-                    <button
-                      className="button"
+                    </Button>
+                    <Button
+                      variant="destructive"
                       onClick={() => setConfirm('delete')}
                     >
                       Excluir grupo
-                    </button>
+                    </Button>
                   </div>
                 </section>
               )}
@@ -395,8 +398,8 @@ function Details({ id }: { id: string }) {
                       ? 'Arquivar grupo? Novas interações serão bloqueadas.'
                       : 'Restaurar este grupo?'}
               </p>
-              <button
-                className="button button-primary"
+              <Button
+                variant="primary"
                 disabled={busy}
                 onClick={() =>
                   void act(
@@ -406,10 +409,10 @@ function Details({ id }: { id: string }) {
                 }
               >
                 Confirmar ação
-              </button>
-              <button className="button" onClick={() => setConfirm('')}>
+              </Button>
+              <Button variant="outline" onClick={() => setConfirm('')}>
                 Cancelar
-              </button>
+              </Button>
             </div>
           )}
         </>
@@ -479,12 +482,12 @@ function InvitationView() {
     <div className="groups-page">
       <h1>Convite para grupo</h1>
       {!user && (
-        <Link
-          className="button"
+        <ButtonLink
+          variant="secondary"
           to={`/entrar?retorno=${encodeURIComponent(loc.pathname + loc.hash)}`}
         >
           Entre na sua conta para consultar o convite
-        </Link>
+        </ButtonLink>
       )}
       {error && <p role="alert">{error}</p>}
       {group && (
@@ -501,28 +504,27 @@ function InvitationView() {
             ))}
           </ol>
           <label>
-            <input
-              type="checkbox"
+            <Checkbox
               checked={accepted}
               onChange={(e) => setAccepted(e.target.checked)}
             />
             Li e aceito as regras
           </label>
           <div className="social-controls">
-            <button
-              className="button button-primary"
+            <Button
+              variant="primary"
               disabled={busy || !accepted}
               onClick={() => void act('accept')}
             >
               Aceitar convite
-            </button>
-            <button
-              className="button"
+            </Button>
+            <Button
+              variant="secondary"
               disabled={busy}
               onClick={() => void act('reject')}
             >
               Recusar convite
-            </button>
+            </Button>
           </div>
         </section>
       )}

@@ -6,6 +6,7 @@ import { isAbsolute, resolve, relative, sep } from 'node:path';
 export interface Config {
   adminMfaKey: string;
   routing: { url: string; profile: string; token: string };
+  geocoding?: { key: string; authorized: boolean };
   nodeEnv: 'development' | 'test' | 'production';
   host: string;
   port: number;
@@ -238,6 +239,10 @@ export function parseEnv(env: NodeJS.ProcessEnv): Config {
       url: routingUrl.replace(/\/$/, ''),
       profile: routingProfile,
       token: env.ROUTING_OSRM_TOKEN ?? '',
+    },
+    geocoding: {
+      key: (env.GEOCODING_MAPTILER_KEY ?? '').trim(),
+      authorized: env.GEOCODING_AUTHORIZED === 'true',
     },
     motorcycleStorageDir,
     auth: {

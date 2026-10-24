@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { Button } from '../components/design-system';
 import { useLiveLocation } from './live-context';
 export function LiveBanner() {
   const { state, controller } = useLiveLocation();
@@ -21,17 +22,14 @@ export function LiveBanner() {
         min restantes
       </span>
       <Link
-        className="text-link"
+        className="text-link action-link"
         to={`/comunidade/eventos/${state.eventId}/mapa`}
       >
         Mapa social
       </Link>
-      <button
-        className="button button-primary"
-        onClick={() => controller.stop()}
-      >
+      <Button variant="primary" onClick={() => controller.stop()}>
         Parar compartilhamento
-      </button>
+      </Button>
     </div>
   );
 }

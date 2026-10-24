@@ -1,14 +1,16 @@
+import { ChoiceSelect } from '../components/design-system';
 import { RIDE_MODES } from '@apex-ride/ride-core/modes';
-import { AdvancedResults } from './AdvancedResults';
-import { RideMap } from '../components/maps/RideMap';
-import { useRide } from './context';
-import { rideGps, rideMetrics } from './controller';
-import { useAuth } from '../auth/useAuth';
-import { formatDuration } from './format';
 import { Link } from 'react-router';
+import { useAuth } from '../auth/useAuth';
+import { Button } from '../components/design-system';
+import { RideMap } from '../components/maps/RideMap';
+import { RideXp } from '../gamification/Progress';
 import { VideoLibrary } from '../video/VideoLibrary';
 import { VideoStatus } from '../video/VideoPanel';
-import { RideXp } from '../gamification/Progress';
+import { AdvancedResults } from './AdvancedResults';
+import { useRide } from './context';
+import { rideGps, rideMetrics } from './controller';
+import { formatDuration } from './format';
 export function RideSummary() {
   const { controller, snapshot } = useRide();
   const { user } = useAuth();
@@ -166,7 +168,7 @@ export function RideSummary() {
       <VideoLibrary clientId={a.payload.clientId} />
       {saved && (
         <Link
-          className="text-link"
+          className="text-link action-link"
           to={
             snapshot.savedId
               ? `/historico/${snapshot.savedId}`
@@ -191,9 +193,9 @@ export function RideSummary() {
         {new Set(a.payload.points.map((p) => p.segment)).size} segmentos.
         Marcadores I/F indicam início e fim.
       </p>
-      <label className="account-field">
-        Visibilidade da atividade
-        <select
+      <div className="account-field">
+        <span>Visibilidade da atividade</span>
+        <ChoiceSelect
           aria-label="Visibilidade da atividade"
           value={a.payload.visibility}
           disabled={snapshot.state !== 'finished'}
@@ -203,8 +205,8 @@ export function RideSummary() {
         >
           <option value="public">Público</option>
           <option value="private">Privado</option>
-        </select>
-      </label>
+        </ChoiceSelect>
+      </div>
       <p>
         Os pontos completos e os eventos de desempenho permanecem acessíveis
         somente à sua conta nesta etapa, inclusive em atividades públicas.
@@ -217,14 +219,14 @@ export function RideSummary() {
               ? 'Atividade salva no aparelho. Acompanhe a confirmação na seção de sincronização.'
               : 'Atividade salva com sucesso.'}
           </p>
-          <button className="button button-primary" onClick={controller.reset}>
+          <Button variant="primary" onClick={controller.reset}>
             Preparar novo Ride
-          </button>
+          </Button>
         </>
       ) : (
         <div className="session-summary-actions">
-          <button
-            className="button button-primary"
+          <Button
+            variant="primary"
             disabled={saving || user?.id !== a.ownerId}
             onClick={() => void controller.save(user?.id ?? '')}
           >
@@ -233,9 +235,9 @@ export function RideSummary() {
               : snapshot.state === 'error'
                 ? 'Tentar salvar novamente'
                 : 'Salvar atividade'}
-          </button>
-          <button
-            className="button"
+          </Button>
+          <Button
+            variant="destructive"
             disabled={saving}
             onClick={async () => {
               if (
@@ -249,7 +251,7 @@ export function RideSummary() {
             }}
           >
             Descartar atividade
-          </button>
+          </Button>
         </div>
       )}
       {!saved && user?.id !== a.ownerId && (

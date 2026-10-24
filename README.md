@@ -2,7 +2,39 @@
 
 Plataforma mobile-first para motociclistas: Garagem, registro de Ride por GPS,
 telemetria estimada, histórico, replay, rotas, vídeos locais e comunidade.
+
+**Refinamento — Etapa 5:** preparação compacta, painel de pilotagem, diagnóstico
+individual de sensores e páginas internas de sessões, circuitos, telemetria,
+vídeos e estúdio. Reutiliza coleta, IndexedDB, Histórico e exportação existentes.
+Consulte o [relatório A–R](docs/refinamento/etapa-05-ride-telemetria.md).
+Homologação física pendente; sem deploy, VPS ou início da Etapa 6.
+Ajustes aprovados: Guia único no menu Mais opções, Configurações e Descobertas;
+filtros com escolhas curtas em cartões, paginação alinhada e Missões no desempenho.
+As descrições das etapas anteriores abaixo preservam seu alcance histórico.
+
+**Refinamento — Etapa 4:** Explorar, mapa real, editor, navegação interna com
+GPS compartilhado, GPX e elevação. Implementação local; homologação de
+OSRM/MapTiler depende de provedores autorizados configurados. Consulte o
+[relatório A–Q](docs/refinamento/etapa-04-explorar-navegacao.md).
+Sem deploy ou início da Etapa 5.
 Interface Racing Tech com cinco abas: **Início, Explorar, Ride, Comunidade e Garagem**.
+
+**Refinamento — Etapa 1:** `/` apresenta a landing pública; `/entrar` e `/cadastro`
+têm telas próprias. O painel começa em `/app` e todas as abas internas exigem
+sessão confirmada pelo backend. As demais URLs existentes foram preservadas.
+Veja [entrada e acesso autenticado](docs/refinamento/etapa1-acesso.md) para rotas,
+validação, recuperação de senha e comportamento após recarga offline.
+
+**Refinamento — Etapa 2:** tokens, controles e cards compartilhados, variantes
+semânticas de botão, filtros confortáveis, novos indicadores de inclinação e
+navegação com estados reais de Ride. Veja o [relatório do design system](docs/refinamento/etapa-02-design-system.md)
+para componentes, capturas, comparação com as referências e testes.
+
+**Refinamento — Etapa 3:** Início com hero, acesso ao Ride, status reais,
+moto principal, desempenho por período, atividades recentes e evolução.
+Veja o [relatório do dashboard](docs/refinamento/etapa-03-home-dashboard.md)
+para origem dos dados, correção do carregamento em desenvolvimento, capturas e testes.
+Sem deploy; a Etapa 4 não foi iniciada.
 
 **Candidata avaliada em 23/10/2026 — NO-GO para produção.** A auditoria local e
 os testes automatizados não substituem homologação física Android/iPhone,

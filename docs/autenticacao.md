@@ -1,5 +1,23 @@
 # Autenticação, perfis e privacidade — Parte 03
 
+## Atualização — refinamento, Etapa 1
+
+A raiz agora é pública e o painel começa em `/app`. As cinco abas e demais
+páginas internas exigem sessão antes de montar o layout. Login e cadastro usam
+telas independentes do aplicativo; o cadastro inicial não solicita cidade/UF.
+O endpoint de login mantém `{ email, password }` e aceita, em `email`, o endereço
+ou username (sem diferenciar maiúsculas). Erros de credenciais são genéricos.
+O retorno validado preserva query/fragmento e rejeita destinos externos.
+Username e e-mail compartilham o limite de tentativas da conta. A configuração
+pública informa `passwordRecoveryAvailable`; sem SMTP habilitado, a tela de
+recuperação avisa que o envio está indisponível e não simula e-mail externo.
+
+Após recarga, perfil em cache não autoriza acesso: `/auth/me` precisa confirmar
+a sessão. Falhas temporárias mantêm os dados locais e oferecem nova tentativa;
+401/logout retiram acesso sem excluir atividades/vídeos. Recuperação e SMTP
+mantêm os contratos reais abaixo. Veja [relatório da Etapa 1](refinamento/etapa1-acesso.md).
+O restante deste manual preserva o histórico e os contratos da Parte 03.
+
 ## Executar
 
 1. Configure PostgreSQL conforme `.env.example`, mantendo `.env` fora do Git.

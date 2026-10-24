@@ -24,12 +24,6 @@
 .route-editor select,
 .route-tools select {
   max-width: 100%;
-  min-height: 44px;
-  color: var(--text);
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px;
 }
 .route-editor ol {
   padding-left: 24px;

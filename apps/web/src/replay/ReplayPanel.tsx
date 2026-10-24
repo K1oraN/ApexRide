@@ -1,3 +1,4 @@
+import { Activity, MoveDown, MoveUp } from 'lucide-react';
 import {
   useEffect,
   useMemo,
@@ -5,18 +6,18 @@ import {
   useSyncExternalStore,
   type CSSProperties,
 } from 'react';
-import { Activity, MoveDown, MoveUp } from 'lucide-react';
-import { ReplayEngine } from './engine';
-import { prepareReplay, type ReplayInput } from './timeline';
-import { ReplayMarks, ReplayTicks } from './ReplayMarks';
-import { Speedometer } from '../components/telemetry/Speedometer';
-import { MetricCard } from '../components/telemetry/Metrics';
+import { Button, Checkbox, Select } from '../components/design-system';
 import { RideMap } from '../components/maps/RideMap';
+import { MetricCard } from '../components/telemetry/Metrics';
+import { Speedometer } from '../components/telemetry/Speedometer';
 import { TelemetryCharts } from '../ride/TelemetryCharts';
 import type { GpsSnapshot } from '../services/gps/preview';
 import '../styles/history.css';
-import '../styles/ride-session.css';
 import '../styles/replay.css';
+import '../styles/ride-session.css';
+import { ReplayEngine } from './engine';
+import { ReplayMarks, ReplayTicks } from './ReplayMarks';
+import { prepareReplay, type ReplayInput } from './timeline';
 const empty: never[] = [];
 const labels = {
   idle: 'Não iniciado',
@@ -153,8 +154,8 @@ export function ReplayPanel({ input }: { input: ReplayInput }) {
           <span>{replayTime(timeline.clock.duration)}</span>
         </div>
         <div className="history-actions">
-          <button
-            className="button button-primary"
+          <Button
+            variant="primary"
             disabled={reduced}
             onClick={snapshot.state === 'playing' ? engine.pause : engine.play}
           >
@@ -163,25 +164,25 @@ export function ReplayPanel({ input }: { input: ReplayInput }) {
               : snapshot.state === 'paused'
                 ? 'Continuar replay'
                 : 'Iniciar replay'}
-          </button>
-          <button className="button" onClick={engine.restart}>
+          </Button>
+          <Button variant="secondary" onClick={engine.restart}>
             Reiniciar
-          </button>
-          <button
-            className="button"
+          </Button>
+          <Button
+            variant="outline"
             onClick={() => engine.seek(snapshot.time - 10000)}
           >
             Voltar 10 s
-          </button>
-          <button
-            className="button"
+          </Button>
+          <Button
+            variant="secondary"
             onClick={() => engine.seek(snapshot.time + 10000)}
           >
             Avançar 10 s
-          </button>
+          </Button>
           <label>
             Velocidade do replay
-            <select
+            <Select
               aria-label="Velocidade do replay"
               value={snapshot.speed}
               onChange={(e) => engine.setPlaybackSpeed(Number(e.target.value))}
@@ -191,12 +192,11 @@ export function ReplayPanel({ input }: { input: ReplayInput }) {
                   {speed.toLocaleString('pt-BR')}×
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
         </div>
         <label>
-          <input
-            type="checkbox"
+          <Checkbox
             checked={reduced}
             onChange={(e) => {
               engine.pause();

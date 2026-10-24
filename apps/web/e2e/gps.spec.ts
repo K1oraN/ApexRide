@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test';
+import { authenticate } from './auth-fixtures';
 import { mockGps, mockMapProvider } from './gps-fixtures';
 
 test.beforeEach(async ({ page }) => {
   await mockMapProvider(page);
   await mockGps(page);
+  await authenticate(page);
 });
 
 test('prévia explícita, velocidade direta, marcador, percurso e encerramento sem persistência', async ({
@@ -185,6 +187,7 @@ test('permissão e geolocalização do Chrome emuladas pelo contexto, sem mock d
   try {
     const page = await context.newPage();
     await mockMapProvider(page);
+    await authenticate(page);
     await page.goto('http://127.0.0.1:5174/ride');
     await expect(
       page.getByText('GPS desligado', { exact: true }),

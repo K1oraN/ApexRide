@@ -17,6 +17,11 @@ export interface RoutePlan {
   direction: 1 | -1 | null;
 }
 export interface RouteData {
+  importMetadata?: {
+    source: 'gpx';
+    version: 1;
+    altitudes: (number | null)[];
+  } | null;
   name: string;
   description: string;
   city: string;

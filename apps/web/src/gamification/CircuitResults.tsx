@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Button } from '../components/design-system';
 import { useGamification } from './useGamification';
 export function CircuitResults({ id }: { id: string }) {
   const [page, setPage] = useState(1);
@@ -30,20 +31,20 @@ export function CircuitResults({ id }: { id: string }) {
         <p>Nenhuma volta registrada neste circuito.</p>
       )}
       <div className="gamification-actions">
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={page <= 1}
           onClick={() => setPage((n) => n - 1)}
         >
           Resultados anteriores
-        </button>
-        <button
-          className="button"
+        </Button>
+        <Button
+          variant="secondary"
           disabled={!data?.hasMore}
           onClick={() => setPage((n) => n + 1)}
         >
           Mais resultados
-        </button>
+        </Button>
       </div>
     </section>
   );

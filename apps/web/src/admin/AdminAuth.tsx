@@ -1,4 +1,5 @@
 import { useState, type SubmitEvent } from 'react';
+import { Button, Checkbox, Input } from '../components/design-system';
 import { authRequest } from '../services/auth';
 import { errorText } from './service';
 export function AdminAuth({
@@ -65,15 +66,15 @@ export function AdminAuth({
               </li>
             ))}
           </ul>
-          <button
-            className="button button-primary"
+          <Button
+            variant="primary"
             onClick={() => {
               setCodes([]);
               onVerified();
             }}
           >
             Guardei os códigos · Abrir painel
-          </button>
+          </Button>
         </>
       ) : (
         <form className="account-form" onSubmit={(e) => void submit(e)}>
@@ -92,7 +93,7 @@ export function AdminAuth({
           )}
           <label className="account-field">
             Senha atual
-            <input
+            <Input
               type="password"
               autoComplete="current-password"
               required
@@ -105,7 +106,7 @@ export function AdminAuth({
             <>
               <label className="account-field">
                 {recovery ? 'Código de recuperação' : 'Código do autenticador'}
-                <input
+                <Input
                   autoComplete="one-time-code"
                   inputMode={recovery ? 'text' : 'numeric'}
                   required
@@ -116,8 +117,7 @@ export function AdminAuth({
               </label>
               {enrolled && (
                 <label className="check-field">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={recovery}
                     onChange={(e) => {
                       setRecovery(e.target.checked);
@@ -129,13 +129,13 @@ export function AdminAuth({
               )}
             </>
           )}
-          <button className="button button-primary" disabled={busy}>
+          <Button variant="primary" disabled={busy}>
             {busy
               ? 'Validando…'
               : !enrolled && !setup
                 ? 'Configurar autenticador'
                 : 'Confirmar autenticação'}
-          </button>
+          </Button>
         </form>
       )}
     </section>

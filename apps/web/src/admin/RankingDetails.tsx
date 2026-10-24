@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Button } from '../components/design-system';
 import { adminRequest, errorText, type Row } from './service';
 export function RankingDetails({ season }: { season: string }) {
   const [page, setPage] = useState(1),
@@ -38,8 +39,8 @@ export function RankingDetails({ season }: { season: string }) {
         Resultados de GPS permanecem experimentais; a classificação pública de
         tempos continua indisponível.
       </p>
-      <button
-        className="button"
+      <Button
+        variant="secondary"
         onClick={() => {
           setPage(1);
           setItems([]);
@@ -47,7 +48,7 @@ export function RankingDetails({ season }: { season: string }) {
         }}
       >
         {results ? 'Consultar participantes' : 'Consultar resultados de pista'}
-      </button>
+      </Button>
       {error && <p role="alert">{error}</p>}
       {!items.length ? (
         <p>Nenhuma entrada nesta página.</p>
@@ -85,21 +86,21 @@ export function RankingDetails({ season }: { season: string }) {
         ))
       )}
       <div className="admin-pagination">
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={page === 1}
           onClick={() => setPage((v) => v - 1)}
         >
           Anterior
-        </button>
+        </Button>
         <span>Página {page}</span>
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={!more}
           onClick={() => setPage((v) => v + 1)}
         >
           Próxima
-        </button>
+        </Button>
       </div>
     </section>
   );

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Crown,
   Heart,
@@ -10,6 +9,7 @@ import {
   Share2,
   UsersRound,
 } from 'lucide-react';
+import { useState } from 'react';
 import {
   demoAchievements,
   demoCommunity,

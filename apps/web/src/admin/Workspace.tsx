@@ -1,11 +1,12 @@
-import { RouteMap } from '../components/maps/RouteMap';
 import type { Line } from '@apex-ride/ride-core/routes';
 import { useEffect, useState } from 'react';
+import { Button, Input } from '../components/design-system';
+import { RouteMap } from '../components/maps/RouteMap';
 import { apiUrl } from '../services/auth';
-import { adminRequest, errorText, type Row } from './service';
-import { actions, type Action } from './actions';
 import { ActionForm } from './ActionForm';
+import { actions, type Action } from './actions';
 import { RankingDetails } from './RankingDetails';
+import { adminRequest, errorText, type Row } from './service';
 const specs: Record<
   string,
   { title: string; path: string; columns: string[] }
@@ -310,7 +311,7 @@ export function AdminWorkspace({
         {section === 'users' && (
           <label className="account-field">
             Buscar conta
-            <input
+            <Input
               type="search"
               value={search}
               maxLength={80}
@@ -330,7 +331,7 @@ export function AdminWorkspace({
         ].includes(section) && (
           <label className="account-field">
             Estado
-            <input
+            <Input
               value={status}
               maxLength={40}
               onChange={(e) => setStatus(e.target.value)}
@@ -338,14 +339,14 @@ export function AdminWorkspace({
             />
           </label>
         )}
-        <button className="button">Filtrar</button>
-        <button
+        <Button variant="secondary">Filtrar</Button>
+        <Button
           type="button"
-          className="button"
+          variant="secondary"
           onClick={() => setRevision((n) => n + 1)}
         >
           Atualizar
-        </button>
+        </Button>
       </form>
       {error && <p role="alert">{error}</p>}
       {message && (
@@ -383,13 +384,13 @@ export function AdminWorkspace({
                     <td key={k}>{fieldFormat(k, row[k])}</td>
                   ))}
                   <td>
-                    <button
-                      className="button"
+                    <Button
+                      variant="secondary"
                       onClick={() => void select(row)}
                       aria-label={`Abrir ${String(row.name ?? row.title ?? row.username ?? row.id ?? i + 1)}`}
                     >
                       Abrir
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -398,8 +399,8 @@ export function AdminWorkspace({
         </div>
       )}
       <div className="admin-pagination">
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={page === 1 || busy}
           onClick={() => {
             setPage((p) => p - 1);
@@ -408,10 +409,10 @@ export function AdminWorkspace({
           }}
         >
           Anterior
-        </button>
+        </Button>
         <span>Página {page}</span>
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={!more || busy}
           onClick={() => {
             setPage((p) => p + 1);
@@ -420,7 +421,7 @@ export function AdminWorkspace({
           }}
         >
           Próxima
-        </button>
+        </Button>
       </div>
       {selected && (
         <section className="admin-evidence">
@@ -523,13 +524,13 @@ export function AdminWorkspace({
           >
             <label className="account-field">
               ID da conta para consultar XP
-              <input
+              <Input
                 required
                 value={ledgerUser}
                 onChange={(e) => setLedgerUser(e.target.value)}
               />
             </label>
-            <button className="button">Consultar XP</button>
+            <Button variant="secondary">Consultar XP</Button>
           </form>
           {ledger?.map((row, i) => (
             <div className="admin-evidence" key={i}>
@@ -547,16 +548,16 @@ export function AdminWorkspace({
       {available.length > 0 && (
         <section className="admin-pagination" aria-label="Ações autorizadas">
           {available.map((a) => (
-            <button
+            <Button
               key={a.label}
-              className="button"
+              variant="secondary"
               onClick={() => {
                 setAction(a);
                 setMessage('');
               }}
             >
               {a.label}
-            </button>
+            </Button>
           ))}
         </section>
       )}

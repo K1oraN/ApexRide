@@ -1,6 +1,14 @@
+import { ChoiceSelect } from '../components/design-system';
+import { BIKE_CATEGORIES } from '@apex-ride/ride-core/comparison';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { BIKE_CATEGORIES } from '@apex-ride/ride-core/comparison';
+import {
+  Button,
+  Checkbox,
+  Input,
+  Select,
+  Textarea,
+} from '../components/design-system';
 import { social, uploadPhoto } from '../social/service';
 import type { Group } from './types';
 const states =
@@ -102,7 +110,7 @@ export function GroupForm({
         <fieldset className="account-form" disabled={busy}>
           <label className="account-field">
             Nome do grupo
-            <input
+            <Input
               required
               maxLength={100}
               value={name}
@@ -114,16 +122,17 @@ export function GroupForm({
           </label>
           <label className="account-field">
             Descrição pública
-            <textarea
+            <Textarea
               maxLength={2000}
               rows={4}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </label>
-          <label className="account-field">
-            Privacidade
-            <select
+          <div className="account-field">
+            <span>Privacidade</span>
+            <ChoiceSelect
+              aria-label="Privacidade"
               disabled={!isOwner}
               value={privacy}
               onChange={(e) => {
@@ -133,12 +142,13 @@ export function GroupForm({
             >
               <option value="public">Público</option>
               <option value="private">Privado</option>
-            </select>
-          </label>
+            </ChoiceSelect>
+          </div>
           {privacy === 'private' && (
-            <label className="account-field">
-              Descoberta
-              <select
+            <div className="account-field">
+              <span>Descoberta</span>
+              <ChoiceSelect
+                aria-label="Descoberta"
                 disabled={!isOwner}
                 value={discovery}
                 onChange={(e) =>
@@ -149,8 +159,8 @@ export function GroupForm({
                 <option value="unlisted">
                   Não listado · somente por convite
                 </option>
-              </select>
-            </label>
+              </ChoiceSelect>
+            </div>
           )}
           <p>
             {privacy === 'public'
@@ -162,8 +172,7 @@ export function GroupForm({
               (privacy === 'private' &&
                 discovery !== group.discovery_mode)) && (
               <label>
-                <input
-                  type="checkbox"
+                <Checkbox
                   required
                   checked={confirm}
                   onChange={(e) => setConfirm(e.target.checked)}
@@ -174,7 +183,7 @@ export function GroupForm({
             )}
           <label className="account-field">
             Cidade (opcional)
-            <input
+            <Input
               maxLength={100}
               value={city}
               onChange={(e) => setCity(e.target.value)}
@@ -182,19 +191,18 @@ export function GroupForm({
           </label>
           <label className="account-field">
             Estado (opcional)
-            <select value={state} onChange={(e) => setState(e.target.value)}>
+            <Select value={state} onChange={(e) => setState(e.target.value)}>
               <option value="">Todo o Brasil</option>
               {states.map((s) => (
                 <option key={s}>{s}</option>
               ))}
-            </select>
+            </Select>
           </label>
           <fieldset className="group-categories">
             <legend>Interesses de motocicleta (opcionais)</legend>
             {BIKE_CATEGORIES.map((c) => (
               <label key={c}>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={cats.includes(c)}
                   onChange={(e) =>
                     setCats((old) =>
@@ -210,16 +218,17 @@ export function GroupForm({
           </fieldset>
           <label className="account-field">
             Regras (uma por linha, até 20)
-            <textarea
+            <Textarea
               rows={5}
               maxLength={10020}
               value={rules}
               onChange={(e) => setRules(e.target.value)}
             />
           </label>
-          <label className="account-field">
-            Entrada
-            <select
+          <div className="account-field">
+            <span>Entrada</span>
+            <ChoiceSelect
+              aria-label="Entrada"
               value={join}
               onChange={(e) => setJoin(e.target.value as typeof join)}
             >
@@ -227,21 +236,21 @@ export function GroupForm({
                 Público: imediata / Privado: aprovação
               </option>
               <option value="approval">Aprovação prévia</option>
-            </select>
-          </label>
-          <label className="account-field">
-            Quem pode publicar
-            <select
+            </ChoiceSelect>
+          </div>
+          <div className="account-field">
+            <span>Quem pode publicar</span>
+            <ChoiceSelect
+              aria-label="Quem pode publicar"
               value={posting}
               onChange={(e) => setPosting(e.target.value as typeof posting)}
             >
               <option value="members">Todos os membros</option>
               <option value="staff">Equipe de administração e moderação</option>
-            </select>
-          </label>
+            </ChoiceSelect>
+          </div>
           <label>
-            <input
-              type="checkbox"
+            <Checkbox
               checked={invites}
               onChange={(e) => setInvites(e.target.checked)}
             />
@@ -251,7 +260,7 @@ export function GroupForm({
             <div key={slot}>
               <label className="account-field">
                 {slot === 'avatar' ? 'Imagem de perfil' : 'Imagem de capa'}
-                <input
+                <Input
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   onChange={(e) => {
@@ -267,8 +276,7 @@ export function GroupForm({
               </label>
               {group?.images[slot] && (
                 <label>
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={remove[slot] ?? false}
                     onChange={(e) =>
                       setRemove((old) => ({ ...old, [slot]: e.target.checked }))
@@ -297,7 +305,7 @@ export function GroupForm({
           </div>
         )}
         <div className="social-controls">
-          <button className="button button-primary" disabled={busy}>
+          <Button variant="primary" disabled={busy}>
             {busy
               ? 'Salvando…'
               : saved
@@ -307,11 +315,11 @@ export function GroupForm({
                     ? 'Salvar grupo'
                     : 'Confirmar criação'
                   : 'Revisar informações'}
-          </button>
+          </Button>
           {onCancel && (
-            <button type="button" className="button" onClick={onCancel}>
+            <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar
-            </button>
+            </Button>
           )}
         </div>
         {error && <p role="alert">{error}</p>}

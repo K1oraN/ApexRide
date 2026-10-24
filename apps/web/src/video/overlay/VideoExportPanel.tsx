@@ -1,10 +1,12 @@
+import { ChoiceSelect } from '../../components/design-system';
 import { useEffect, useRef, useState } from 'react';
+import { Button, Select } from '../../components/design-system';
 import type { VideoSegment } from '../types';
-import type { OverlayConfig } from './config';
 import { exportCapabilities, extension } from './capabilities';
+import type { OverlayConfig } from './config';
+import { exportVideo, type ExportProgress } from './export-service';
 import { overlayRepository, type ExportRecord } from './repository';
 import type { VideoTelemetryResolver } from './resolver';
-import { exportVideo, type ExportProgress } from './export-service';
 
 function fileName(job: ExportRecord) {
   return `apexride_${job.clientId.replace(/[^a-zA-Z0-9_-]/g, '_')}_segmento-${job.segmentId.replace(/[^a-zA-Z0-9_-]/g, '_')}.${extension(job.mimeType)}`;
@@ -126,9 +128,10 @@ export function VideoExportPanel({
         Limite do resultado: 128 MiB.
       </p>
       {segment.audio && (
-        <label className="overlay-seek">
-          Áudio da exportação
-          <select
+        <div className="overlay-seek">
+          <span>Áudio da exportação</span>
+          <ChoiceSelect
+            aria-label="Áudio da exportação"
             value={config.audio ? 'original' : 'off'}
             disabled={busy}
             onChange={(e) => change({ audio: e.target.value === 'original' })}
@@ -140,8 +143,8 @@ export function VideoExportPanel({
             >
               Preservar áudio original quando validável
             </option>
-          </select>
-        </label>
+          </ChoiceSelect>
+        </div>
       )}
       {segment.audio && !config.audio && (
         <p>
@@ -153,7 +156,7 @@ export function VideoExportPanel({
       {caps.formats.length > 0 && (
         <label className="overlay-seek">
           Formato de exportação
-          <select
+          <Select
             aria-label="Formato de exportação"
             value={mime}
             disabled={busy}
@@ -164,12 +167,12 @@ export function VideoExportPanel({
                 {m}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       )}
       <div className="history-actions">
-        <button
-          className="button button-primary"
+        <Button
+          variant="primary"
           disabled={
             busy ||
             !mime ||
@@ -181,14 +184,11 @@ export function VideoExportPanel({
           {segment.audio && !config.audio
             ? 'Exportar vídeo com telemetria sem áudio'
             : 'Exportar vídeo com telemetria'}
-        </button>
+        </Button>
         {busy && (
-          <button
-            className="button"
-            onClick={() => controller.current?.abort()}
-          >
+          <Button variant="outline" onClick={() => controller.current?.abort()}>
             Cancelar exportação
-          </button>
+          </Button>
         )}
       </div>
       <p role="status">
@@ -224,8 +224,8 @@ export function VideoExportPanel({
             Salvar vídeo com telemetria
           </a>
           {typeof navigator.share === 'function' && (
-            <button
-              className="button"
+            <Button
+              variant="secondary"
               onClick={() => {
                 const file = new File([output.blob], fileName(output.job), {
                   type: output.job.mimeType,
@@ -248,7 +248,7 @@ export function VideoExportPanel({
               }}
             >
               Compartilhar arquivo local
-            </button>
+            </Button>
           )}
         </div>
       )}

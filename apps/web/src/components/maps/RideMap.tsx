@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
-import { LocateFixed, MapPin, Minus, Plus } from 'lucide-react';
-import type { GpsSnapshot } from '../../services/gps/preview';
-import { RideMapController, type MapState } from './rideMapController';
-import 'maplibre-gl/dist/maplibre-gl.css';
-import '../../styles/gps.css';
 import type { RoutePlan } from '@apex-ride/ride-core/routes';
-import type { ReplayTimeline } from '../../replay/timeline';
+import { LocateFixed, MapPin, Minus, Plus } from 'lucide-react';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { useEffect, useRef, useState } from 'react';
 import type { ReplayEngine } from '../../replay/engine';
 import { OfflineReplayTrace } from '../../replay/OfflineReplayTrace';
+import type { ReplayTimeline } from '../../replay/timeline';
+import type { GpsSnapshot } from '../../services/gps/preview';
+import '../../styles/gps.css';
+import { Button } from '../design-system';
+import { RideMapController, type MapState } from './rideMapController';
 
 export function RideMap({
   gps,
@@ -153,13 +154,14 @@ export function RideMap({
         </button>
       </div>
       {replay && (
-        <button
-          className="button replay-overview"
+        <Button
+          variant="secondary"
+          className="replay-overview"
           onClick={() => controller.current?.replayOverview()}
           disabled={state !== 'ready'}
         >
           Ver percurso completo
-        </button>
+        </Button>
       )}
       <span className="map-disclaimer">
         {replay

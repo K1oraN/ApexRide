@@ -38,6 +38,33 @@ function begin() {
   emit();
 }
 describe('Controlador de sessão com GPS simulado', () => {
+  it('Etapa 4: pausa, finalização e descarte preservam GPS usado pela navegação', async () => {
+    controller.setNavigationGpsShared(() => true);
+    begin();
+    vi.advanceTimersByTime(2000);
+    emit(-35.7349);
+    controller.pause();
+    expect(clear).not.toHaveBeenCalled();
+    controller.finish();
+    expect(clear).not.toHaveBeenCalled();
+    expect(controller.getSnapshot().activity?.payload.visibility).toBe(
+      'private',
+    );
+    await controller.discard();
+    expect(clear).not.toHaveBeenCalled();
+    expect(controller.getSnapshot().state).toBe('discarded');
+    controller.setNavigationGpsShared(() => false);
+    controller.stopPreview();
+    expect(clear).toHaveBeenCalledTimes(1);
+  });
+  it('Etapa 4: cancelar espera de Ride mantém navegação e não inicia outro watch', () => {
+    controller.setNavigationGpsShared(() => true);
+    controller.gps.start();
+    controller.start('owner', bike, 'passeio', 'private');
+    expect(navigator.geolocation.watchPosition).toHaveBeenCalledTimes(1);
+    controller.cancelWaiting();
+    expect(clear).not.toHaveBeenCalled();
+  });
   it('11C abandonar em pausa conserva plano e continua GPS sem acompanhar', () => {
     const plan = {
       id: crypto.randomUUID(),

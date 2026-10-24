@@ -19,12 +19,38 @@ try {
       tiles.push(url.pathname);
   });
   // Isola somente a sessão para permitir smoke sem backend. Nenhum mock de mapas.
-  await page.route('**/api/**', (route) =>
-    route.fulfill({ status: 401, json: { message: 'Não autenticado' } }),
-  );
+  await page.route('**/api/**', (route) => {
+    const path = new URL(route.request().url()).pathname;
+    if (path === '/api/auth/me')
+      return route.fulfill({
+        json: {
+          user: {
+            id: '00000000-0000-4000-8000-000000000001',
+            displayName: 'Teste cartográfico sintético',
+            username: 'map_smoke',
+          },
+          csrfToken: 'fixture',
+        },
+      });
+    if (path === '/api/routes')
+      return route.fulfill({ json: { routes: [], page: 1, hasMore: false } });
+    if (path === '/api/motorcycles')
+      return route.fulfill({ json: { motorcycles: [] } });
+    return route.fulfill({
+      status: 503,
+      json: { message: 'Sessão sintética somente para teste de mapas' },
+    });
+  });
+  await page.addInitScript(() => {
+    navigator.geolocation.watchPosition = () => {
+      throw new Error('GPS não autorizado neste smoke');
+    };
+  });
   const origin = process.env.MAP_SMOKE_ORIGIN ?? 'http://127.0.0.1:5175';
-  await page.goto(`${origin}/ride`);
-  await expect(page.getByText('GPS desligado', { exact: true })).toBeVisible();
+  await page.goto(`${origin}/explorar`);
+  await expect(
+    page.getByRole('heading', { name: 'EXPLORE MAIS LONGE' }),
+  ).toBeVisible();
   await expect.poll(() => tiles.length, { timeout: 30_000 }).toBeGreaterThan(0);
   await expect(page.getByText('Carregando mapa…', { exact: true })).toBeHidden({
     timeout: 30_000,
@@ -37,7 +63,7 @@ try {
   );
   await expect(page.locator('.gps-map-notice')).toHaveCount(0);
   await mkdir('../../.local/screenshots', { recursive: true });
-  for (const width of [320, 390, 1440]) {
+  for (const width of [320, 360, 375, 390, 430, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.locator('.gps-map').scrollIntoViewIfNeeded();
     await expect(page.locator('.maplibregl-ctrl-attrib')).toBeVisible();
@@ -51,13 +77,13 @@ try {
       element.scrollTop = 0;
     });
     await page.screenshot({
-      path: `../../.local/screenshots/ride-real-map-${width}.png`,
+      path: `../../.local/screenshots/explore-real-map-${width}.png`,
       fullPage: true,
     });
   }
   expect(errors).toEqual([]);
   console.log(
-    `OpenFreeMap real: ${tiles.length} respostas de tiles vetoriais, atribuições visíveis, 320/390/1440 px sem overflow. GPS permaneceu desligado.`,
+    `OpenFreeMap real: ${tiles.length} respostas de tiles vetoriais, atribuições visíveis, oito larguras de 320 a 1440 px sem overflow. GPS permaneceu desligado.`,
   );
 } finally {
   await browser.close();

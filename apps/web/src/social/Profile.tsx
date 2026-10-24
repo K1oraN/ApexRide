@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useAuth } from '../auth/useAuth';
+import { Button, ButtonLink, Input } from '../components/design-system';
 import { Avatar } from '../components/ui';
+import { PublicProgress } from '../gamification/PublicProgress';
+import { GroupList } from '../groups/GroupsPage';
 import { Feed, Report } from './Feed';
 import { social } from './service';
 import type { Person, SocialProfile } from './types';
 import { usePage } from './usePage';
-import { GroupList } from '../groups/GroupsPage';
 export function PeopleList({
   path,
   action,
@@ -50,37 +52,37 @@ export function PeopleList({
           </div>
           {action === 'requests' ? (
             <>
-              <button
-                className="button"
+              <Button
+                variant="secondary"
                 disabled={busy}
                 onClick={() =>
                   void act(`/requests/${person.id}/approve`, 'POST')
                 }
               >
                 Aprovar
-              </button>
-              <button
-                className="button"
+              </Button>
+              <Button
+                variant="secondary"
                 disabled={busy}
                 onClick={() => void act(`/requests/${person.id}`, 'DELETE')}
               >
                 Recusar
-              </button>
+              </Button>
             </>
           ) : action === 'blocks' ? (
-            <button
-              className="button"
+            <Button
+              variant="secondary"
               disabled={busy}
               onClick={() => void act(`/blocks/${person.id}`, 'DELETE')}
             >
               Desbloquear
-            </button>
+            </Button>
           ) : (
             user &&
             user.id !== person.id && (
               <>
-                <button
-                  className="button"
+                <Button
+                  variant="secondary"
                   disabled={busy}
                   onClick={() =>
                     void act(
@@ -97,17 +99,17 @@ export function PeopleList({
                     : person.relationship === 'pending'
                       ? 'Cancelar solicitação'
                       : 'Seguir'}
-                </button>
+                </Button>
                 {action === 'followers' && (
-                  <button
-                    className="button"
+                  <Button
+                    variant="destructive"
                     disabled={busy}
                     onClick={() =>
                       void act(`/followers/${person.id}`, 'DELETE')
                     }
                   >
                     Remover seguidor
-                  </button>
+                  </Button>
                 )}
               </>
             )
@@ -121,19 +123,19 @@ export function PeopleList({
       {(p.error || error) && (
         <p role="alert">
           {p.error || error}
-          <button className="button" onClick={() => void p.reload()}>
+          <Button variant="secondary" onClick={() => void p.reload()}>
             Tentar novamente
-          </button>
+          </Button>
         </p>
       )}
       {p.data.nextCursor && (
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={p.loading}
           onClick={() => void p.more()}
         >
           Mais contas
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -153,15 +155,15 @@ export function Discover() {
       >
         <label className="account-field">
           Nome, usuário ou região
-          <input
+          <Input
             maxLength={80}
             value={term}
             onChange={(e) => setTerm(e.target.value)}
           />
         </label>
-        <button className="button" disabled={!term.trim()}>
+        <Button variant="secondary" disabled={!term.trim()}>
           Buscar perfis
-        </button>
+        </Button>
       </form>
       {search && (
         <PeopleList
@@ -181,21 +183,24 @@ export function MySocial() {
       {user && (
         <>
           <div className="social-controls">
-            <Link className="button" to={`/comunidade/u/${user.username}`}>
+            <ButtonLink
+              variant="secondary"
+              to={`/comunidade/u/${user.username}`}
+            >
               Meu perfil social
-            </Link>
-            <button
-              className="button"
+            </ButtonLink>
+            <Button
+              variant="secondary"
               onClick={() => setTab(tab === 'requests' ? '' : 'requests')}
             >
               Solicitações recebidas
-            </button>
-            <button
-              className="button"
+            </Button>
+            <Button
+              variant="secondary"
               onClick={() => setTab(tab === 'blocks' ? '' : 'blocks')}
             >
               Contas bloqueadas
-            </button>
+            </Button>
           </div>
           {tab && (
             <PeopleList
@@ -264,16 +269,16 @@ function Profile({ username }: { username: string }) {
   }
   return (
     <div className="social-profile">
-      <Link className="text-link" to="/comunidade">
+      <Link className="text-link action-link" to="/comunidade">
         Voltar à Comunidade
       </Link>
       {loading && <p role="status">Carregando perfil…</p>}
       {error && (
         <p role="alert">
           {error}
-          <button className="button" onClick={() => setRevision((n) => n + 1)}>
+          <Button variant="secondary" onClick={() => setRevision((n) => n + 1)}>
             Tentar novamente
-          </button>
+          </Button>
         </p>
       )}
       {profile && (
@@ -292,21 +297,21 @@ function Profile({ username }: { username: string }) {
                   {[profile.city, profile.state].filter(Boolean).join(', ')}
                 </p>
                 <div className="social-controls">
-                  <button
-                    className="button"
+                  <Button
+                    variant="secondary"
                     onClick={() => setTab('followers')}
                   >
                     {profile.followers} seguidores
-                  </button>
-                  <button
-                    className="button"
+                  </Button>
+                  <Button
+                    variant="secondary"
                     onClick={() => setTab('following')}
                   >
                     {profile.following} seguindo
-                  </button>
-                  <button className="button" onClick={() => setTab('posts')}>
+                  </Button>
+                  <Button variant="secondary" onClick={() => setTab('posts')}>
                     Publicações
-                  </button>
+                  </Button>
                 </div>
               </>
             ) : (
@@ -316,13 +321,13 @@ function Profile({ username }: { username: string }) {
               </p>
             )}
             {user?.id === profile.id ? (
-              <Link className="button" to="/configuracoes">
+              <ButtonLink variant="secondary" to="/configuracoes">
                 Editar perfil e privacidade
-              </Link>
+              </ButtonLink>
             ) : user ? (
               <div className="social-controls">
-                <button
-                  className="button button-primary"
+                <Button
+                  variant="primary"
                   disabled={busy}
                   onClick={() =>
                     void act(
@@ -341,20 +346,20 @@ function Profile({ username }: { username: string }) {
                       : profile.visibility === 'private'
                         ? 'Solicitar seguir'
                         : 'Seguir'}
-                </button>
-                <button
-                  className="button"
+                </Button>
+                <Button
+                  variant="secondary"
                   disabled={busy}
                   onClick={() => setBlockConfirm(true)}
                 >
                   Bloquear usuário
-                </button>
+                </Button>
                 <Report id={profile.id} kind="profile" />
               </div>
             ) : (
-              <Link className="button" to="/entrar">
+              <ButtonLink variant="secondary" to="/entrar">
                 Entre para seguir
-              </Link>
+              </ButtonLink>
             )}
             {blockConfirm && (
               <div>
@@ -362,19 +367,19 @@ function Profile({ username }: { username: string }) {
                   Bloquear este usuário? Os seguimentos e solicitações entre
                   vocês serão removidos.
                 </p>
-                <button
-                  className="button"
+                <Button
+                  variant="secondary"
                   disabled={busy}
                   onClick={() => void act(`/blocks/${profile.id}`, 'POST')}
                 >
                   Confirmar bloqueio
-                </button>
-                <button
-                  className="button"
+                </Button>
+                <Button
+                  variant="outline"
                   onClick={() => setBlockConfirm(false)}
                 >
                   Cancelar bloqueio
-                </button>
+                </Button>
               </div>
             )}
           </section>
@@ -404,4 +409,3 @@ function Profile({ username }: { username: string }) {
     </div>
   );
 }
-import { PublicProgress } from '../gamification/PublicProgress';

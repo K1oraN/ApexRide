@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../auth/useAuth';
+import { Button } from '../components/design-system';
 import { formatDuration } from '../ride/format';
+import '../styles/video.css';
 import { useRideVideo } from './context';
+import { VideoOverlayEntry } from './overlay/VideoOverlayPlayer';
 import { videoRepository } from './repository';
 import type { VideoSegment } from './types';
-import { VideoOverlayEntry } from './overlay/VideoOverlayPlayer';
-import '../styles/video.css';
 
 function SegmentPlayer({
   owner,
@@ -88,10 +89,12 @@ export function VideoLibrary({
   clientId,
   serverId,
   historicalBike,
+  studio = false,
 }: {
   clientId: string;
-  serverId?: string;
+  serverId?: string | undefined;
   historicalBike?: string;
+  studio?: boolean;
 }) {
   const { user } = useAuth(),
     { video: integration, snapshot: video } = useRideVideo();
@@ -104,6 +107,7 @@ export function VideoLibrary({
     [refresh, setRefresh] = useState(0),
     [selected, setSelected] = useState('');
   const [overlay, setOverlay] = useState('');
+  const initializedStudio = useRef(false);
   useEffect(() => {
     let live = true;
     if (user) {
@@ -112,12 +116,22 @@ export function VideoLibrary({
         await videoRepository.recover(owner, Date.now(), true);
         if (serverId) await videoRepository.link(owner, clientId, serverId);
         const rows = await videoRepository.list(owner, clientId);
-        if (live)
+        if (live) {
           setData({
             owner,
             client: clientId,
             rows: rows.sort((a, b) => a.order - b.order),
           });
+          if (studio && !initializedStudio.current) {
+            const first = rows.find(
+              (row) => row.state !== 'writing' && row.chunks > 0,
+            );
+            if (first) {
+              initializedStudio.current = true;
+              setOverlay(first.id);
+            }
+          }
+        }
       })().catch((e) => {
         if (live) setMessage(e.message);
       });
@@ -125,7 +139,7 @@ export function VideoLibrary({
     return () => {
       live = false;
     };
-  }, [user, clientId, serverId, refresh, video.segments]);
+  }, [user, clientId, serverId, refresh, video.segments, studio]);
   if (!user) return null;
   const rows =
     data?.owner === user.id && data.client === clientId ? data.rows : [];
@@ -152,7 +166,11 @@ export function VideoLibrary({
       className="panel video-library"
       aria-label="Vídeos desta atividade"
     >
-      <h2>Vídeos desta atividade</h2>
+      <h2>
+        {studio
+          ? 'Estúdio · segmentos desta atividade'
+          : 'Vídeos desta atividade'}
+      </h2>
       <p>Somente neste dispositivo e nesta conta · sem cópia na nuvem.</p>
       {rows.length === 0 ? (
         <p>
@@ -220,8 +238,8 @@ export function VideoLibrary({
               )}
               <p>{row.reason}</p>
               {row.state === 'complete' && (
-                <button
-                  className="button"
+                <Button
+                  variant="secondary"
                   onClick={() => {
                     setOverlay('');
                     setSelected(selected === row.id ? '' : row.id);
@@ -230,7 +248,7 @@ export function VideoLibrary({
                   {selected === row.id
                     ? 'Fechar vídeo'
                     : `Assistir vídeo ${row.order + 1}`}
-                </button>
+                </Button>
               )}
               {selected === row.id && (
                 <SegmentPlayer
@@ -240,8 +258,8 @@ export function VideoLibrary({
                 />
               )}
               {row.state !== 'writing' && row.chunks > 0 && (
-                <button
-                  className="button"
+                <Button
+                  variant="secondary"
                   onClick={() => {
                     setSelected('');
                     setOverlay(overlay === row.id ? '' : row.id);
@@ -252,7 +270,7 @@ export function VideoLibrary({
                     : row.state === 'incomplete'
                       ? 'Tentar trecho recuperável com telemetria'
                       : `Assistir com telemetria · ${row.order + 1}`}
-                </button>
+                </Button>
               )}
               {overlay === row.id && (
                 <VideoOverlayEntry

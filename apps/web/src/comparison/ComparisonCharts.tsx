@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
-import type { ComparisonActivity, ComparisonResult } from './types';
+import { Select } from '../components/design-system';
 import { ACTIVITY_COLORS } from './colors';
+import type { ComparisonActivity, ComparisonResult } from './types';
 const metrics = {
   gps: ['Velocidade GPS validada', 'km/h'],
   assisted: ['GPS Assistido estimado', 'km/h'],
@@ -54,7 +55,7 @@ export function ComparisonCharts({ result }: { result: ComparisonResult }) {
       <h2>Gráficos por posição na rota</h2>
       <label className="account-field">
         Métrica
-        <select
+        <Select
           aria-label="Métrica comparativa"
           value={metric}
           onChange={(e) => setMetric(e.target.value as Metric)}
@@ -64,7 +65,7 @@ export function ComparisonCharts({ result }: { result: ComparisonResult }) {
               {label}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
       {numbers.length ? (
         <figure className="telemetry-plot">

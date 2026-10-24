@@ -1,4 +1,5 @@
-﻿import { expect, test, type Page } from '@playwright/test';
+import { chooseOption } from './choices';
+import { expect, test, type Page } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import { mkdir } from 'node:fs/promises';
 import { prepare, begin, finish } from './ride-fixtures';
@@ -44,7 +45,7 @@ test('Parte 12: histórico, filtros combinados, paginação, perfil e último Ri
     await seed(page, bikes[i % 2]!, i, i % 2 ? 'pista' : 'passeio');
   await page.goto('/historico');
   await expect(
-    page.getByText('14 atividade(s) salva(s) na conta', { exact: true }),
+    page.getByText('14 sessões salvas', { exact: true }),
   ).toBeVisible();
   await expect(
     page.locator('[aria-label="Histórico sincronizado"] article'),
@@ -58,7 +59,7 @@ test('Parte 12: histórico, filtros combinados, paginação, perfil e último Ri
   await expect(
     page.locator('[aria-label="Histórico sincronizado"] article'),
   ).toHaveCount(7);
-  await page.getByLabel('Motocicleta', { exact: true }).selectOption(bikes[0]!);
+  await chooseOption(page, 'Motocicleta', bikes[0]!);
   await expect(
     page.getByRole('heading', {
       name: 'Nenhuma atividade encontrada',
@@ -71,8 +72,8 @@ test('Parte 12: histórico, filtros combinados, paginação, perfil e último Ri
   await expect(
     page.locator('[aria-label="Histórico sincronizado"] article'),
   ).toHaveCount(12);
-  await page.goto('/');
-  const last = page.locator('.last-ride');
+  await page.goto('/app');
+  const last = page.locator('.last-ride').first();
   await expect(last).toContainText('Passeio —');
   await expect(last).toHaveAttribute('href', '/historico/' + latest.id);
   await page.goto('/perfil');
@@ -165,9 +166,7 @@ test('Parte 12: detalhes, gráficos, edição, compartilhamento seguro e exclus�
   await page
     .getByText('Editar título, descrição e visibilidade', { exact: true })
     .click();
-  await page
-    .getByLabel('Visibilidade da atividade salva', { exact: true })
-    .selectOption('private');
+  await chooseOption(page, 'Visibilidade da atividade salva', 'private');
   await page
     .getByRole('button', { name: 'Salvar alterações', exact: true })
     .click();
@@ -179,9 +178,7 @@ test('Parte 12: detalhes, gráficos, edição, compartilhamento seguro e exclus�
   await page
     .getByText('Editar título, descrição e visibilidade', { exact: true })
     .click();
-  await page
-    .getByLabel('Visibilidade da atividade salva', { exact: true })
-    .selectOption('public');
+  await chooseOption(page, 'Visibilidade da atividade salva', 'public');
   await page
     .getByRole('button', { name: 'Salvar alterações', exact: true })
     .click();
@@ -201,7 +198,7 @@ test('Parte 12: detalhes, gráficos, edição, compartilhamento seguro e exclus�
     .click();
   await expect(page).toHaveURL(/\/historico$/);
   await expect(
-    page.getByText('0 atividade(s) salva(s) na conta', { exact: true }),
+    page.getByText('0 sessões salvas', { exact: true }),
   ).toBeVisible();
   expect(
     (

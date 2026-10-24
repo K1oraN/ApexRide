@@ -124,7 +124,9 @@ export const authService = {
     authRequest<{ message: string }>('/auth/register', 'POST', data),
   logout: () => authRequest('/auth/logout', 'POST', {}),
   config: () =>
-    authRequest<{ legal: LegalConfig; emailVerificationRequired: boolean }>(
-      '/auth/config',
-    ),
+    authRequest<{
+      legal: LegalConfig;
+      emailVerificationRequired: boolean;
+      passwordRecoveryAvailable: boolean;
+    }>('/auth/config'),
 };

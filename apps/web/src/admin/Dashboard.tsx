@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Button, Input, Select } from '../components/design-system';
 import { adminRequest, errorText } from './service';
 const labels: Record<string, string> = {
   users: 'Contas cadastradas',
@@ -74,18 +75,18 @@ export function AdminDashboard() {
       <div className="admin-filters">
         <label className="account-field">
           Período
-          <select value={days} onChange={(e) => setDays(e.target.value)}>
+          <Select value={days} onChange={(e) => setDays(e.target.value)}>
             <option value="1">Hoje</option>
             <option value="7">Últimos sete dias</option>
             <option value="30">Últimos 30 dias</option>
             <option value="custom">Personalizado</option>
-          </select>
+          </Select>
         </label>
         {days === 'custom' && (
           <>
             <label className="account-field">
               Início
-              <input
+              <Input
                 type="datetime-local"
                 value={from}
                 onChange={(e) => setFrom(e.target.value)}
@@ -93,7 +94,7 @@ export function AdminDashboard() {
             </label>
             <label className="account-field">
               Fim
-              <input
+              <Input
                 type="datetime-local"
                 value={to}
                 onChange={(e) => setTo(e.target.value)}
@@ -101,9 +102,9 @@ export function AdminDashboard() {
             </label>
           </>
         )}
-        <button className="button" onClick={() => setRevision((n) => n + 1)}>
+        <Button variant="secondary" onClick={() => setRevision((n) => n + 1)}>
           Atualizar indicadores
-        </button>
+        </Button>
       </div>
       {error ? (
         <p role="alert">{error}</p>

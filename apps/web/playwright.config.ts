@@ -30,7 +30,9 @@ export default defineConfig({
     },
     {
       command:
-        'pnpm exec vite preview --host 127.0.0.1 --port 5174 --strictPort',
+        process.env.E2E_WEB_MODE === 'development'
+          ? 'pnpm exec vite --host 127.0.0.1 --port 5174 --strictPort'
+          : 'pnpm exec vite preview --host 127.0.0.1 --port 5174 --strictPort',
       url: 'http://127.0.0.1:5174',
       reuseExistingServer: false,
       timeout: 30000,

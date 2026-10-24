@@ -1,7 +1,8 @@
 import { useState, type SubmitEvent } from 'react';
 import { StateField } from '../components/AccountFields';
-import { useGamification, changeGamification } from './useGamification';
+import { Button, Checkbox, Input } from '../components/design-system';
 import type { Preferences } from './types';
+import { changeGamification, useGamification } from './useGamification';
 export function RankingPreferences() {
   const { data, error, reload } = useGamification<{ preferences: Preferences }>(
     '/gamification/me/ranking-preferences',
@@ -12,9 +13,9 @@ export function RankingPreferences() {
       {error && (
         <p role="alert">
           {error}
-          <button className="button" onClick={reload}>
+          <Button variant="secondary" onClick={reload}>
             Tentar novamente
-          </button>
+          </Button>
         </p>
       )}
       {data && <PreferencesForm initial={data.preferences} />}
@@ -60,24 +61,21 @@ function PreferencesForm({ initial }: { initial: Preferences }) {
           trajetória GPS é divulgada.
         </p>
         <label>
-          <input
-            type="checkbox"
+          <Checkbox
             checked={p.opted_in}
             onChange={(e) => setP({ ...p, opted_in: e.target.checked })}
           />
           Participar dos rankings públicos
         </label>
         <label>
-          <input
-            type="checkbox"
+          <Checkbox
             checked={p.show_progress}
             onChange={(e) => setP({ ...p, show_progress: e.target.checked })}
           />
           Mostrar XP total e nível no meu perfil público
         </label>
         <label>
-          <input
-            type="checkbox"
+          <Checkbox
             checked={p.show_achievements}
             onChange={(e) =>
               setP({ ...p, show_achievements: e.target.checked })
@@ -87,8 +85,7 @@ function PreferencesForm({ initial }: { initial: Preferences }) {
           datas
         </label>
         <label>
-          <input
-            type="checkbox"
+          <Checkbox
             checked={p.circuit_opt_in}
             onChange={(e) => setP({ ...p, circuit_opt_in: e.target.checked })}
           />
@@ -106,7 +103,7 @@ function PreferencesForm({ initial }: { initial: Preferences }) {
         />
         <label className="account-field">
           Município escolhido (opcional)
-          <input
+          <Input
             maxLength={80}
             disabled={!p.state}
             value={p.city}
@@ -118,17 +115,16 @@ function PreferencesForm({ initial }: { initial: Preferences }) {
           momento, preservando XP e conquistas.
         </small>
         <label>
-          <input
-            type="checkbox"
+          <Checkbox
             required
             checked={consent}
             onChange={(e) => setConsent(e.target.checked)}
           />
           Li e confirmo estas escolhas de divulgação.
         </label>
-        <button className="button button-primary" disabled={!consent || busy}>
+        <Button variant="primary" disabled={!consent || busy}>
           Salvar participação e privacidade
-        </button>
+        </Button>
       </fieldset>
       {message && <p role="status">{message}</p>}
     </form>

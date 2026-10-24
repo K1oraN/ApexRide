@@ -6,22 +6,23 @@ import {
   Signpost,
   UsersRound,
 } from 'lucide-react';
-import { Link } from 'react-router';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router';
+import { useAuth } from '../auth/useAuth';
+import { ButtonLink } from '../components/design-system';
+import { MetricCard } from '../components/telemetry/Metrics';
+import { Avatar, SectionTitle, UnavailableButton } from '../components/ui';
+import { photos } from '../data/demo';
+import { AchievementPreview, ProgressSummary } from '../gamification/Progress';
+import type { ProgressData } from '../gamification/types';
+import { useGamification } from '../gamification/useGamification';
+import { GaragePreview } from '../garage/GaragePreview';
+import { HistoryPreview } from '../history/HistoryPreview';
+import { useHistoryStats } from '../history/useHistoryStats';
 import { Feed } from '../social/Feed';
 import { MySocial } from '../social/Profile';
 import { social } from '../social/service';
 import type { SocialProfile } from '../social/types';
-import { useAuth } from '../auth/useAuth';
-import { AchievementPreview, ProgressSummary } from '../gamification/Progress';
-import { useGamification } from '../gamification/useGamification';
-import type { ProgressData } from '../gamification/types';
-import { MetricCard } from '../components/telemetry/Metrics';
-import { Avatar, SectionTitle, UnavailableButton } from '../components/ui';
-import { photos } from '../data/demo';
-import { GaragePreview } from '../garage/GaragePreview';
-import { HistoryPreview } from '../history/HistoryPreview';
-import { useHistoryStats } from '../history/useHistoryStats';
 
 export function CommunityPage() {
   const { user } = useAuth();
@@ -91,10 +92,10 @@ export function CommunityPage() {
             {progression.error && <p role="status">{progression.error}</p>}
             {user && (
               <div className="gamification-actions">
-                <Link className="text-link" to="/perfil/xp">
+                <Link className="text-link action-link" to="/perfil/xp">
                   Histórico de XP
                 </Link>
-                <Link className="text-link" to="/perfil/conquistas">
+                <Link className="text-link action-link" to="/perfil/conquistas">
                   Conquistas e metas
                 </Link>
               </div>
@@ -110,13 +111,14 @@ export function CommunityPage() {
                 : 'Perfil pessoal disponível após login'}
             </small>
           </div>
-          <Link
+          <ButtonLink
             to={user ? '/configuracoes' : '/entrar'}
-            className="button edit-profile"
+            variant="secondary"
+            className="edit-profile"
           >
             <Settings size={19} />
             {user ? 'Editar perfil' : 'Entrar na conta'}
-          </Link>
+          </ButtonLink>
         </div>
         <div className="profile-stats">
           <MetricCard
@@ -171,17 +173,22 @@ export function CommunityPage() {
             </SectionTitle>
             <div className="panel social-summary">
               <p>Encontre comunidades por região e estilo de motocicleta.</p>
-              <Link className="button button-primary" to="/comunidade/grupos">
-                Grupos
-              </Link>
-              <Link className="button" to="/comunidade/eventos">
-                Eventos
-              </Link>
-              {user && (
-                <Link className="button" to="/comunidade/grupos?filter=mine">
-                  Meus grupos
-                </Link>
-              )}
+              <div className="social-controls">
+                <ButtonLink variant="secondary" to="/comunidade/grupos">
+                  Grupos
+                </ButtonLink>
+                <ButtonLink variant="secondary" to="/comunidade/eventos">
+                  Eventos
+                </ButtonLink>
+                {user && (
+                  <ButtonLink
+                    variant="secondary"
+                    to="/comunidade/grupos?filter=mine"
+                  >
+                    Meus grupos
+                  </ButtonLink>
+                )}
+              </div>
             </div>
           </section>
           <section>
@@ -193,9 +200,9 @@ export function CommunityPage() {
                 XP sazonal, exploração e participação comunitária. Participação
                 pública opcional.
               </p>
-              <Link className="button" to="/comunidade/rankings">
+              <ButtonLink variant="secondary" to="/comunidade/rankings">
                 Rankings
-              </Link>
+              </ButtonLink>
             </div>
           </section>
         </div>

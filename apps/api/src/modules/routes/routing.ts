@@ -8,10 +8,12 @@ import {
 } from '@apex-ride/ride-core/routes';
 import { AuthError } from '../auth/validation.js';
 import { invalid } from './validation.js';
+import { normalizeManeuvers } from './directions.js';
 export async function calculateRoute(
   config: Config['routing'],
   waypoints: unknown,
   fetcher = fetch,
+  withSteps = false,
 ) {
   if (
     !Array.isArray(waypoints) ||
@@ -26,7 +28,7 @@ export async function calculateRoute(
       'Roteamento rodoviário não configurado. Os pontos foram preservados.',
     );
   try {
-    const url = `${config.url}/route/v1/${config.profile}/${(waypoints as Coordinate[]).map((p) => p.join(',')).join(';')}?overview=full&geometries=geojson&steps=false&alternatives=false`;
+    const url = `${config.url}/route/v1/${config.profile}/${(waypoints as Coordinate[]).map((p) => p.join(',')).join(';')}?overview=full&geometries=geojson&steps=${withSteps}&alternatives=false`;
     const r = await fetcher(url, {
       signal: AbortSignal.timeout(8000),
       redirect: 'error',
@@ -66,10 +68,22 @@ export async function calculateRoute(
       geometry: route.geometry as Line,
       distanceMeters: lineLength(route.geometry),
       durationSeconds:
-        Number.isFinite(route.duration) && route.duration >= 0
+        Number.isFinite(route.duration) &&
+        route.duration >= 0 &&
+        route.duration <= 604800
           ? (route.duration as number)
           : null,
       source: 'osrm' as const,
+      ...(withSteps
+        ? {
+            waypoints: waypoints as Coordinate[],
+            maneuvers: normalizeManeuvers(
+              route.legs,
+              route.geometry,
+              waypoints.length - 1,
+            ),
+          }
+        : {}),
     };
   } catch (e) {
     if (e instanceof AuthError) throw e;

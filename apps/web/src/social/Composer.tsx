@@ -1,14 +1,16 @@
+import { ChoiceSelect } from '../components/design-system';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { useAuth } from '../auth/useAuth';
+import { Button, Input, Select, Textarea } from '../components/design-system';
 import { useGarage } from '../garage/context';
+import type { Group } from '../groups/types';
 import { historyService } from '../history/service';
 import type { HistoryRide } from '../history/types';
 import { apiUrl } from '../services/auth';
 import { savePost, social, uploadPhoto } from './service';
 import type { Media, RideSummary, SocialPost } from './types';
 import { usePage } from './usePage';
-import type { Group } from '../groups/types';
 function LocalPhoto({ file }: { file: File }) {
   const image = useRef<HTMLImageElement>(null),
     anchor = useRef<HTMLAnchorElement>(null);
@@ -176,7 +178,7 @@ export function Composer({
       <fieldset disabled={busy} className="account-form">
         <label className="account-field">
           Texto da publicação
-          <textarea
+          <Textarea
             aria-label="Texto da publicação"
             maxLength={2000}
             rows={4}
@@ -190,7 +192,7 @@ export function Composer({
         <small>{text.length}/2000</small>
         <label className="account-field">
           Fotografias
-          <input
+          <Input
             type="file"
             accept="image/jpeg,image/png,image/webp"
             multiple
@@ -206,8 +208,8 @@ export function Composer({
               <a href={apiUrl(m.url)} target="_blank" rel="noreferrer">
                 <img src={apiUrl(m.thumbnailUrl)} alt={`Fotografia ${i + 1}`} />
               </a>
-              <button
-                className="button"
+              <Button
+                variant="destructive"
                 onClick={() => {
                   setMedia((old) => old.filter((p) => p.id !== m.id));
                   if (!post?.media.some((p) => p.id === m.id))
@@ -215,24 +217,24 @@ export function Composer({
                 }}
               >
                 Remover foto {i + 1}
-              </button>
+              </Button>
             </div>
           ))}
           {files.map((f, i) => (
             <div key={`${f.name}:${i}`}>
               <LocalPhoto file={f} />
-              <button
-                className="button"
+              <Button
+                variant="destructive"
                 onClick={() => setFiles((old) => old.filter((_, n) => n !== i))}
               >
                 Remover foto local {i + 1}
-              </button>
+              </Button>
             </div>
           ))}
         </div>
         <label className="account-field">
           Associar moto
-          <select
+          <Select
             aria-label="Associar moto"
             value={bike}
             onChange={(e) => setBike(e.target.value)}
@@ -243,11 +245,11 @@ export function Composer({
                 {m.brand} {m.model} · {m.year}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label className="account-field">
           Associar Ride público
-          <select
+          <Select
             aria-label="Associar Ride público"
             value={ride}
             onChange={(e) => {
@@ -264,12 +266,12 @@ export function Composer({
                 {r.title}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         {hasMore && (
-          <button className="button" onClick={() => setRidePage((n) => n + 1)}>
+          <Button variant="secondary" onClick={() => setRidePage((n) => n + 1)}>
             Carregar mais atividades
-          </button>
+          </Button>
         )}
         <small>
           Somente atividades sincronizadas e públicas são elegíveis. Ajuste a
@@ -280,7 +282,7 @@ export function Composer({
         {!post && !groupId && (
           <label className="account-field">
             Destino
-            <select
+            <Select
               aria-label="Destino da publicação"
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
@@ -291,11 +293,11 @@ export function Composer({
                   {g.name}
                 </option>
               ))}
-            </select>
+            </Select>
             {groups.data.nextCursor && (
-              <button className="button" onClick={() => void groups.more()}>
+              <Button variant="secondary" onClick={() => void groups.more()}>
                 Mais grupos para compartilhar
-              </button>
+              </Button>
             )}
             {groups.error && <small role="alert">{groups.error}</small>}
           </label>
@@ -306,9 +308,9 @@ export function Composer({
             perfil. O resumo do Ride continua sem GPS.
           </p>
         ) : (
-          <label className="account-field">
-            Público da publicação
-            <select
+          <div className="account-field">
+            <span>Público da publicação</span>
+            <ChoiceSelect
               aria-label="Público da publicação"
               value={visibility}
               onChange={(e) =>
@@ -318,8 +320,8 @@ export function Composer({
               <option value="public">Público</option>
               <option value="followers">Seguidores autorizados</option>
               <option value="private">Somente eu</option>
-            </select>
-          </label>
+            </ChoiceSelect>
+          </div>
         )}
         {user.privacy.profileVisibility === 'private' && (
           <p>
@@ -327,9 +329,9 @@ export function Composer({
             inclusive para posts marcados como públicos.
           </p>
         )}
-        <button className="button" onClick={() => setPreview(!preview)}>
+        <Button variant="secondary" onClick={() => setPreview(!preview)}>
           {preview ? 'Fechar prévia' : 'Visualizar prévia'}
-        </button>
+        </Button>
         {preview && (
           <div className="social-summary">
             <p className="post-text">{text || 'Sem legenda'}</p>
@@ -362,8 +364,9 @@ export function Composer({
           </div>
         )}
         <div className="social-controls">
-          <button
-            className="button button-primary"
+          <Button
+            variant="primary"
+            loading={busy}
             disabled={
               Boolean(ride && summary?.id !== ride) ||
               (!text.trim() && !media.length && !files.length && !bike && !ride)
@@ -371,10 +374,10 @@ export function Composer({
             onClick={() => void publish()}
           >
             {busy ? 'Enviando…' : post ? 'Salvar publicação' : 'Publicar'}
-          </button>
-          <button className="button" onClick={onCancel}>
+          </Button>
+          <Button variant="outline" onClick={onCancel}>
             Cancelar
-          </button>
+          </Button>
         </div>
       </fieldset>
       {error && <p role="alert">{error}</p>}

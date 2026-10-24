@@ -5,12 +5,12 @@ import {
   type ReactNode,
 } from 'react';
 import { useAuth } from '../auth/useAuth';
-import { RideController } from './controller';
-import { RideContext } from './context';
-import { OfflineCoordinator } from '../offline/coordinator';
 import { OfflineContext } from '../offline/context';
-import { RideVideoIntegration } from '../video/coordinator';
+import { OfflineCoordinator } from '../offline/coordinator';
 import { VideoContext } from '../video/context';
+import { RideVideoIntegration } from '../video/coordinator';
+import { RideContext } from './context';
+import { RideController } from './controller';
 export function RideProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [controller] = useState(() => new RideController());

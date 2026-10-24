@@ -1,3 +1,5 @@
+import { chooseOption } from './choices';
+import { openRideSetting } from './ride-settings';
 import { expect, test, type Page } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { prepare, begin, finish } from './ride-fixtures';
@@ -29,6 +31,7 @@ async function recorded(page: Page, audio = false, mp4 = false) {
       );
     });
   await prepare(page);
+  await openRideSetting(page, 'video');
   if (audio) await page.getByLabel('Gravar áudio (solicita microfone)').check();
   await page
     .getByRole('button', { name: 'Ativar vídeo e abrir prévia' })
@@ -87,7 +90,7 @@ test('17: gravação da Parte 16, prévia offline, ajustes, cancelamento, WebM/M
   await page.waitForTimeout(250);
   expect(await player.getByRole('slider').inputValue()).toBe(paused);
   await player.getByText('Configurar overlay', { exact: true }).click();
-  await player.getByLabel('Layout', { exact: true }).selectOption('compact');
+  await chooseOption(player, 'Layout', 'compact');
   await player.getByLabel('Velocidade de reprodução').selectOption('2');
   await player.getByRole('button', { name: '+0,1 s', exact: true }).click();
   await expect(player.getByText(/0.1 s · positivo/)).toBeVisible();
@@ -302,7 +305,7 @@ test('17: fonte MP4 da Parte 16, erros do codificador, suspensão, persistência
     });
   const before = await originalDigest();
   await player.getByText('Configurar overlay', { exact: true }).click();
-  await player.getByLabel('Layout', { exact: true }).selectOption('track');
+  await chooseOption(player, 'Layout', 'track');
   await player.getByRole('button', { name: '+0,1 s', exact: true }).click();
   await player
     .getByRole('button', { name: 'Salvar configuração local' })
@@ -363,9 +366,11 @@ test('17: fonte MP4 da Parte 16, erros do codificador, suspensão, persistência
     .getByRole('button', { name: 'Assistir com telemetria · 1', exact: true })
     .click();
   await player.getByText('Configurar overlay', { exact: true }).click();
-  await expect(player.getByLabel('Layout', { exact: true })).toHaveValue(
-    'track',
-  );
+  await expect(
+    player
+      .getByRole('radiogroup', { name: 'Layout', exact: true })
+      .getByRole('radio', { name: 'Pista', exact: true }),
+  ).toBeChecked();
   await expect(player.getByText(/0.1 s · positivo/)).toBeVisible();
   const formats = await player
     .getByLabel('Formato de exportação', { exact: true })
@@ -382,6 +387,7 @@ test('17: fonte MP4 da Parte 16, erros do codificador, suspensão, persistência
   });
   expect(await originalDigest()).toBe(before);
   await prepare(page);
+  await openRideSetting(page, 'video');
   await page.goto('/historico');
   await expect(
     page.getByRole('button', { name: /Gravação local 1/ }),
@@ -393,7 +399,7 @@ test('17: áudio original opt-in e fallback sem codificador mantém prévia e or
 }) => {
   test.setTimeout(60000);
   const player = await recorded(page, true);
-  await player.getByLabel('Áudio da exportação').selectOption('original');
+  await chooseOption(player, 'Áudio da exportação', 'original');
   const formats = await player
     .getByLabel('Formato de exportação', { exact: true })
     .locator('option')
@@ -417,7 +423,7 @@ test('17: áudio original opt-in e fallback sem codificador mantém prévia e or
     });
   });
   // Re-render capability detection without removing the original/preview.
-  await player.getByLabel('Áudio da exportação').selectOption('off');
+  await chooseOption(player, 'Áudio da exportação', 'off');
   await expect(
     player.getByText(/Exportação composta indisponível para esta configuração/),
   ).toBeVisible();

@@ -1,10 +1,12 @@
+import { ChoiceSelect } from '../../components/design-system';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { ReplayInput } from '../../replay/timeline';
-import { loadServerReplay, localReplay } from '../../replay/load';
+import { Button, Checkbox, Select } from '../../components/design-system';
 import { offlineRepository } from '../../offline/repository';
+import { loadServerReplay, localReplay } from '../../replay/load';
+import type { ReplayInput } from '../../replay/timeline';
 import { videoRepository } from '../repository';
 import { presets, type VideoSegment } from '../types';
-import { overlayTime } from './format';
+import { observeVideoFrames } from './clock';
 import {
   defaultOverlay,
   layoutMetrics,
@@ -13,11 +15,11 @@ import {
   type Metric,
   type OverlayConfig,
 } from './config';
+import { overlayTime } from './format';
+import { loadMedia } from './media';
+import { composeFrame } from './renderer';
 import { overlayRepository } from './repository';
 import { prepareVideoTelemetry } from './resolver';
-import { observeVideoFrames } from './clock';
-import { composeFrame } from './renderer';
-import { loadMedia } from './media';
 import { VideoExportPanel } from './VideoExportPanel';
 
 export function VideoOverlayEntry({
@@ -227,8 +229,8 @@ export function VideoOverlayPlayer({
       <fieldset disabled={exporting} className="overlay-controls">
         <legend>Reprodução e configuração</legend>
         <div className="history-actions">
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={!ready}
             onClick={() => {
               const v = videoRef.current!;
@@ -237,10 +239,9 @@ export function VideoOverlayPlayer({
             }}
           >
             {playing ? 'Pausar vídeo' : 'Reproduzir vídeo'}
-          </button>
+          </Button>
           <label>
-            <input
-              type="checkbox"
+            <Checkbox
               checked={enabled}
               onChange={(e) => setEnabled(e.target.checked)}
             />{' '}
@@ -276,7 +277,7 @@ export function VideoOverlayPlayer({
           <div className="video-settings">
             <label>
               Velocidade de reprodução
-              <select
+              <Select
                 aria-label="Velocidade de reprodução"
                 defaultValue="1"
                 onChange={(e) => {
@@ -288,11 +289,11 @@ export function VideoOverlayPlayer({
                     {v}×
                   </option>
                 ))}
-              </select>
+              </Select>
             </label>
-            <label>
-              Layout
-              <select
+            <div>
+              <span>Layout</span>
+              <ChoiceSelect
                 aria-label="Layout"
                 value={config.layout}
                 onChange={(e) => {
@@ -303,11 +304,12 @@ export function VideoOverlayPlayer({
                 <option value="compact">Compacto</option>
                 <option value="full">Completo</option>
                 <option value="track">Pista</option>
-              </select>
-            </label>
-            <label>
-              Posição dos indicadores
-              <select
+              </ChoiceSelect>
+            </div>
+            <div>
+              <span>Posição dos indicadores</span>
+              <ChoiceSelect
+                aria-label="Posição dos indicadores"
                 value={config.position}
                 onChange={(e) =>
                   change({
@@ -317,11 +319,12 @@ export function VideoOverlayPlayer({
               >
                 <option value="left">Inferior esquerdo</option>
                 <option value="right">Inferior direito</option>
-              </select>
-            </label>
-            <label>
-              Referência de tempo
-              <select
+              </ChoiceSelect>
+            </div>
+            <div>
+              <span>Referência de tempo</span>
+              <ChoiceSelect
+                aria-label="Referência de tempo"
                 value={config.time}
                 onChange={(e) =>
                   change({ time: e.target.value as OverlayConfig['time'] })
@@ -329,15 +332,14 @@ export function VideoOverlayPlayer({
               >
                 <option value="active">Tempo ativo</option>
                 <option value="elapsed">Tempo decorrido</option>
-              </select>
-            </label>
+              </ChoiceSelect>
+            </div>
           </div>
           <fieldset className="overlay-metrics">
             <legend>Indicadores</legend>
             {Object.entries(metricLabels).map(([key, label]) => (
               <label key={key}>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={config.metrics.includes(key as Metric)}
                   onChange={(e) =>
                     change({
@@ -358,31 +360,31 @@ export function VideoOverlayPlayer({
               telemetria posterior; negativo consulta anterior.
             </p>
             <div className="history-actions">
-              <button
-                className="button"
+              <Button
+                variant="secondary"
                 disabled={config.offsetMs <= -60000}
                 onClick={() => change({ offsetMs: config.offsetMs - 100 })}
               >
                 −0,1 s
-              </button>
-              <button
-                className="button"
+              </Button>
+              <Button
+                variant="secondary"
                 disabled={config.offsetMs >= 60000}
                 onClick={() => change({ offsetMs: config.offsetMs + 100 })}
               >
                 +0,1 s
-              </button>
-              <button
-                className="button"
+              </Button>
+              <Button
+                variant="secondary"
                 onClick={() => change({ offsetMs: 0 })}
               >
                 Restaurar sincronização original
-              </button>
+              </Button>
             </div>
           </fieldset>
           <div className="history-actions">
-            <button
-              className="button"
+            <Button
+              variant="secondary"
               onClick={() =>
                 void overlayRepository
                   .saveConfig(owner, config)
@@ -391,9 +393,9 @@ export function VideoOverlayPlayer({
               }
             >
               Salvar configuração local
-            </button>
-            <button
-              className="button"
+            </Button>
+            <Button
+              variant="secondary"
               onClick={() =>
                 void overlayRepository
                   .preference(owner)
@@ -415,13 +417,13 @@ export function VideoOverlayPlayer({
               }
             >
               Aplicar meu layout salvo
-            </button>
+            </Button>
           </div>
         </details>
         <div className="video-settings">
           <label>
             Qualidade de exportação
-            <select
+            <Select
               value={config.quality}
               onChange={(e) =>
                 change({ quality: e.target.value as OverlayConfig['quality'] })
@@ -432,7 +434,7 @@ export function VideoOverlayPlayer({
                   {preset.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
         </div>
       </fieldset>

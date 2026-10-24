@@ -1,6 +1,6 @@
 import { RouteMap, type MapPoint } from '../components/maps/RouteMap';
-import type { EventMapData, LivePosition } from './types';
 import type { LocationReading } from '../services/gps/readings';
+import type { EventMapData, LivePosition } from './types';
 export function EventMap({
   data,
   positions = [],

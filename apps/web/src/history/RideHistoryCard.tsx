@@ -1,7 +1,7 @@
+import { Gauge, Route, Timer } from 'lucide-react';
 import { Link } from 'react-router';
-import { Route, Timer, Gauge } from 'lucide-react';
-import { formatDuration } from '../ride/format';
 import { ModeIcon } from '../components/Brand';
+import { formatDuration } from '../ride/format';
 import type { HistoryRide } from './types';
 export function RideHistoryCard({
   ride,

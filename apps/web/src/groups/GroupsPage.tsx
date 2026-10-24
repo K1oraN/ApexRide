@@ -1,14 +1,22 @@
+import { ChoiceSelect } from '../components/design-system';
+import { BIKE_CATEGORIES } from '@apex-ride/ride-core/comparison';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
-import { BIKE_CATEGORIES } from '@apex-ride/ride-core/comparison';
 import { useAuth } from '../auth/useAuth';
+import {
+  Button,
+  ButtonLink,
+  Checkbox,
+  Input,
+  Select,
+} from '../components/design-system';
 import { Avatar } from '../components/ui';
 import { apiUrl } from '../services/auth';
-import { usePage } from '../social/usePage';
 import { social } from '../social/service';
-import { roleNames, type Group, type Invitation } from './types';
-import '../styles/social.css';
+import { usePage } from '../social/usePage';
 import '../styles/groups.css';
+import '../styles/social.css';
+import { roleNames, type Group, type Invitation } from './types';
 export function GroupCard({ g }: { g: Group }) {
   return (
     <article className="panel social-summary motorcycle-group-card">
@@ -74,22 +82,22 @@ export function PageState({
       {p.error && (
         <p role="alert">
           {p.error}{' '}
-          <button className="button" onClick={() => void p.reload()}>
+          <Button variant="secondary" onClick={() => void p.reload()}>
             Tentar novamente
-          </button>
+          </Button>
         </p>
       )}
       {!p.loading && !p.error && !p.data.items.length && (
         <p className="panel social-summary">{empty}</p>
       )}
       {p.data.nextCursor && (
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={p.loading}
           onClick={() => void p.more()}
         >
           Carregar mais
-        </button>
+        </Button>
       )}
     </>
   );
@@ -126,8 +134,7 @@ function Inbox() {
             ))}
           </ol>
           <label>
-            <input
-              type="checkbox"
+            <Checkbox
               checked={accepted[i.id] ?? false}
               onChange={(e) =>
                 setAccepted((old) => ({ ...old, [i.id]: e.target.checked }))
@@ -136,20 +143,20 @@ function Inbox() {
             Li e aceito as regras
           </label>
           <div className="social-controls">
-            <button
-              className="button"
+            <Button
+              variant="secondary"
               disabled={busy || !accepted[i.id]}
               onClick={() => void act(i, 'accept')}
             >
               Aceitar convite
-            </button>
-            <button
-              className="button"
+            </Button>
+            <Button
+              variant="secondary"
               disabled={busy}
               onClick={() => void act(i, 'reject')}
             >
               Recusar convite
-            </button>
+            </Button>
           </div>
         </article>
       ))}
@@ -186,15 +193,15 @@ function GroupsView() {
     p = usePage<Group>(`/groups?${query}`);
   return (
     <div className="groups-page">
-      <Link className="text-link" to="/comunidade">
+      <Link className="text-link action-link" to="/comunidade">
         Voltar à Comunidade
       </Link>
       <div className="section-title">
         <h1>GRUPOS</h1>
         {user && (
-          <Link className="button button-primary" to="/comunidade/grupos/novo">
+          <ButtonLink variant="primary" to="/comunidade/grupos/novo">
             Criar grupo
-          </Link>
+          </ButtonLink>
         )}
       </div>
       <p>Comunidades por região e interesses. Explore todo o Brasil.</p>
@@ -208,17 +215,17 @@ function GroupsView() {
       >
         <label className="account-field">
           Pesquisar grupos
-          <input
+          <Input
             maxLength={100}
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
         </label>
-        <button className="button">Pesquisar</button>
+        <Button variant="secondary">Pesquisar</Button>
         <div className="group-filters">
           <label className="account-field">
             Participação
-            <select
+            <Select
               value={filter}
               onChange={(e) => {
                 setFilter(e.target.value);
@@ -242,11 +249,11 @@ function GroupsView() {
                   {name}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <label className="account-field">
             Cidade
-            <input
+            <Input
               maxLength={100}
               value={city}
               onChange={(e) => setCity(e.target.value)}
@@ -254,18 +261,18 @@ function GroupsView() {
           </label>
           <label className="account-field">
             Estado
-            <select value={state} onChange={(e) => setState(e.target.value)}>
+            <Select value={state} onChange={(e) => setState(e.target.value)}>
               <option value="">Todo o Brasil</option>
               {'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'
                 .split(' ')
                 .map((s) => (
                   <option key={s}>{s}</option>
                 ))}
-            </select>
+            </Select>
           </label>
           <label className="account-field">
             Categoria
-            <select
+            <Select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
@@ -273,38 +280,42 @@ function GroupsView() {
               {BIKE_CATEGORIES.map((c) => (
                 <option key={c}>{c}</option>
               ))}
-            </select>
+            </Select>
           </label>
-          <label className="account-field">
-            Ordenação
-            <select value={sort} onChange={(e) => setSort(e.target.value)}>
+          <div className="account-field">
+            <span>Ordenação</span>
+            <ChoiceSelect
+              aria-label="Ordenação"
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+            >
               <option value="recent">Mais recentes</option>
               <option value="name">Nome</option>
               <option value="members">
                 Mais membros (contagens autorizadas)
               </option>
-            </select>
-          </label>
+            </ChoiceSelect>
+          </div>
         </div>
       </form>
       {user && (
         <div className="social-controls">
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             onClick={() => {
               setFilter('mine');
               setInbox(false);
             }}
           >
             Meus grupos
-          </button>
-          <button
-            className="button"
+          </Button>
+          <Button
+            variant="secondary"
             aria-pressed={inbox}
             onClick={() => setInbox(!inbox)}
           >
             Convites recebidos
-          </button>
+          </Button>
         </div>
       )}
       {inbox ? (
@@ -323,9 +334,9 @@ function GroupsView() {
         </>
       )}
       {!user && (
-        <Link className="button" to="/entrar">
+        <ButtonLink variant="secondary" to="/entrar">
           Entre para participar ou criar grupos
-        </Link>
+        </ButtonLink>
       )}
     </div>
   );

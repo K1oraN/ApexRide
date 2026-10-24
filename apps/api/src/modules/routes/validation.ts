@@ -12,6 +12,24 @@ export const invalid = (message = 'Dados do percurso inválidos.') =>
 export function routeData(value: unknown, circuit = false): RouteData {
   if (!value || typeof value !== 'object') throw invalid();
   const b = value as RouteData;
+  if (
+    b.importMetadata != null &&
+    (b.source !== 'manual' ||
+      b.importMetadata.source !== 'gpx' ||
+      b.importMetadata.version !== 1 ||
+      !Array.isArray(b.importMetadata.altitudes) ||
+      b.importMetadata.altitudes.length !== b.geometry?.coordinates?.length ||
+      b.importMetadata.altitudes.length > 10000 ||
+      !b.importMetadata.altitudes.every(
+        (altitude) =>
+          altitude === null ||
+          (typeof altitude === 'number' &&
+            Number.isFinite(altitude) &&
+            altitude >= -500 &&
+            altitude <= 9000),
+      ))
+  )
+    throw invalid('Metadados de importação inválidos.');
   for (const [key, max] of [
     ['name', 120],
     ['description', 4000],
@@ -102,6 +120,15 @@ export function routeData(value: unknown, circuit = false): RouteData {
     durationSeconds: b.source === 'manual' ? null : b.durationSeconds,
     startLine: b.startLine,
     direction: b.direction,
+    ...(b.importMetadata
+      ? {
+          importMetadata: {
+            source: 'gpx',
+            version: 1,
+            altitudes: b.importMetadata.altitudes,
+          },
+        }
+      : {}),
   };
 }
 export function listQuery(query: Record<string, unknown>, nearby = false) {
@@ -148,6 +175,9 @@ export function listQuery(query: Record<string, unknown>, nearby = false) {
     q: text('q'),
     city: text('city'),
     state: text('state', 2),
+    category: text('category', 60),
+    minDistance: num('minDistance', 0, 0, 5000000),
+    maxDistance: num('maxDistance', 5000000, 0, 5000000),
     kind,
     sort,
     page,

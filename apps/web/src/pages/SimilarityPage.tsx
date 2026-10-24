@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
+import { ComparisonResults } from '../comparison/ComparisonResults';
+import type { ComparisonResult } from '../comparison/types';
+import { Button } from '../components/design-system';
+import { MatchMap } from '../similarity/MatchMap';
 import {
-  similarityService,
   labels,
+  similarityService,
   statusLabels,
   type SimilarMatch,
   type SimilarStatus,
 } from '../similarity/service';
 import { SimilarityFilters } from '../similarity/SimilarityFilters';
-import { MatchMap } from '../similarity/MatchMap';
-import { ComparisonResults } from '../comparison/ComparisonResults';
-import type { ComparisonResult } from '../comparison/types';
-import '../styles/history.css';
 import '../styles/comparison.css';
+import '../styles/history.css';
 export function SimilarityPage() {
   const { id } = useParams();
   return <SimilarityDetails key={id} id={id!} />;
@@ -89,7 +90,7 @@ function SimilarityDetails({ id }: { id: string }) {
   }
   return (
     <div className="history-page">
-      <Link className="text-link" to={`/historico/${id}`}>
+      <Link className="text-link action-link" to={`/historico/${id}`}>
         Voltar à atividade
       </Link>
       <header className="panel history-panel">
@@ -106,21 +107,24 @@ function SimilarityDetails({ id }: { id: string }) {
           <p>Busca limitada a 40 candidatos; a lista pode estar incompleta.</p>
         )}
         <div className="history-actions">
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={busy}
             onClick={() => setAttempt((n) => n + 1)}
           >
             Atualizar análise
-          </button>
-          <button
-            className="button"
+          </Button>
+          <Button
+            variant="secondary"
             disabled={busy || status?.status === 'processing'}
             onClick={() => void reprocess()}
           >
             Solicitar reanálise
-          </button>
-          <Link className="text-link" to={`/historico/${id}/replay`}>
+          </Button>
+          <Link
+            className="text-link action-link"
+            to={`/historico/${id}/replay`}
+          >
             Abrir replay original
           </Link>
         </div>
@@ -162,38 +166,38 @@ function SimilarityDetails({ id }: { id: string }) {
               <p key={issue}>{issue}</p>
             ))}
             <div className="history-actions">
-              <button
-                className="button"
+              <Button
+                variant="secondary"
                 aria-pressed={selected?.id === m.id}
                 onClick={() => change('atividade', m.id)}
               >
                 Selecionar e ver mapa
-              </button>
-              <Link className="text-link" to={`/historico/${m.id}`}>
+              </Button>
+              <Link className="text-link action-link" to={`/historico/${m.id}`}>
                 Abrir atividade
               </Link>
             </div>
           </article>
         ))}
         <div className="history-actions">
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={Number(params.get('page') ?? 1) <= 1}
             onClick={() =>
               change('page', String(Number(params.get('page') ?? 1) - 1))
             }
           >
             Anterior
-          </button>
-          <button
-            className="button"
+          </Button>
+          <Button
+            variant="secondary"
             disabled={!more}
             onClick={() =>
               change('page', String(Number(params.get('page') ?? 1) + 1))
             }
           >
             Próxima
-          </button>
+          </Button>
         </div>
       </section>
       {selected && (
@@ -205,8 +209,8 @@ function SimilarityDetails({ id }: { id: string }) {
               Totais de atividades diferentes são contexto; a comparação utiliza
               somente os trechos equivalentes.
             </p>
-            <button
-              className="button button-primary"
+            <Button
+              variant="primary"
               disabled={
                 busy ||
                 selected.direction !== 'same' ||
@@ -216,7 +220,7 @@ function SimilarityDetails({ id }: { id: string }) {
               onClick={() => void compare()}
             >
               Comparar trechos comuns
-            </button>
+            </Button>
           </section>
         </>
       )}

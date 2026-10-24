@@ -1,6 +1,8 @@
+import { RefreshCw, HardDrive } from 'lucide-react';
 import { useSyncExternalStore } from 'react';
 import { Link } from 'react-router';
 import { useAuth } from '../auth/useAuth';
+import { Button } from '../components/design-system';
 import { useRide } from '../ride/context';
 import { useOffline } from './context';
 const connections = {
@@ -19,7 +21,7 @@ const states = {
   permanent: 'Erro permanente ou conflito',
   confirmed: 'Sincronizado',
 };
-export function OfflinePanel() {
+export function OfflinePanel({ compact = false }: { compact?: boolean }) {
   const offline = useOffline();
   const { snapshot } = useRide();
   const { user } = useAuth();
@@ -37,20 +39,30 @@ export function OfflinePanel() {
   const current = state.queue.find(
     (q) => q.id === `${user?.id}:${snapshot.activity?.payload.clientId}`,
   );
+  const storage = state.storage && (
+    <p className="offline-storage">
+      {state.storage}{' '}
+      <button className="text-link" onClick={() => void offline.monitor(true)}>
+        Proteger armazenamento
+      </button>
+    </p>
+  );
   return (
     <section
       className="ride-preparation panel offline-panel"
       aria-label="Armazenamento e sincronização"
     >
-      <p aria-live="polite">
-        {connections[connection]}
-        {snapshot.activity
-          ? ` · ${current ? states[current.state] : state.local}`
-          : ''}
-        {connection !== 'online' && snapshot.state === 'running'
-          ? ' · Registro local continua; sinal GPS é independente da internet.'
-          : ''}
-      </p>
+      <div className="offline-panel-heading">
+        <p className="offline-connection" aria-live="polite">
+          {connections[connection]}
+          {snapshot.activity
+            ? ` · ${current ? states[current.state] : state.local}`
+            : ''}
+          {connection !== 'online' && snapshot.state === 'running'
+            ? ' · Registro local continua; sinal GPS é independente da internet.'
+            : ''}
+        </p>
+      </div>
       {state.error && (
         <p role="alert">
           {state.error}{' '}
@@ -62,17 +74,7 @@ export function OfflinePanel() {
           </button>
         </p>
       )}
-      {state.storage && (
-        <p className="offline-storage">
-          {state.storage}{' '}
-          <button
-            className="text-link"
-            onClick={() => void offline.monitor(true)}
-          >
-            Proteger armazenamento
-          </button>
-        </p>
-      )}
+      {!compact && storage}
       {interrupted.length > 0 && (
         <p>
           Há {interrupted.length} atividade(s) aguardando revisão neste
@@ -81,24 +83,26 @@ export function OfflinePanel() {
       )}
       {state.queue.some((q) => q.state === 'auth') && (
         <p>
-          <Link className="text-link" to="/entrar">
+          <Link className="text-link action-link" to="/entrar">
             Entrar novamente para sincronizar
           </Link>
         </p>
       )}
       {user && (
         <details>
-          <summary>Atividades no aparelho · {pending.length} pendentes</summary>
-          <p>
-            Envio somente após salvar e confirmar sua conta no servidor. A cópia
-            deste aparelho não é um login offline.
-          </p>
-          <button
-            className="button"
+          <summary>
+            <HardDrive size={18} aria-hidden />
+            Atividades no aparelho · {pending.length} pendentes
+          </summary>
+          {compact && storage}
+          <Button
+            variant="secondary"
+            disabled={pending.length === 0}
             onClick={() => void offline.sync.run(true).catch(() => {})}
           >
+            <RefreshCw size={17} aria-hidden />
             Sincronizar agora
-          </button>
+          </Button>
           {connection !== 'online' && (
             <p>Sem acesso confirmado à API. Os dados locais serão mantidos.</p>
           )}

@@ -1,6 +1,7 @@
 import { memo, useState } from 'react';
-import type { ReplayMark, ReplayTimeline } from './timeline';
+import { Button } from '../components/design-system';
 import type { ReplayEngine } from './engine';
+import type { ReplayMark, ReplayTimeline } from './timeline';
 export const ReplayMarks = memo(function ReplayMarks({
   marks,
   current,
@@ -15,8 +16,8 @@ export const ReplayMarks = memo(function ReplayMarks({
     <>
       <div className="replay-marks">
         {marks.slice(page * 50, (page + 1) * 50).map((m) => (
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             aria-pressed={current === m.id}
             key={m.id}
             onClick={() => engine.seek(m.start)}
@@ -25,26 +26,26 @@ export const ReplayMarks = memo(function ReplayMarks({
             <small>
               {(m.start / 1000).toFixed(1)}–{(m.end / 1000).toFixed(1)} s ativos
             </small>
-          </button>
+          </Button>
         ))}
       </div>
       {marks.length > 50 && (
         <div className="history-actions">
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={page === 0}
             onClick={() => setPage((n) => n - 1)}
           >
             Marcações anteriores
-          </button>
+          </Button>
           <span>Página {page + 1}</span>
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={(page + 1) * 50 >= marks.length}
             onClick={() => setPage((n) => n + 1)}
           >
             Próximas marcações
-          </button>
+          </Button>
         </div>
       )}
     </>

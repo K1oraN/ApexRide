@@ -1,7 +1,7 @@
+import type { SpeedState } from '@apex-ride/ride-core/speed';
 import { useSyncExternalStore } from 'react';
 import { Speedometer } from '../components/telemetry/Speedometer';
 import { useRide } from './context';
-import type { SpeedState } from '@apex-ride/ride-core/speed';
 
 const speedLabels: Record<SpeedState, string> = {
   assisted: 'GPS Assistido ativo · estimativa',

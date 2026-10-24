@@ -1,9 +1,10 @@
+import type { TrackPreview } from '@apex-ride/ride-core/history';
 import { useEffect, useMemo, useState } from 'react';
+import { ACTIVITY_COLORS } from '../comparison/colors';
+import { Select } from '../components/design-system';
 import { RouteMap } from '../components/maps/RouteMap';
 import { historyService } from '../history/service';
-import type { TrackPreview } from '@apex-ride/ride-core/history';
 import type { SimilarMatch } from './service';
-import { ACTIVITY_COLORS } from '../comparison/colors';
 export function MatchMap({ id, match }: { id: string; match: SimilarMatch }) {
   const [piece, setPiece] = useState(0);
   const [tracks, setTracks] = useState<TrackPreview[]>([]),
@@ -69,7 +70,7 @@ export function MatchMap({ id, match }: { id: string; match: SimilarMatch }) {
       {match.pieces.length > 1 && (
         <label className="account-field">
           Trecho comum
-          <select
+          <Select
             value={piece}
             onChange={(e) => setPiece(Number(e.target.value))}
           >
@@ -78,7 +79,7 @@ export function MatchMap({ id, match }: { id: string; match: SimilarMatch }) {
                 Trecho {i + 1} · {(p.meters / 1000).toFixed(2)} km
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       )}
       {error ? (

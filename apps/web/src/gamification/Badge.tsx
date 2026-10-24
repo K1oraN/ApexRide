@@ -1,17 +1,18 @@
 import {
   Award,
+  Flag,
+  LockKeyhole,
   Mountain,
   Route,
   UsersRound,
-  Bike,
-  Flag,
-  LockKeyhole,
 } from 'lucide-react';
-const icons: Record<string, typeof Award> = {
+import type { ComponentType } from 'react';
+import { RideIcon } from '../components/Brand';
+const icons: Record<string, ComponentType<{ size?: number }>> = {
   Exploração: Mountain,
   Atividades: Route,
   Comunidade: UsersRound,
-  Garagem: Bike,
+  Garagem: RideIcon,
   Circuitos: Flag,
 };
 // Mesmo medalhão Racing Tech previsto no Perfil aprovado.

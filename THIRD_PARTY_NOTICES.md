@@ -6,6 +6,12 @@ Consulte [inventário por pacote e versão](docs/licenses/dependencies.json), [l
 
 Os avisos abaixo foram copiados dos pacotes instalados, sem alterar seus termos. Conserve-os em distribuições que incluam esses componentes.
 
+Etapa 4: `saxes` 6.0.0 também é dependência de execução do frontend para GPX
+em worker. Licença ISC: [texto original da tag v6.0.0](docs/licenses/third-party/saxes--6.0.0--LICENSE),
+obtido de [lddubeau/saxes](https://github.com/lddubeau/saxes/blob/v6.0.0/LICENSE).
+`xmlchars` 2.2.0 mantém o aviso MIT abaixo. O inventário já incluía ambos como
+dependências transitivas de desenvolvimento.
+
 - @asamuzakjp/css-color 7.1.7 — MIT: [LICENSE](docs/licenses/third-party/asamuzakjp__css-color--7.1.7--LICENSE)
 - @asamuzakjp/dom-selector 10.0.4 — MIT: [LICENSE](docs/licenses/third-party/asamuzakjp__dom-selector--10.0.4--LICENSE)
 - @babel/code-frame 7.29.7 — MIT: [LICENSE](docs/licenses/third-party/babel__code-frame--7.29.7--LICENSE)

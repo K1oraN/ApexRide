@@ -1,17 +1,27 @@
+import {
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  RotateCcw,
+  Search,
+  SlidersHorizontal,
+} from 'lucide-react';
+import { ChoiceSelect } from '../components/design-system';
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
-import { SectionTitle } from '../components/ui';
-import { RouteMap } from '../components/maps/RouteMap';
 import { useAuth } from '../auth/useAuth';
+import { Button, ButtonLink, Input, Select } from '../components/design-system';
+import { RouteMap } from '../components/maps/RouteMap';
+import { SectionTitle } from '../components/ui';
+import { authRequest } from '../services/auth';
+import '../styles/events.css';
 import { events } from './service';
 import {
   eventDate,
   statusLabel,
-  type SocialEvent,
   type EventInvitation,
+  type SocialEvent,
 } from './types';
-import { authRequest } from '../services/auth';
-import '../styles/events.css';
 const states =
   'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(
     ' ',
@@ -78,9 +88,9 @@ export function EventsPage() {
     <div className="events-page">
       <SectionTitle
         aside={
-          <Link className="button button-primary" to="/comunidade/eventos/novo">
-            Criar evento
-          </Link>
+          <ButtonLink variant="primary" to="/comunidade/eventos/novo">
+            <CalendarDays size={18} aria-hidden /> Criar evento
+          </ButtonLink>
         }
       >
         EVENTOS E ENCONTROS
@@ -92,104 +102,119 @@ export function EventsPage() {
       {!user ? (
         <section className="panel social-summary">
           <p>Entre para descobrir eventos e convites autorizados.</p>
-          <Link className="button" to="/entrar">
+          <ButtonLink variant="secondary" to="/entrar">
             Entrar na conta
-          </Link>
+          </ButtonLink>
         </section>
       ) : (
         <>
           <section
-            className="panel social-summary event-filters"
+            className="panel social-summary event-filter-panel"
             aria-label="Filtros de eventos"
           >
-            <label className="account-field">
-              Pesquisar eventos
-              <input
-                maxLength={100}
-                value={params.get('q') ?? ''}
-                onChange={(e) => filter('q', e.target.value)}
-              />
-            </label>
-            <label className="account-field">
-              Cidade
-              <input
-                maxLength={100}
-                value={params.get('city') ?? ''}
-                onChange={(e) => filter('city', e.target.value)}
-              />
-            </label>
-            <label className="account-field">
-              Estado
-              <select
-                value={params.get('state') ?? ''}
-                onChange={(e) => filter('state', e.target.value)}
-              >
-                <option value="">Brasil</option>
-                {states.map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
-              </select>
-            </label>
-            <label className="account-field">
-              Tipo
-              <select
-                value={params.get('type') ?? ''}
-                onChange={(e) => filter('type', e.target.value)}
-              >
-                <option value="">Todos</option>
-                <option value="meetup">Encontros</option>
-                <option value="ride">Passeios</option>
-              </select>
-            </label>
-            <label className="account-field">
-              Exibir
-              <select
-                value={params.get('filter') ?? 'upcoming'}
-                onChange={(e) => filter('filter', e.target.value)}
-              >
-                <option value="upcoming">Próximos eventos</option>
-                <option value="mine">Minha participação</option>
-                <option value="groups">Meus grupos</option>
-                <option value="public">Públicos</option>
-                <option value="invited">Por convite</option>
-                <option value="all">Todos autorizados</option>
-              </select>
-            </label>
-            <label className="account-field">
-              A partir de
-              <input
-                type="date"
-                value={params.get('from')?.slice(0, 10) ?? ''}
-                onChange={(e) =>
-                  filter(
-                    'from',
-                    e.target.value ? `${e.target.value}T00:00:00.000Z` : '',
-                  )
-                }
-              />
-            </label>
-            <label className="account-field">
-              Até
-              <input
-                type="date"
-                value={params.get('to')?.slice(0, 10) ?? ''}
-                onChange={(e) =>
-                  filter(
-                    'to',
-                    e.target.value ? `${e.target.value}T23:59:59.999Z` : '',
-                  )
-                }
-              />
-            </label>
-            <button className="button" onClick={() => setParams({})}>
-              Limpar filtros
-            </button>
+            <header className="filter-panel-heading">
+              <h2>
+                <SlidersHorizontal size={19} aria-hidden />
+                Filtros de eventos
+              </h2>
+              <Button size="sm" variant="ghost" onClick={() => setParams({})}>
+                <RotateCcw size={16} aria-hidden />
+                Limpar filtros
+              </Button>
+            </header>
+            <div className="event-filters">
+              <label className="account-field">
+                <span>
+                  <Search size={16} aria-hidden />
+                  Pesquisar eventos
+                </span>
+                <Input
+                  placeholder="Nome do evento…"
+                  type="search"
+                  maxLength={100}
+                  value={params.get('q') ?? ''}
+                  onChange={(e) => filter('q', e.target.value)}
+                />
+              </label>
+              <label className="account-field">
+                Cidade
+                <Input
+                  maxLength={100}
+                  value={params.get('city') ?? ''}
+                  onChange={(e) => filter('city', e.target.value)}
+                />
+              </label>
+              <label className="account-field">
+                Estado
+                <Select
+                  value={params.get('state') ?? ''}
+                  onChange={(e) => filter('state', e.target.value)}
+                >
+                  <option value="">Brasil</option>
+                  {states.map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
+                </Select>
+              </label>
+              <div className="account-field">
+                <span>Tipo</span>
+                <ChoiceSelect
+                  aria-label="Tipo"
+                  value={params.get('type') ?? ''}
+                  onChange={(e) => filter('type', e.target.value)}
+                >
+                  <option value="">Todos</option>
+                  <option value="meetup">Encontros</option>
+                  <option value="ride">Passeios</option>
+                </ChoiceSelect>
+              </div>
+              <label className="account-field">
+                Exibir
+                <Select
+                  value={params.get('filter') ?? 'upcoming'}
+                  onChange={(e) => filter('filter', e.target.value)}
+                >
+                  <option value="upcoming">Próximos eventos</option>
+                  <option value="mine">Minha participação</option>
+                  <option value="groups">Meus grupos</option>
+                  <option value="public">Públicos</option>
+                  <option value="invited">Por convite</option>
+                  <option value="all">Todos autorizados</option>
+                </Select>
+              </label>
+              <label className="account-field">
+                A partir de
+                <Input
+                  type="date"
+                  value={params.get('from')?.slice(0, 10) ?? ''}
+                  onChange={(e) =>
+                    filter(
+                      'from',
+                      e.target.value ? `${e.target.value}T00:00:00.000Z` : '',
+                    )
+                  }
+                />
+              </label>
+              <label className="account-field">
+                Até
+                <Input
+                  type="date"
+                  value={params.get('to')?.slice(0, 10) ?? ''}
+                  onChange={(e) =>
+                    filter(
+                      'to',
+                      e.target.value ? `${e.target.value}T23:59:59.999Z` : '',
+                    )
+                  }
+                />
+              </label>
+            </div>
           </section>
           {error && (
             <p role="alert">
               {error}{' '}
               <button
-                className="text-link"
+                className="text-link action-link"
                 onClick={() => setRefresh((x) => x + 1)}
               >
                 Tentar novamente
@@ -206,18 +231,18 @@ export function EventsPage() {
                   </Link>
                   <span>{eventDate(i)}</span>
                   <div className="social-controls">
-                    <button
-                      className="button"
+                    <Button
+                      variant="secondary"
                       onClick={() => void respond(i.id, 'accept')}
                     >
                       Aceitar convite
-                    </button>
-                    <button
-                      className="button"
+                    </Button>
+                    <Button
+                      variant="secondary"
                       onClick={() => void respond(i.id, 'reject')}
                     >
                       Recusar convite
-                    </button>
+                    </Button>
                   </div>
                 </article>
               ))}
@@ -270,7 +295,7 @@ export function EventsPage() {
                         : 'Por convite'}
                   </p>
                   <Link
-                    className="text-link"
+                    className="text-link action-link"
                     to={`/comunidade/eventos/${e.id}`}
                   >
                     Ver detalhes
@@ -279,9 +304,9 @@ export function EventsPage() {
               ))}
             </div>
           )}
-          <div className="social-controls">
-            <button
-              className="button"
+          <nav className="page-pagination" aria-label="Páginas de eventos">
+            <Button
+              variant="secondary"
               disabled={page <= 1}
               onClick={() => {
                 const next = new URLSearchParams(params);
@@ -289,11 +314,11 @@ export function EventsPage() {
                 setParams(next);
               }}
             >
-              Anterior
-            </button>
-            <span>Página {page}</span>
-            <button
-              className="button"
+              <ChevronLeft aria-hidden /> Anterior
+            </Button>
+            <span aria-live="polite">Página {page}</span>
+            <Button
+              variant="secondary"
               disabled={!more}
               onClick={() => {
                 const next = new URLSearchParams(params);
@@ -301,9 +326,9 @@ export function EventsPage() {
                 setParams(next);
               }}
             >
-              Próxima
-            </button>
-          </div>
+              Próxima <ChevronRight aria-hidden />
+            </Button>
+          </nav>
         </>
       )}
     </div>

@@ -1,12 +1,15 @@
 import { MOTION_RULES } from '@apex-ride/ride-core/motion';
 import { eventTimeValid, finite, vector } from './normalize';
 import type { Orientation, RawMotion, SensorSnapshot } from './types';
+import { SensorDiagnostics, untestedDiagnostics } from './diagnostics';
 
 type PermissionConstructor = {
   requestPermission?: () => Promise<PermissionState>;
 };
 export class MotionCapture {
   private snapshot: SensorSnapshot = {
+    diagnostics: untestedDiagnostics(),
+    orientationPermission: 'unknown',
     policyWarning: null,
     status: 'idle',
     active: false,
@@ -23,6 +26,8 @@ export class MotionCapture {
   private orientationTime = -Infinity;
   private sequence = 0;
   private orientation: Orientation | null = null;
+  private diagnostics = new SensorDiagnostics();
+  private diagnosticsPublishedAt = -Infinity;
   getSnapshot = () => this.snapshot;
   subscribe = (fn: () => void) => {
     this.stateListeners.add(fn);
@@ -106,6 +111,12 @@ export class MotionCapture {
       : Promise.resolve('denied');
     const [m, o] = await Promise.allSettled([motion, orientation]);
     if (generation !== this.generation) return;
+    this.publish({
+      orientationPermission:
+        o.status === 'fulfilled' && o.value === 'granted'
+          ? 'granted'
+          : 'denied',
+    });
     if (m.status !== 'fulfilled' || m.value !== 'granted') {
       this.publish({
         status: 'denied',
@@ -144,6 +155,7 @@ export class MotionCapture {
       absolute: e.absolute,
       monotonicMs: performance.now(),
     };
+    this.diagnostics.observeOrientation(this.orientation);
   };
   private motion = (e: DeviceMotionEvent) => {
     if (
@@ -190,6 +202,11 @@ export class MotionCapture {
       return;
     }
     this.last = now;
+    this.diagnostics.observe(sample);
+    if (now - this.diagnosticsPublishedAt >= 200) {
+      this.diagnosticsPublishedAt = now;
+      this.publish({ diagnostics: this.diagnostics.snapshot(now) });
+    }
     if (this.snapshot.status !== 'working')
       this.publish({
         status: 'working',
@@ -209,6 +226,15 @@ export class MotionCapture {
     });
   }
   private check = () => {
+    const diagnostics = this.diagnostics.snapshot(performance.now());
+    if (
+      Object.keys(diagnostics).some(
+        (key) =>
+          diagnostics[key as keyof typeof diagnostics] !==
+          this.snapshot.diagnostics[key as keyof typeof diagnostics],
+      )
+    )
+      this.publish({ diagnostics });
     if (performance.now() - this.last >= MOTION_RULES.gapMs)
       this.interrupt('signal');
   };
@@ -228,7 +254,10 @@ export class MotionCapture {
     if (this.timer) clearInterval(this.timer);
     this.timer = null;
     this.orientation = null;
+    this.diagnostics.clear();
+    this.diagnosticsPublishedAt = -Infinity;
     this.publish({
+      diagnostics: untestedDiagnostics(),
       active: false,
       ...(this.snapshot.status === 'denied'
         ? {}

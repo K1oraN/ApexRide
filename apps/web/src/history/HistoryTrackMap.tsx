@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
 import type { TrackPreview } from '@apex-ride/ride-core/history';
 import type { RoutePlan } from '@apex-ride/ride-core/routes';
+import { useMemo, useState } from 'react';
+import { Checkbox } from '../components/design-system';
 import { RideMap } from '../components/maps/RideMap';
 import type { GpsSnapshot } from '../services/gps/preview';
 export function HistoryTrackMap({
@@ -30,8 +31,7 @@ export function HistoryTrackMap({
       <h2>Mapa do trajeto</h2>
       {plan && (
         <label>
-          <input
-            type="checkbox"
+          <Checkbox
             checked={planned}
             onChange={(e) => setPlanned(e.target.checked)}
           />

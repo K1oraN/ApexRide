@@ -1,10 +1,11 @@
+import { COMPARISON_STATES } from '@apex-ride/ride-core/comparison';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import { COMPARISON_STATES } from '@apex-ride/ride-core/comparison';
-import type { ComparisonResult, ComparisonActivity } from './types';
+import { Button, Select } from '../components/design-system';
 import { RouteMap } from '../components/maps/RouteMap';
 import { ComparisonCharts } from './ComparisonCharts';
 import { ACTIVITY_COLORS } from './colors';
+import type { ComparisonActivity, ComparisonResult } from './types';
 const number = (v: number | null, unit: string) =>
   v === null
     ? 'Indisponível'
@@ -272,7 +273,7 @@ export function ComparisonResults({
                 </p>
                 <label className="account-field">
                   Volta da atividade {i + 1}
-                  <select
+                  <Select
                     value={lapNumbers[a.id] ?? a.laps[0]!.number}
                     onChange={(e) =>
                       setLapNumbers({
@@ -287,7 +288,7 @@ export function ComparisonResults({
                         · {l.quality.accuracy} m
                       </option>
                     ))}
-                  </select>
+                  </Select>
                 </label>
               </>
             ) : (
@@ -296,7 +297,7 @@ export function ComparisonResults({
           </details>
           {a.own && (
             <Link
-              className="text-link"
+              className="text-link action-link"
               to={
                 result.referenceSource === 'gps-common'
                   ? `/historico/${a.id}/replay?semelhantes=${result.route.id}&atividade=${result.activities.find((other) => other.id !== result.route.id)?.id ?? ''}`
@@ -315,8 +316,8 @@ export function ComparisonResults({
         ) && (
           <section className="panel history-panel">
             <h2>Circuito fechado verificado</h2>
-            <button
-              className="button"
+            <Button
+              variant="secondary"
               disabled={busy}
               onClick={() =>
                 onLaps(
@@ -327,7 +328,7 @@ export function ComparisonResults({
               }
             >
               Comparar voltas selecionadas
-            </button>
+            </Button>
             {result.differences.map((d, i) => (
               <p key={d.id}>
                 Atividade {i + 1} · Δ volta:{' '}

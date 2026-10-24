@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
-import { useGamification, changeGamification } from './useGamification';
-import type { XpEntry, ProgressData } from './types';
+import { Button, Textarea } from '../components/design-system';
 import { ProgressSummary } from './Progress';
+import type { ProgressData, XpEntry } from './types';
+import { changeGamification, useGamification } from './useGamification';
 export function XpHistoryPage() {
   const [params] = useSearchParams(),
     [page, setPage] = useState(1),
@@ -31,7 +32,7 @@ export function XpHistoryPage() {
   }
   return (
     <div className="gamification-page">
-      <Link className="text-link" to="/perfil">
+      <Link className="text-link action-link" to="/perfil">
         Voltar ao perfil
       </Link>
       <h1>Histórico de XP</h1>
@@ -45,9 +46,9 @@ export function XpHistoryPage() {
       {error && (
         <p role="alert">
           {error}
-          <button className="button" onClick={reload}>
+          <Button variant="secondary" onClick={reload}>
             Tentar novamente
-          </button>
+          </Button>
         </p>
       )}
       <div className="panel gamification-card">
@@ -62,7 +63,10 @@ export function XpHistoryPage() {
                 {e.status === 'reversal' ? 'Correção rastreável' : 'Confirmada'}
               </small>
               {e.source_type === 'ride' && e.status !== 'reversal' && (
-                <Link className="text-link" to={`/historico/${e.source_id}`}>
+                <Link
+                  className="text-link action-link"
+                  to={`/historico/${e.source_id}`}
+                >
                   Atividade de origem
                 </Link>
               )}
@@ -73,22 +77,22 @@ export function XpHistoryPage() {
             </strong>
           </article>
         ))}
-        <div className="gamification-actions">
-          <button
-            className="button"
+        <div className="page-pagination">
+          <Button
+            variant="secondary"
             disabled={page <= 1}
             onClick={() => setPage((n) => n - 1)}
           >
             Página anterior
-          </button>
+          </Button>
           <span>Página {page}</span>
-          <button
-            className="button"
+          <Button
+            variant="secondary"
             disabled={!data?.hasMore}
             onClick={() => setPage((n) => n + 1)}
           >
             Próxima página
-          </button>
+          </Button>
         </div>
       </div>
       <details className="panel gamification-card">
@@ -103,19 +107,19 @@ export function XpHistoryPage() {
         )}
         <label className="account-field">
           Motivo da revisão
-          <textarea
+          <Textarea
             maxLength={500}
             value={reason}
             onChange={(e) => setReason(e.target.value)}
           />
         </label>
-        <button
-          className="button"
+        <Button
+          variant="secondary"
           disabled={busy || !reason.trim() || !ride}
           onClick={() => void review()}
         >
           Solicitar revisão
-        </button>
+        </Button>
         {message && <p role="status">{message}</p>}
       </details>
     </div>

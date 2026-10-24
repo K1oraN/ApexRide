@@ -42,10 +42,19 @@ test('Parte 10: perda de internet, pausa, finalização, recarga offline, nova s
   ).toContainText('Atividade salva no aparelho');
   await page.reload();
   await expect(
+    page.getByRole('heading', { name: 'Conexão indisponível' }),
+  ).toBeVisible();
+  await expect(page.locator('.app-shell')).toHaveCount(0);
+  await context.setOffline(false);
+  await page
+    .getByRole('button', { name: 'Tentar novamente', exact: true })
+    .click();
+  await expect(
     page.getByRole('button', { name: 'Iniciar Ride', exact: true }),
   ).toBeEnabled();
+  await context.setOffline(true);
   await panel.locator('summary').click();
-  await expect(panel).toContainText('1 pendentes');
+  await expect(panel.locator('.offline-item')).toContainText('3 pontos');
   await panel.getByRole('button', { name: 'Revisar resumo local' }).click();
   await expect(
     page.getByRole('img', { name: 'Traçado GPS local sem base cartográfica' }),

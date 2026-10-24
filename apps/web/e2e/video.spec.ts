@@ -1,3 +1,4 @@
+import { openRideSetting } from './ride-settings';
 import { expect, test } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import { prepare, begin, finish } from './ride-fixtures';
@@ -21,6 +22,7 @@ test('Parte 16: câmera sintética, MediaRecorder nativo, pausa, offline, cópia
       uploaded.push(r.postData() ?? '');
   });
   await prepare(page);
+  await openRideSetting(page, 'video');
   const config = page.getByRole('region', { name: 'Configuração de vídeo' });
   await expect(
     config.getByText('Vídeo desativado', { exact: true }),
@@ -56,8 +58,9 @@ test('Parte 16: câmera sintética, MediaRecorder nativo, pausa, offline, cópia
     config.getByText('Vídeo pausado', { exact: true }),
   ).toBeVisible();
   await page
-    .getByRole('combobox', { name: 'Câmera do vídeo' })
-    .selectOption('user');
+    .getByRole('group', { name: 'Câmera do vídeo' })
+    .getByRole('button', { name: 'Frontal', exact: true })
+    .click();
   await page
     .getByRole('button', { name: 'Ativar vídeo e abrir prévia' })
     .click();
@@ -101,6 +104,11 @@ test('Parte 16: câmera sintética, MediaRecorder nativo, pausa, offline, cópia
     ),
   ).toBeVisible();
   await context.setOffline(false);
+  // Confirm the upload receipt before inspecting video persistence across reload.
+  // Reloading an active upload can leave its protective lease pending for 60 s.
+  await expect(
+    page.getByRole('region', { name: 'Armazenamento e sincronização' }),
+  ).toContainText('Sincronizado', { timeout: 20000 });
   page.on('dialog', (dialog) => dialog.accept());
   await page.reload();
   await page.goto('/historico');
@@ -139,7 +147,8 @@ test('Parte 16: câmera sintética, MediaRecorder nativo, pausa, offline, cópia
   await expect(
     page.getByRole('heading', { name: 'Segmento 2 · Finalizado', exact: true }),
   ).toBeVisible();
-  await prepare(page); // Another test account in the same browser/IndexedDB.
+  await prepare(page);
+  await openRideSetting(page, 'video'); // Another test account in the same browser/IndexedDB.
   await page.goto('/historico');
   await expect(
     page.getByRole('heading', { name: 'Histórico de Rides', exact: true }),
@@ -182,6 +191,7 @@ test('Parte 16: acesso negado mantém Ride e descarte sem vídeo; configuração
     });
   });
   await prepare(page);
+  await openRideSetting(page, 'video');
   for (const width of [320, 390, 430, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     expect(

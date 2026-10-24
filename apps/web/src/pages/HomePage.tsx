@@ -1,131 +1,55 @@
-import {
-  ArrowUpRight,
-  ChevronRight,
-  CircleGauge,
-  Gauge,
-  Signal,
-  Timer,
-  UsersRound,
-} from 'lucide-react';
-import { Link } from 'react-router';
+import { ChevronRight, Route } from 'lucide-react';
 import { useAuth } from '../auth/useAuth';
-import { ModeIcon } from '../components/Brand';
-import { CommunityPreview } from '../social/CommunityPreview';
-import '../styles/social.css';
-import { IllustrativeMap } from '../components/maps/IllustrativeMap';
-import { MetricCard, RideSummary } from '../components/telemetry/Metrics';
-import { Speedometer } from '../components/telemetry/Speedometer';
-import { SectionTitle } from '../components/ui';
-import { photos, rideModes } from '../data/demo';
-import { HistoryPreview } from '../history/HistoryPreview';
+import { ButtonLink } from '../components/design-system';
+import { photos } from '../data/demo';
+import { HomeMotorcycle } from '../home/HomeMotorcycle';
+import { HomePerformance } from '../home/HomePerformance';
+import { HomeRecentRides } from '../home/HomeRecentRides';
+import { HomeQuickRide, HomeSystemStatus } from '../home/HomeRideStatus';
+import { useHomeOffline } from '../home/useHomeOffline';
+import '../styles/home.css';
 
 export function HomePage() {
   const { user } = useAuth();
+  return user ? <Dashboard key={user.id} name={user.displayName} /> : null;
+}
+function Dashboard({ name }: { name: string }) {
+  const local = useHomeOffline();
   return (
-    <div className="home-page">
+    <div className="home-dashboard">
       <h1 className="sr-only">Apex Ride — Início</h1>
-      <section className="home-hero panel" aria-label="Alagoas sob duas rodas">
+      <section className="home-banner panel" aria-label="Sua próxima aventura">
         <img
-          src={photos.ride}
-          alt="Motociclista em uma curva no litoral — fotografia ilustrativa"
+          src={photos.cover}
+          alt="Motociclista no litoral ao pôr do sol — imagem decorativa"
           fetchPriority="high"
         />
-        <div className="hero-copy">
-          <span className="eyebrow">ROTAS É EXPERIÊNCIAS</span>
+        <div className="home-banner-copy">
+          <span className="eyebrow">
+            BEM-VINDO, {name.trim().split(/\s+/)[0]}
+          </span>
           <h2>
-            ALAGOAS
+            PRONTO PARA
             <br />
-            <em>SOB DUAS RODAS</em>
+            <em>PILOTAR?</em>
           </h2>
           <p>
-            Praias, serras e curvas
-            <br />
-            que fazem histórias.
+            Novas rotas, novos destinos
+            <br />e grandes histórias esperam por você.
           </p>
-          <Link to="/explorar" className="button button-primary">
-            Explorar rotas
-            <ChevronRight size={22} />
-          </Link>
+          <ButtonLink to="/explorar" variant="primary">
+            <Route size={22} aria-hidden />
+            Encontrar rotas
+            <ChevronRight size={20} aria-hidden />
+          </ButtonLink>
         </div>
       </section>
-      <section>
-        <SectionTitle aside={<span>Qual é o plano de hoje?</span>}>
-          INICIAR NOVO RIDE
-        </SectionTitle>
-        <div className="ride-mode-grid">
-          {rideModes.map((mode) => (
-            <Link
-              className="mode-card panel"
-              to={
-                user
-                  ? `/ride?modo=${mode.id}`
-                  : `/entrar?retorno=${encodeURIComponent(`/ride?modo=${mode.id}`)}`
-              }
-              key={mode.id}
-            >
-              <ModeIcon mode={mode.id} />
-              <span>
-                <strong>{mode.name}</strong>
-                <small>{mode.description}</small>
-              </span>
-              <ChevronRight className="mode-chevron" />
-            </Link>
-          ))}
-        </div>
-      </section>
-      <section>
-        <SectionTitle to="/historico" action="Ver todas">
-          ÚLTIMO RIDE
-        </SectionTitle>
-        <HistoryPreview />
-      </section>
-      <div className="home-instruments">
-        <section className="home-map panel">
-          <IllustrativeMap variant="home" />
-          <RideSummary />
-        </section>
-        <section className="home-telemetry panel">
-          <SectionTitle icon={Signal} to="/ride" action="">
-            TELEMETRIA · INICIE UM RIDE
-          </SectionTitle>
-          <div className="home-gauges">
-            <Speedometer value={null} source="gps" compact />
-            <div className="home-metric-list">
-              <MetricCard
-                icon={<Timer />}
-                label="Vel. média"
-                value="—"
-                unit="km/h"
-              />
-              <MetricCard
-                icon={<Gauge />}
-                label="Vel. máxima"
-                value="—"
-                unit="km/h"
-              />
-              <MetricCard
-                icon={<ArrowUpRight />}
-                label="Ângulo de curva"
-                value="Indisponível"
-                progress={null}
-              />
-              <MetricCard
-                icon={<CircleGauge />}
-                label="Força de frenagem"
-                value="—"
-                unit="G"
-                progress={null}
-              />
-            </div>
-          </div>
-        </section>
-      </div>
-      <section>
-        <SectionTitle icon={UsersRound} to="/comunidade">
-          COMUNIDADE APEX
-        </SectionTitle>
-        <CommunityPreview key={user?.id ?? 'anonymous'} />
-      </section>
+      <HomeQuickRide local={local} />
+      <HomeSystemStatus local={local} />
+      <HomeMotorcycle />
+      <HomePerformance local={local}>
+        <HomeRecentRides local={local} />
+      </HomePerformance>
     </div>
   );
 }

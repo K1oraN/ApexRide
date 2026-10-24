@@ -1,13 +1,20 @@
+import type { TrackPreview } from '@apex-ride/ride-core/history';
+import { ChevronRight, Clock3, Gauge, Route } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { ChevronRight, Route, Clock3, Gauge } from 'lucide-react';
-import type { TrackPreview } from '@apex-ride/ride-core/history';
-import type { HistoryRide } from './types';
-import { historyService } from './service';
 import { formatDuration } from '../ride/format';
-export function LastRide({ ride }: { ride: HistoryRide }) {
+import { historyService } from './service';
+import type { HistoryRide } from './types';
+export function LastRide({
+  ride,
+  compact = false,
+}: {
+  ride: HistoryRide;
+  compact?: boolean;
+}) {
   const [track, setTrack] = useState<TrackPreview | null>(null);
   useEffect(() => {
+    if (compact) return;
     let live = true;
     void historyService
       .track(ride.id)
@@ -18,7 +25,43 @@ export function LastRide({ ride }: { ride: HistoryRide }) {
     return () => {
       live = false;
     };
-  }, [ride.id]);
+  }, [ride.id, compact]);
+  if (compact)
+    return (
+      <Link
+        to={`/historico/${ride.id}`}
+        className="last-ride home-recent-card panel"
+      >
+        <span className="home-recent-icon" aria-hidden>
+          <Route size={28} />
+        </span>
+        <div>
+          <h3>{ride.title}</h3>
+          <p>
+            {ride.motorcycle_snapshot
+              ? `${ride.motorcycle_snapshot.brand} ${ride.motorcycle_snapshot.model}`
+              : 'Moto histórica'}
+            {ride.route_name ? ` · ${ride.route_name}` : ''}
+          </p>
+          <div className="home-recent-meta">
+            <time dateTime={ride.started_at}>
+              {new Date(ride.started_at).toLocaleDateString('pt-BR')}
+            </time>
+            <span>
+              {(ride.distance_meters / 1000).toLocaleString('pt-BR', {
+                maximumFractionDigits: 1,
+              })}{' '}
+              km
+            </span>
+            <span>
+              <Clock3 size={15} aria-hidden />
+              {formatDuration(ride.active_ms)}
+            </span>
+          </div>
+        </div>
+        <ChevronRight size={18} aria-hidden />
+      </Link>
+    );
   const points = track?.segments.flatMap((s) => s.points) ?? [];
   const xs = points.map((p) => p.longitude),
     ys = points.map((p) => p.latitude),

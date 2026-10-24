@@ -54,6 +54,10 @@ export interface RideSnapshot {
 }
 export class RideController {
   gpsShared = () => false;
+  navigationGpsShared = () => false;
+  setNavigationGpsShared = (shared: () => boolean) => {
+    this.navigationGpsShared = shared;
+  };
   setGpsShared = (shared: () => boolean) => {
     this.gpsShared = shared;
   };
@@ -86,6 +90,7 @@ export class RideController {
   private frozenSave: RidePayload | null = null;
   private routeTracker: RouteTracker | null = null;
   private lapDetector: LapDetector | null = null;
+  currentLapStartedAt = () => this.lapDetector?.started ?? null;
   selectRoute = (plan: RoutePlan | null) => {
     if (this.snapshot.activity || this.pending) return false;
     this.routeTracker = plan ? new RouteTracker(plan) : null;
@@ -204,7 +209,7 @@ export class RideController {
   };
   stopPreview = () => {
     if (!this.snapshot.activity && !this.pending) {
-      if (!this.gpsShared()) this.gps.stop();
+      if (!this.gpsShared() && !this.navigationGpsShared()) this.gps.stop();
       this.motion.stop();
     }
   };
@@ -249,7 +254,7 @@ export class RideController {
     this.requestedAt = this.clock();
     this.gap = true;
     this.publish({ state: 'waiting-gps', error: null, savedId: null });
-    this.gps.retry();
+    this.gps.start();
   };
   private receive = () => {
     const gps = this.gps.getSnapshot();
@@ -260,7 +265,11 @@ export class RideController {
       this.routeTracker?.interrupt();
       this.lapDetector?.interrupt();
       if (this.routeTracker)
-        this.publish({ routeProgress: this.routeTracker.snapshot() });
+        this.publish({
+          routeProgress: this.routeTracker.snapshot(),
+          inconclusiveLaps:
+            this.lapDetector?.inconclusive ?? this.snapshot.inconclusiveLaps,
+        });
       if (
         state === 'waiting-gps' &&
         (['denied', 'insecure', 'unsupported'].includes(gps.status) ||
@@ -402,9 +411,11 @@ export class RideController {
       state: 'paused',
       activity,
       routeProgress: this.routeTracker?.snapshot() ?? null,
+      inconclusiveLaps:
+        this.lapDetector?.inconclusive ?? this.snapshot.inconclusiveLaps,
     });
     this.gap = true;
-    if (!this.gpsShared()) this.gps.stop();
+    if (!this.gpsShared() && !this.navigationGpsShared()) this.gps.stop();
   };
   resume = () => {
     if (this.snapshot.state !== 'paused' || !this.snapshot.activity) return;
@@ -419,7 +430,7 @@ export class RideController {
     this.requestedAt = this.clock();
     this.gap = true;
     this.publish({ state: 'waiting-gps', error: null });
-    this.gps.retry();
+    this.gps.start();
   };
   finish = () => {
     const { state, activity } = this.snapshot;
@@ -458,13 +469,13 @@ export class RideController {
       },
       error: null,
     });
-    this.gps.stop();
+    if (!this.gpsShared() && !this.navigationGpsShared()) this.gps.stop();
   };
   cancelWaiting = () => {
     if (this.snapshot.state !== 'waiting-gps') return;
     this.pending = null;
     this.publish({ state: this.snapshot.activity ? 'paused' : 'preparation' });
-    this.gps.stop();
+    if (!this.gpsShared() && !this.navigationGpsShared()) this.gps.stop();
   };
   setVisibility = (visibility: RidePayload['visibility']) => {
     if (
@@ -566,7 +577,7 @@ export class RideController {
       error: null,
       savedId: null,
     });
-    this.gps.stop();
+    if (!this.gpsShared() && !this.navigationGpsShared()) this.gps.stop();
   };
   recover = (
     activity: Activity,
