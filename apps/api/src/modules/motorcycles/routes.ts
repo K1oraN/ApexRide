@@ -1,3 +1,10 @@
+import {
+  resolveIdentity,
+  recordIdentity,
+  type IdentityRow,
+} from './identity.js';
+import { registerCatalog } from './catalog.js';
+import { registerGarageRecords } from './records.js';
 import { randomUUID } from 'node:crypto';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import type { Pool, PoolClient } from 'pg';
@@ -13,24 +20,43 @@ import {
   type PhotoStorage,
 } from './photos.js';
 
-interface MotorcycleRow {
+interface MotorcycleRow extends IdentityRow {
   id: string;
   owner_id: string;
   brand: string;
   model: string;
   year: number;
-  displacement_cc: number;
+  displacement_cc: number | string | null;
   is_primary: boolean;
   photo_ref: string | null;
   created_at: Date;
   updated_at: Date;
 }
+const privateVisible = (row: MotorcycleRow) => ({
+  id: row.id,
+  brand: row.brand,
+  model: row.model,
+  year: row.year,
+  displacementCc:
+    row.displacement_cc === null ? null : Number(row.displacement_cc),
+  propulsion: row.propulsion,
+  manufactureYear: row.manufacture_year,
+  versionName: row.version_name,
+  catalogVariantId: row.catalog_variant_id,
+  catalogRevision: row.catalog_revision,
+  archivedAt: row.archived_at,
+  isPrimary: row.is_primary,
+  photoUrl: row.photo_ref ? `/motorcycles/${row.id}/photo` : null,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
 const visible = (row: MotorcycleRow) => ({
   id: row.id,
   brand: row.brand,
   model: row.model,
   year: row.year,
-  displacementCc: row.displacement_cc,
+  displacementCc:
+    row.displacement_cc === null ? null : Number(row.displacement_cc),
   isPrimary: row.is_primary,
   photoUrl: row.photo_ref ? `/motorcycles/${row.id}/photo` : null,
   createdAt: row.created_at,
@@ -69,10 +95,11 @@ export async function motorcycleRoutes(
     client: Pool | PoolClient,
     bikeId: string,
     userId: string,
+    includeArchived = false,
   ) {
     const result = await client.query(
-      'SELECT * FROM motorcycles WHERE id=$1 AND owner_id=$2 AND archived_at IS NULL',
-      [bikeId, userId],
+      'SELECT * FROM motorcycles WHERE id=$1 AND owner_id=$2 AND ($3 OR archived_at IS NULL)',
+      [bikeId, userId, includeArchived],
     );
     if (!result.rows[0]) throw notFound();
     return result.rows[0] as MotorcycleRow;
@@ -132,15 +159,20 @@ export async function motorcycleRoutes(
     await cleaning;
   });
 
+  registerCatalog(app, db);
+  registerGarageRecords(app, { db, identify, owner, own, transaction });
   app.get('/motorcycles', { onRequest: identify }, async (request) => ({
     status: 'ok',
     motorcycles: (
       await db().query(
         `SELECT * FROM motorcycles
-      WHERE owner_id=$1 AND archived_at IS NULL ORDER BY is_primary DESC,created_at,id`,
-        [owner(request)],
+      WHERE owner_id=$1 AND (CASE WHEN $2 THEN archived_at IS NOT NULL ELSE archived_at IS NULL END) ORDER BY is_primary DESC,created_at,id`,
+        [
+          owner(request),
+          (request.query as { archived?: string }).archived === 'true',
+        ],
       )
-    ).rows.map(visible),
+    ).rows.map(privateVisible),
   }));
   app.get('/motorcycles/primary', { onRequest: identify }, async (request) => ({
     status: 'ok',
@@ -150,50 +182,72 @@ export async function motorcycleRoutes(
           'SELECT * FROM motorcycles WHERE owner_id=$1 AND is_primary AND archived_at IS NULL',
           [owner(request)],
         )
-      ).rows.map(visible)[0] ?? null,
+      ).rows.map(privateVisible)[0] ?? null,
   }));
   app.post('/motorcycles', { onRequest: identify }, async (request, reply) => {
     const b = motorcycleData(request.body);
     const row = await transaction(owner(request), async (client) => {
+      const v = await resolveIdentity(client, b);
       const result = await client.query(
-        `INSERT INTO motorcycles(id,owner_id,brand,model,year,displacement_cc,is_primary)
-        VALUES($1,$2,$3,$4,$5,$6,NOT EXISTS(SELECT 1 FROM motorcycles WHERE owner_id=$2 AND archived_at IS NULL)) RETURNING *`,
+        `INSERT INTO motorcycles(id,owner_id,brand,model,year,displacement_cc,is_primary,propulsion,manufacture_year,version_name,catalog_variant_id,catalog_revision)
+        VALUES($1,$2,$3,$4,$5,$6,NOT EXISTS(SELECT 1 FROM motorcycles WHERE owner_id=$2 AND archived_at IS NULL),$7,$8,$9,$10,$11) RETURNING *`,
         [
           randomUUID(),
           owner(request),
-          b.brand,
-          b.model,
-          b.year,
-          b.displacementCc,
+          v.brand,
+          v.model,
+          v.year,
+          v.cc,
+          v.propulsion,
+          v.manufactureYear,
+          v.versionName,
+          v.variant,
+          v.revision,
         ],
       );
+      await recordIdentity(client, result.rows[0]);
       await reconcileUser(client, owner(request));
       return result.rows[0] as MotorcycleRow;
     });
-    return reply.code(201).send({ status: 'ok', motorcycle: visible(row) });
+    return reply
+      .code(201)
+      .send({ status: 'ok', motorcycle: privateVisible(row) });
   });
   app.get('/motorcycles/:id', { onRequest: identify }, async (request) => ({
     status: 'ok',
-    motorcycle: visible(await own(db(), id(request), owner(request))),
+    motorcycle: privateVisible(
+      await own(
+        db(),
+        id(request),
+        owner(request),
+        (request.query as { archived?: string }).archived === 'true',
+      ),
+    ),
   }));
   app.patch('/motorcycles/:id', { onRequest: identify }, async (request) => {
     const b = motorcycleData(request.body, true);
     const row = await transaction(owner(request), async (client) => {
       const current = await own(client, id(request), owner(request));
+      const v = await resolveIdentity(client, b, current);
       const result = await client.query(
-        `UPDATE motorcycles SET brand=$1,model=$2,year=$3,displacement_cc=$4,updated_at=now()
-        WHERE id=$5 RETURNING *`,
+        `UPDATE motorcycles SET brand=$1,model=$2,year=$3,displacement_cc=$4,propulsion=$5,manufacture_year=$6,version_name=$7,catalog_variant_id=$8,catalog_revision=$9,updated_at=now() WHERE id=$10 RETURNING *`,
         [
-          b.brand ?? current.brand,
-          b.model ?? current.model,
-          b.year ?? current.year,
-          b.displacementCc ?? current.displacement_cc,
+          v.brand,
+          v.model,
+          v.year,
+          v.cc,
+          v.propulsion,
+          v.manufactureYear,
+          v.versionName,
+          v.variant,
+          v.revision,
           current.id,
         ],
       );
+      await recordIdentity(client, result.rows[0]);
       return result.rows[0] as MotorcycleRow;
     });
-    return { status: 'ok', motorcycle: visible(row) };
+    return { status: 'ok', motorcycle: privateVisible(row) };
   });
   app.patch(
     '/motorcycles/:id/primary',
@@ -211,7 +265,7 @@ export async function motorcycleRoutes(
         );
         return result.rows[0] as MotorcycleRow;
       });
-      return { status: 'ok', motorcycle: visible(row) };
+      return { status: 'ok', motorcycle: privateVisible(row) };
     },
   );
   app.delete('/motorcycles/:id', { onRequest: identify }, async (request) => {
@@ -295,7 +349,7 @@ export async function motorcycleRoutes(
         );
       }
       await clean();
-      return { status: 'ok', motorcycle: visible(row) };
+      return { status: 'ok', motorcycle: privateVisible(row) };
     },
   );
   app.delete(
@@ -312,7 +366,7 @@ export async function motorcycleRoutes(
         return result.rows[0] as MotorcycleRow;
       });
       await clean();
-      return { status: 'ok', motorcycle: visible(row) };
+      return { status: 'ok', motorcycle: privateVisible(row) };
     },
   );
   app.get('/motorcycles/:id/photo', async (request, reply) => {

@@ -8,7 +8,7 @@ import type { MotionStats } from '@apex-ride/ride-core/motion';
 export interface Bike {
   brand: string;
   model: string;
-  displacementCc: number;
+  displacementCc: number | null;
 }
 export interface Candidate {
   id: string;

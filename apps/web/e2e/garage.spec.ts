@@ -58,9 +58,11 @@ test('garagem real: foto, edição, principal, perfil, privacidade e exclusão',
   const session = await login(page);
   await page.goto('/garagem');
   await expect(
-    page.getByRole('heading', { name: 'Sua garagem está vazia.' }),
+    page.getByRole('heading', { name: 'Sua garagem começa aqui.' }),
   ).toBeVisible();
-  await page.getByRole('link', { name: 'Cadastrar primeira moto' }).click();
+  await page
+    .getByRole('link', { name: 'Adicionar minha primeira moto' })
+    .click();
   await page.getByRole('button', { name: 'Salvar moto' }).click();
   expect(
     await page
@@ -76,7 +78,9 @@ test('garagem real: foto, edição, principal, perfil, privacidade e exclusão',
   ).toBeVisible();
   await page.getByRole('button', { name: 'Salvar moto' }).click();
   await expect(page).toHaveURL(/\/garagem\/[a-f0-9-]+$/);
-  await expect(page.getByRole('status')).toContainText('Moto cadastrada.');
+  await expect(
+    page.getByText('Moto cadastrada.', { exact: true }),
+  ).toBeVisible();
   await expect(page.getByText('Moto principal', { exact: true })).toBeVisible();
   const firstPath = new URL(page.url()).pathname;
   const photo = page.getByAltText('Honda CB 650R', { exact: true });
@@ -93,7 +97,9 @@ test('garagem real: foto, edição, principal, perfil, privacidade e exclusão',
     .getByLabel('Fotografia (opcional)')
     .setInputFiles('public/assets/sunset-bike.webp');
   await page.getByRole('button', { name: 'Salvar moto' }).click();
-  await expect(page.getByRole('status')).toContainText('Moto atualizada.');
+  await expect(
+    page.getByText('Moto atualizada.', { exact: true }),
+  ).toBeVisible();
   await page.reload();
   await expect(
     page.getByRole('heading', { name: 'CB 650R Sport', exact: true }),
@@ -159,7 +165,7 @@ test('garagem real: foto, edição, principal, perfil, privacidade e exclusão',
     .getByRole('button', { name: 'Confirmar exclusão', exact: true })
     .click();
   await expect(
-    page.getByRole('heading', { name: 'Sua garagem está vazia.' }),
+    page.getByRole('heading', { name: 'Sua garagem começa aqui.' }),
   ).toBeVisible();
   await page.goto('/perfil');
   await expect(page.locator('.profile-top-grid')).toContainText(
@@ -247,9 +253,11 @@ test('falha de upload permite tentar de novo sem duplicar moto; erros de rede e 
   ).toHaveLength(1);
   await page.route('**/api/motorcycles', (route) => route.abort());
   await page.goto('/garagem');
-  await expect(page.getByRole('alert')).toContainText(
-    'Não foi possível conectar',
-  );
+  await expect(
+    page.getByText(
+      'Cópia deste aparelho · sem fotografias ou registros privados.',
+    ),
+  ).toBeVisible();
   await page.unroute('**/api/motorcycles');
   await page
     .getByRole('button', { name: 'Tentar novamente', exact: true })

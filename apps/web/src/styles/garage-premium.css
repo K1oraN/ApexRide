@@ -1,0 +1,583 @@
+.garage-premium,
+.motorcycle-workspace {
+  max-width: 1120px;
+  margin-inline: auto;
+  min-width: 0;
+  display: grid;
+  gap: 20px;
+}
+.garage-premium .ui-page-header {
+  margin: 0;
+}
+.garage-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+.garage-toolbar .ui-search {
+  min-width: 0;
+}
+.garage-bike-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  gap: 12px;
+}
+.garage-bike-tile {
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, #171e24, #0b1013);
+  border-radius: 14px;
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 10px;
+  padding: 8px;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  min-width: 0;
+  min-height: 96px;
+}
+.garage-bike-tile.selected {
+  border-color: #ff253a;
+  box-shadow:
+    0 0 0 1px #ff253a30,
+    inset 0 -3px #f21931;
+}
+.garage-bike-tile > .motorcycle-photo {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  width: 80px;
+  height: 80px;
+  min-height: 0;
+  border-radius: 9px;
+  object-fit: cover;
+  margin: 0;
+}
+.garage-bike-tile .motorcycle-photo-empty {
+  padding: 8px;
+  align-items: center;
+  justify-content: center;
+}
+.garage-bike-tile .motorcycle-photo-empty > span {
+  display: none;
+}
+.garage-bike-tile .motorcycle-photo-empty > svg {
+  width: 45px;
+  height: 45px;
+}
+.garage-bike-tile > span {
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  min-width: 0;
+}
+.garage-bike-tile strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.garage-bike-tile small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.garage-add-tile {
+  border-style: dashed !important;
+  min-height: 96px;
+}
+.garage-hero {
+  position: relative;
+  min-height: 330px;
+  overflow: hidden;
+  border: 1px solid #303840;
+  border-radius: 22px;
+  background: radial-gradient(
+    ellipse at 80% 35%,
+    #293239,
+    #11171c 50%,
+    #070b0e
+  );
+  isolation: isolate;
+}
+.garage-hero > .motorcycle-photo {
+  width: 100%;
+  height: 100%;
+  min-height: 330px;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  object-fit: cover;
+  object-position: 65% center;
+  border-radius: 0;
+}
+.garage-hero > .motorcycle-photo-empty {
+  justify-items: end;
+  padding-right: 9%;
+  background: transparent;
+}
+.garage-hero > .motorcycle-photo-empty > svg {
+  width: 145px;
+  height: 145px;
+  opacity: 0.5;
+}
+.garage-hero > .motorcycle-photo-empty > span {
+  display: none;
+}
+.garage-hero.has-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #05090bf5, #05090bc4 32%, #05090b0d 75%);
+  z-index: 1;
+  pointer-events: none;
+}
+.garage-hero-copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 10px;
+  min-height: 330px;
+  padding: 34px;
+  max-width: 65%;
+  overflow-wrap: anywhere;
+}
+.garage-hero-copy .eyebrow {
+  letter-spacing: 3px;
+}
+.garage-hero-copy h2,
+.garage-hero-copy h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(29px, 5vw, 48px);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1.05;
+  margin: 0;
+}
+.garage-hero-copy h2 em,
+.garage-hero-copy h1 em {
+  color: var(--red);
+}
+.garage-hero-copy p {
+  font-size: 17px;
+  color: #c4cbd3;
+  margin: 0;
+}
+.garage-hero-copy .button {
+  margin-top: 14px;
+}
+.garage-hero-badge {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  z-index: 3;
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid #5e646a;
+  background: #070a0de8;
+  color: #dce0e6;
+  font-size: 11px;
+  font-weight: 700;
+}
+.garage-hero-badge.primary svg {
+  color: #30df80;
+  fill: #30df80;
+}
+.garage-zoom {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 3;
+}
+.garage-section {
+  padding: 22px;
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.garage-section h2 {
+  font-size: 20px;
+  margin: 0;
+}
+.garage-section p {
+  margin: 0;
+  line-height: 1.6;
+}
+.garage-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.garage-section-heading h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+}
+.garage-section-heading h2 > svg {
+  color: var(--red);
+  flex-shrink: 0;
+}
+.garage-muted {
+  font-size: 12px;
+  color: var(--muted);
+}
+.garage-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+.garage-spec {
+  padding: 16px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  background: linear-gradient(130deg, #151d23, #0a1013);
+}
+.garage-spec dt {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.garage-spec dd {
+  font-size: 17px;
+  margin: 0;
+  font-weight: 600;
+}
+.garage-spec a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  font-size: 12px;
+  color: #ff6373;
+}
+.garage-spec-sheet {
+  min-width: 0;
+}
+.garage-quick-actions,
+.garage-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.garage-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-block: 8px;
+}
+.garage-stats > div {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.garage-stats strong {
+  font-size: 25px;
+}
+.garage-stats span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.garage-details {
+  min-width: 0;
+  display: grid;
+  gap: 18px;
+}
+.garage-detail-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+.garage-detail-tabs .button {
+  padding: 12px 8px;
+  font-size: 12px;
+}
+.garage-detail-tabs svg {
+  flex-shrink: 0;
+}
+.garage-record {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 0;
+}
+.garage-record-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 10px;
+}
+.garage-record h3 {
+  margin: 0;
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+.garage-record-title > span {
+  font-size: 10px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px;
+}
+.garage-record dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.garage-record dt {
+  font-size: 11px;
+  color: var(--muted);
+}
+.garage-record dd {
+  margin: 5px 0 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.garage-record-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.garage-record small {
+  color: var(--muted);
+}
+.garage-record .garage-actions {
+  margin-top: 14px;
+}
+.garage-record-form {
+  padding-block: 12px;
+}
+.garage-record-form fieldset {
+  display: grid;
+  gap: 16px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.garage-record-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.garage-record-form label {
+  min-width: 0;
+}
+.garage-record-form input {
+  max-width: 100%;
+}
+.catalog-picker {
+  padding: 20px;
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+.catalog-picker > header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.catalog-picker h2 {
+  font-size: 20px;
+  margin: 0;
+}
+.catalog-picker p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.catalog-picker > header > svg {
+  color: var(--red);
+  flex-shrink: 0;
+}
+.catalog-search-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: end;
+  min-width: 0;
+}
+.catalog-search-grid > .ui-search {
+  min-width: 0;
+}
+.catalog-results {
+  display: grid;
+  gap: 8px;
+}
+.catalog-result {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #10171d;
+  color: var(--text);
+  padding: 14px;
+  text-align: left;
+  min-width: 0;
+  cursor: pointer;
+}
+.catalog-result > span {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.catalog-result strong {
+  overflow-wrap: anywhere;
+}
+.catalog-result small {
+  color: var(--muted);
+}
+.catalog-result > svg:first-child {
+  color: var(--red);
+  flex-shrink: 0;
+}
+.catalog-result > svg:last-child {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.catalog-result:hover {
+  border-color: var(--red);
+}
+.catalog-link-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+.catalog-source {
+  padding-block: 14px;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 24px;
+}
+.catalog-source p {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.motorcycle-form:has(.catalog-picker) {
+  max-width: 900px;
+}
+.motorcycle-workspace > .garage-actions {
+  margin: 0;
+}
+@media (max-width: 700px) {
+  .garage-premium,
+  .motorcycle-workspace {
+    gap: 16px;
+  }
+  .garage-bike-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .garage-bike-tile {
+    grid-template-columns: 54px minmax(0, 1fr);
+    padding: 6px;
+    min-height: 92px;
+    gap: 6px;
+  }
+  .garage-bike-tile > .motorcycle-photo {
+    width: 54px;
+    height: 70px;
+  }
+  .garage-bike-tile strong {
+    font-size: 12px;
+  }
+  .garage-bike-tile small {
+    font-size: 11px;
+  }
+  .garage-hero,
+  .garage-hero > .motorcycle-photo,
+  .garage-hero-copy {
+    min-height: 300px;
+  }
+  .garage-hero-copy {
+    padding: 22px;
+    max-width: 75%;
+    padding-top: 64px;
+  }
+  .garage-hero-copy h2,
+  .garage-hero-copy h1 {
+    font-size: 32px;
+  }
+  .garage-hero-copy p {
+    font-size: 14px;
+  }
+  .garage-hero-copy .button {
+    padding: 12px;
+    font-size: 12px;
+  }
+  .garage-hero-badge {
+    top: 12px;
+    right: 12px;
+    font-size: 10px;
+    padding: 8px;
+  }
+  .garage-zoom {
+    bottom: 10px;
+    right: 10px;
+    font-size: 10px;
+    padding: 8px;
+  }
+  .garage-spec {
+    padding: 12px;
+  }
+  .garage-spec dd {
+    font-size: 14px;
+  }
+  .garage-spec dt {
+    font-size: 11px;
+  }
+  .garage-detail-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .garage-detail-tabs .button {
+    flex-direction: column;
+    font-size: 11px;
+  }
+  .garage-section {
+    padding: 16px;
+  }
+  .garage-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  .garage-stats strong {
+    font-size: 21px;
+  }
+  .catalog-search-grid {
+    grid-template-columns: 1fr;
+  }
+  .garage-toolbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+  .garage-toolbar > .button {
+    font-size: 11px;
+    padding-inline: 10px;
+  }
+  .garage-add-tile {
+    min-height: 92px;
+  }
+  .garage-quick-actions {
+    grid-template-columns: 1fr;
+  }
+  .garage-record-fields {
+    grid-template-columns: 1fr;
+  }
+  .garage-hero > .motorcycle-photo-empty > svg {
+    width: 110px;
+    opacity: 0.3;
+  }
+}
+
+.motorcycle-detail.motorcycle-workspace {
+  width: 100%;
+  max-width: 1120px;
+  justify-items: stretch;
+  padding: 0;
+  margin: 0 auto;
+}

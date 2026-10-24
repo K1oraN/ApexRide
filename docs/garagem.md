@@ -1,5 +1,19 @@
 # Garagem — operação e contratos
 
+## Atualização vigente — Etapa 6, 24/10/2026
+
+A Garagem mantém os contratos de propriedade, principal, fotografias e
+arquivamento descritos abaixo, ampliados pelas migrações 034/035.
+Agora há catálogo brasileiro inicial com revisões e fontes, propulsão elétrica
+sem cilindrada, cilindrada decimal, ano de fabricação separado e registros
+privados persistentes. O DTO do proprietário inclui os novos campos; o
+DTO público continua básico. Estatísticas de Ride não estimam odômetro.
+Consulte [relatório e contratos atuais](refinamento/etapa-06-garagem-catalogo.md)
+e [cobertura/curadoria](catalogo-motos.md). O texto da Parte 04 abaixo conserva
+o contrato histórico daquela entrega, anterior a catálogo e manutenção.
+
+## Registro histórico da Parte 04
+
 A Parte 04 usa as contas da Parte 03, o pool PostgreSQL e os componentes
 existentes. Não há catálogo externo, segundo login ou dados demonstrativos
 como motocicletas pessoais.

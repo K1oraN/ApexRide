@@ -1,20 +1,20 @@
-import { ArrowLeft, Plus } from 'lucide-react';
-import { RideIcon } from '../components/Brand';
+import { CatalogPicker } from '../garage/CatalogPicker';
+import { GaragePremium, GarageHero } from '../garage/GaragePremium';
+import { GarageDetails } from '../garage/GarageDetails';
+import type { CatalogVariant } from '../services/catalog';
+import { ArrowLeft } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
-import { useAuth } from '../auth/useAuth';
 import { Field } from '../components/AccountFields';
 import {
   Button,
   ButtonLink,
   Checkbox,
   Dialog,
-  EmptyState,
-  PageHeader,
+  ChoiceSelect,
 } from '../components/design-system';
-import { Chip } from '../components/ui';
 import { useGarage } from '../garage/context';
-import { MotorcycleCard, MotorcyclePhoto } from '../garage/MotorcycleCard';
+import { MotorcyclePhoto } from '../garage/MotorcycleCard';
 import {
   motorcycleService,
   validatePhoto,
@@ -22,84 +22,31 @@ import {
 } from '../services/motorcycles';
 
 export function GaragePage() {
-  const { user, status } = useAuth();
-  const { motorcycles, loading, error, refresh } = useGarage();
-  const location = useLocation();
-  return (
-    <div className="garage-page">
-      <PageHeader
-        title="Minha"
-        accent="Garagem"
-        description="Suas motos. Suas próximas aventuras."
-        action={
-          user && motorcycles.length > 0 ? (
-            <ButtonLink variant="primary" size="lg" to="/garagem/nova">
-              <Plus size={20} />
-              Adicionar Moto
-            </ButtonLink>
-          ) : undefined
-        }
-      />
-      {location.state?.message && (
-        <p className="form-message" role="status">
-          {location.state.message}
-        </p>
-      )}
-      {status === 'loading' || (user && loading) ? (
-        <p role="status">Carregando garagem…</p>
-      ) : !user ? (
-        <section className="garage-empty panel">
-          <RideIcon size={52} />
-          <h2>Sua garagem começa aqui</h2>
-          <p>
-            Entre na sua conta para cadastrar e gerenciar suas motocicletas.
-          </p>
-          <ButtonLink variant="primary" to="/entrar?retorno=%2Fgaragem">
-            Entrar na conta
-          </ButtonLink>
-        </section>
-      ) : error ? (
-        <section className="garage-empty panel">
-          <p role="alert">{error}</p>
-          <Button variant="secondary" onClick={() => void refresh()}>
-            Tentar novamente
-          </Button>
-        </section>
-      ) : motorcycles.length ? (
-        <div className="motorcycle-grid">
-          {motorcycles.map((bike) => (
-            <MotorcycleCard bike={bike} key={bike.id} />
-          ))}
-        </div>
-      ) : (
-        <EmptyState
-          className="garage-empty"
-          title="Sua garagem está vazia."
-          icon={<RideIcon size={32} />}
-          action={
-            <ButtonLink variant="primary" size="lg" to="/garagem/nova">
-              Cadastrar primeira moto
-            </ButtonLink>
-          }
-        >
-          Cadastre sua primeira moto para começar sua jornada no Apex Ride.
-        </EmptyState>
-      )}
-    </div>
-  );
+  return <GaragePremium />;
 }
 
 export function MotorcyclePage({ edit = false }: { edit?: boolean }) {
   const { id } = useParams();
-  return <MotorcycleView key={`${id ?? 'new'}:${edit}`} id={id} edit={edit} />;
+  const archived =
+    new URLSearchParams(useLocation().search).get('archived') === 'true';
+  return (
+    <MotorcycleView
+      key={`${id ?? 'new'}:${edit}`}
+      id={id}
+      edit={edit}
+      archived={archived}
+    />
+  );
 }
 
 function MotorcycleView({
   id,
   edit,
+  archived = false,
 }: {
   id: string | undefined;
   edit: boolean;
+  archived?: boolean;
 }) {
   const { refresh } = useGarage();
   const navigate = useNavigate();
@@ -115,7 +62,7 @@ function MotorcycleView({
     if (!id) return;
     let active = true;
     void motorcycleService
-      .detail(id)
+      .detail(id, archived)
       .then((data) => {
         if (active) {
           setBike(data.motorcycle);
@@ -136,7 +83,7 @@ function MotorcycleView({
     return () => {
       active = false;
     };
-  }, [id, retry]);
+  }, [id, retry, archived]);
   useEffect(() => {
     if (confirming) confirmButton.current?.focus();
   }, [confirming]);
@@ -181,47 +128,42 @@ function MotorcycleView({
     );
   if (edit || !id) return <MotorcycleForm key={id ?? 'new'} bike={bike} />;
   return (
-    <section className="motorcycle-detail panel">
+    <section className="motorcycle-detail motorcycle-workspace">
       <Link className="text-link action-link" to="/garagem">
         <ArrowLeft size={18} />
         Voltar para a garagem
       </Link>
-      <MotorcyclePhoto bike={bike!} />
-      <div>
-        <span className="eyebrow">{bike!.brand}</span>
-        <h1>{bike!.model}</h1>
-      </div>
-      <p>
-        {bike!.year} · {bike!.displacementCc} cc
-      </p>
-      {bike!.isPrimary && <Chip accent>Moto principal</Chip>}
+      <GarageHero bike={bike!} manage={false} />
       {location.state?.message && <p role="status">{location.state.message}</p>}
       {error && (
         <p className="form-error" role="alert">
           {error}
         </p>
       )}
-      <div className="garage-actions">
-        <ButtonLink variant="secondary" to={`/garagem/${id}/editar`}>
-          Editar moto
-        </ButtonLink>
-        {!bike!.isPrimary && (
+      {!bike!.archivedAt && (
+        <div className="garage-actions">
+          <ButtonLink variant="secondary" to={`/garagem/${id}/editar`}>
+            Editar moto
+          </ButtonLink>
+          {!bike!.isPrimary && (
+            <Button
+              variant="outline"
+              disabled={busy}
+              onClick={() => void action(false)}
+            >
+              {busy ? 'Salvando…' : 'Definir como principal'}
+            </Button>
+          )}
           <Button
-            variant="outline"
+            variant="destructive"
             disabled={busy}
-            onClick={() => void action(false)}
+            onClick={() => setConfirming(true)}
           >
-            {busy ? 'Salvando…' : 'Definir como principal'}
+            Excluir moto
           </Button>
-        )}
-        <Button
-          variant="destructive"
-          disabled={busy}
-          onClick={() => setConfirming(true)}
-        >
-          Excluir moto
-        </Button>
-      </div>
+        </div>
+      )}
+      <GarageDetails bike={bike!} />
       <Dialog
         open={confirming}
         dismissible={!busy}
@@ -268,6 +210,37 @@ function MotorcycleForm({ bike }: { bike: Motorcycle | null }) {
   const [model, setModel] = useState(bike?.model ?? '');
   const [year, setYear] = useState(String(bike?.year ?? ''));
   const [cc, setCc] = useState(String(bike?.displacementCc ?? ''));
+  const [propulsion, setPropulsion] = useState<'combustion' | 'electric'>(
+    bike?.propulsion ?? 'combustion',
+  );
+  const [manufactureYear, setManufactureYear] = useState(
+    String(bike?.manufactureYear ?? ''),
+  );
+  const [versionName, setVersionName] = useState(bike?.versionName ?? '');
+  const [catalog, setCatalog] = useState<{
+    id: string;
+    revision: number;
+  } | null>(
+    bike?.catalogVariantId && bike.catalogRevision
+      ? { id: bike.catalogVariantId, revision: bike.catalogRevision }
+      : null,
+  );
+  const [showCatalog, setShowCatalog] = useState(!bike);
+  function selectCatalog(v: CatalogVariant) {
+    setBrand(v.brand);
+    setModel(v.model);
+    setYear(String(v.model_year));
+    setVersionName(v.name);
+    setPropulsion(v.propulsion);
+    setCc(
+      v.specifications.displacement
+        ? String(v.specifications.displacement.value)
+        : '',
+    );
+    setCatalog({ id: v.id, revision: v.revision });
+    setShowCatalog(false);
+  }
+
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [photoInputVersion, setPhotoInputVersion] = useState(0);
@@ -291,7 +264,12 @@ function MotorcycleForm({ bike }: { bike: Motorcycle | null }) {
       brand: brand.trim(),
       model: model.trim(),
       year: Number(year),
-      displacementCc: Number(cc),
+      displacementCc: propulsion === 'electric' ? null : Number(cc),
+      propulsion,
+      manufactureYear: manufactureYear ? Number(manufactureYear) : null,
+      versionName,
+      catalogVariantId: catalog?.id ?? null,
+      catalogRevision: catalog?.revision ?? null,
     };
     if (
       !data.brand ||
@@ -318,11 +296,13 @@ function MotorcycleForm({ bike }: { bike: Motorcycle | null }) {
       return;
     }
     if (
-      !Number.isInteger(data.displacementCc) ||
-      data.displacementCc < 1 ||
-      data.displacementCc > 10000
+      propulsion === 'combustion' &&
+      (data.displacementCc === null ||
+        !Number.isFinite(data.displacementCc) ||
+        data.displacementCc < 1 ||
+        data.displacementCc > 10000)
     ) {
-      setError('Informe uma cilindrada inteira entre 1 e 10000 cc.');
+      setError('Informe cilindrada entre 1 e 10000 cc.');
       return;
     }
     if (file && validatePhoto(file)) {
@@ -377,6 +357,33 @@ function MotorcycleForm({ bike }: { bike: Motorcycle | null }) {
         <span className="eyebrow">MINHA GARAGEM</span>
         <h1>{bike ? 'Editar moto' : 'Adicionar Moto'}</h1>
       </div>
+      {showCatalog ? (
+        <CatalogPicker
+          onSelect={selectCatalog}
+          onManual={() => setShowCatalog(false)}
+        />
+      ) : (
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => setShowCatalog(true)}
+        >
+          Buscar ou trocar versão no catálogo
+        </Button>
+      )}
+      {catalog && (
+        <p className="catalog-link-state">
+          Versão de catálogo · revisão {catalog.revision}
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={() => setCatalog(null)}
+          >
+            Desvincular e manter dados
+          </Button>
+        </p>
+      )}
       <form
         className="account-form"
         onSubmit={(e) => void submit(e)}
@@ -413,19 +420,50 @@ function MotorcycleForm({ bike }: { bike: Motorcycle | null }) {
             value={year}
             onChange={(e) => setYear(e.target.value)}
           />
+          <div className="account-field">
+            <span>Propulsão</span>
+            <ChoiceSelect
+              aria-label="Propulsão"
+              value={propulsion}
+              onChange={(e) =>
+                setPropulsion(e.target.value as 'combustion' | 'electric')
+              }
+            >
+              <option value="combustion">Combustão</option>
+              <option value="electric">Elétrica</option>
+            </ChoiceSelect>
+          </div>
+          {propulsion === 'combustion' ? (
+            <Field
+              label="Cilindrada (cc)"
+              name="displacementCc"
+              type="number"
+              inputMode="decimal"
+              required
+              min={1}
+              max={10000}
+              step={0.01}
+              value={cc}
+              onChange={(e) => setCc(e.target.value)}
+            />
+          ) : (
+            <p>Propulsão elétrica · sem cilindrada.</p>
+          )}
           <Field
-            label="Cilindrada (cc)"
-            name="displacementCc"
-            type="number"
-            inputMode="numeric"
-            required
-            min={1}
-            max={10000}
-            step={1}
-            value={cc}
-            onChange={(e) => setCc(e.target.value)}
+            label="Versão (opcional)"
+            value={versionName}
+            maxLength={100}
+            onChange={(e) => setVersionName(e.target.value)}
           />
-          <small>Ano: 1885 a {maxYear}. Cilindrada: 1 a 10000 cc.</small>
+          <Field
+            label="Ano de fabricação (opcional)"
+            type="number"
+            min={1885}
+            max={maxYear}
+            step={1}
+            value={manufactureYear}
+            onChange={(e) => setManufactureYear(e.target.value)}
+          />
           <Field
             key={photoInputVersion}
             label="Fotografia (opcional)"

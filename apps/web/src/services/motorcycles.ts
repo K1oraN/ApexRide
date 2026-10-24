@@ -3,10 +3,16 @@ export interface MotorcycleData {
   brand: string;
   model: string;
   year: number;
-  displacementCc: number;
+  displacementCc: number | null;
+  propulsion?: 'combustion' | 'electric';
+  manufactureYear?: number | null;
+  versionName?: string;
+  catalogVariantId?: string | null;
+  catalogRevision?: number | null;
 }
 export interface Motorcycle extends MotorcycleData {
   id: string;
+  archivedAt?: string | null;
   isPrimary: boolean;
   photoUrl: string | null;
   createdAt: string;
@@ -14,9 +20,14 @@ export interface Motorcycle extends MotorcycleData {
 }
 type One = { motorcycle: Motorcycle };
 export const motorcycleService = {
-  list: () => authRequest<{ motorcycles: Motorcycle[] }>('/motorcycles'),
-  detail: (id: string) =>
-    authRequest<One>(`/motorcycles/${encodeURIComponent(id)}`),
+  list: (archived = false) =>
+    authRequest<{ motorcycles: Motorcycle[] }>(
+      `/motorcycles${archived ? '?archived=true' : ''}`,
+    ),
+  detail: (id: string, archived = false) =>
+    authRequest<One>(
+      `/motorcycles/${encodeURIComponent(id)}${archived ? '?archived=true' : ''}`,
+    ),
   primary: () =>
     authRequest<{ motorcycle: Motorcycle | null }>('/motorcycles/primary'),
   publicGarage: (username: string) =>
@@ -42,4 +53,12 @@ export function validatePhoto(file: File): string | null {
     return 'Use JPEG, PNG ou WebP. Conversão de HEIC não está disponível.';
   if (!file.size) return 'Selecione uma fotografia válida.';
   return null;
+}
+
+export function motorcycleEngine(
+  bike: Pick<MotorcycleData, 'displacementCc' | 'propulsion'>,
+) {
+  return bike.propulsion === 'electric' || bike.displacementCc === null
+    ? 'Elétrica'
+    : `${bike.displacementCc.toLocaleString('pt-BR')} cc`;
 }

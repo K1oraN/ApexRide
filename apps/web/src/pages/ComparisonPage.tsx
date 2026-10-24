@@ -288,7 +288,7 @@ function Comparison({ id }: { id: string }) {
               </label>
               <p>
                 {a.bike
-                  ? `${a.bike.brand} ${a.bike.model} · ${a.bike.displacementCc} cc`
+                  ? `${a.bike.brand} ${a.bike.model} · ${a.bike.displacementCc === null ? 'Elétrica' : `${a.bike.displacementCc} cc`}`
                   : 'Moto não identificada'}{' '}
                 · {a.category}
               </p>

@@ -217,7 +217,7 @@ describe.skipIf(!url)('Garagem com PostgreSQL e arquivos reais', () => {
     ).rows[0];
     expect(saved).toMatchObject({
       owner_id: alice.id,
-      displacement_cc: 649,
+      displacement_cc: '649.00',
       brand: 'Honda',
       is_primary: true,
     });
@@ -612,5 +612,331 @@ describe.skipIf(!url)('Garagem com PostgreSQL e arquivos reais', () => {
     );
     await cleanupPhotos(pool, storage);
     expect(await readdir(directory)).toEqual([key]);
+  });
+  it('Etapa 6: catálogo BR paginado, busca normalizada, variantes e procedência sem misturar anos', async () => {
+    const coverage = await call('GET', '/catalog/coverage');
+    expect(coverage.statusCode, coverage.body).toBe(200);
+    expect(coverage.json().coverage).toMatchObject({
+      brands: 2,
+      models: 3,
+      variants: 7,
+    });
+    const variants = (
+      await call('GET', '/catalog/variants?q=HONDA%20cb650')
+    ).json();
+    expect(variants.items).toHaveLength(2);
+    expect(
+      variants.items.map((v: { model_year: number }) => v.model_year).sort(),
+    ).toEqual([2024, 2026]);
+    expect(
+      (await call('GET', '/catalog/variants?q=padr%C3%A3o')).json().items,
+    ).toHaveLength(1);
+    expect(
+      (await call('GET', '/catalog/variants?page=2')).json().items,
+    ).toEqual([]);
+    expect((await call('GET', '/catalog/variants?page=0')).statusCode).toBe(
+      400,
+    );
+    const one = (
+      await call(
+        'GET',
+        '/catalog/variants/66000000-0000-4000-8000-000000000001',
+      )
+    ).json().variant;
+    const two = (
+      await call(
+        'GET',
+        '/catalog/variants/66000000-0000-4000-8000-000000000002',
+      )
+    ).json().variant;
+    expect(one.specifications.power.value).toBe(88.4);
+    expect(two.specifications.power.value).toBe(86.7);
+    expect(two.specifications.dryWeight.unit).toBe('kg');
+    expect(two.specifications.wetWeight).toBeUndefined();
+    for (const f of Object.values(two.specifications) as { source: number }[])
+      expect(two.sources[f.source].url).toMatch(/^https:\/\//);
+    expect(
+      (
+        await call(
+          'GET',
+          '/catalog/variants/66000000-0000-4000-8000-000000000002?revision=99',
+        )
+      ).statusCode,
+    ).toBe(404);
+  });
+  it('Etapa 6: cadastro elétrico, fabricação distinta, vínculo exato e histórico da identidade', async () => {
+    const electric = await call(
+      'POST',
+      '/motorcycles',
+      {
+        brand: 'Artesanal',
+        model: 'Elétrica de teste',
+        year: 2026,
+        manufactureYear: 2025,
+        propulsion: 'electric',
+        displacementCc: null,
+      },
+      alice,
+    );
+    expect(electric.statusCode, electric.body).toBe(201);
+    expect(electric.json().motorcycle.displacementCc).toBeNull();
+    expect(
+      (
+        await call(
+          'POST',
+          '/motorcycles',
+          { ...valid, propulsion: 'electric' },
+          alice,
+        )
+      ).statusCode,
+    ).toBe(400);
+    expect(
+      (
+        await call(
+          'POST',
+          '/motorcycles',
+          { ...valid, displacementCc: null },
+          alice,
+        )
+      ).statusCode,
+    ).toBe(400);
+    const data = {
+      brand: 'Bajaj',
+      model: 'Dominar 400',
+      year: 2025,
+      propulsion: 'combustion',
+      displacementCc: 373.27,
+      versionName: 'Padrão',
+      catalogVariantId: '66000000-0000-4000-8000-000000000003',
+      catalogRevision: 1,
+    };
+    const saved = await call('POST', '/motorcycles', data, alice);
+    expect(saved.statusCode, saved.body).toBe(201);
+    const id = saved.json().motorcycle.id;
+    expect(
+      (await call('GET', `/motorcycles/${id}`, undefined, alice)).json()
+        .motorcycle,
+    ).toMatchObject({
+      catalogVariantId: data.catalogVariantId,
+      catalogRevision: 1,
+      versionName: 'Padrão',
+      displacementCc: 373.27,
+    });
+    expect(
+      (await call('PATCH', `/motorcycles/${id}`, { year: 2024 }, alice))
+        .statusCode,
+    ).toBe(400);
+    expect(
+      (
+        await call(
+          'PATCH',
+          `/motorcycles/${id}`,
+          {
+            catalogVariantId: null,
+            catalogRevision: null,
+            versionName: 'Pessoal',
+          },
+          alice,
+        )
+      ).statusCode,
+    ).toBe(200);
+    const identities = (
+      await pool.query(
+        'SELECT snapshot FROM motorcycle_identity_history WHERE motorcycle_id=$1 ORDER BY revision',
+        [id],
+      )
+    ).rows;
+    expect(identities).toHaveLength(2);
+    expect(identities[0].snapshot.catalogRevision).toBe(1);
+    expect(identities[1].snapshot.catalogRevision).toBeNull();
+  });
+  it('Etapa 6: registros reais, revisões, privacidade, odômetro e arquivamento', async () => {
+    const bike = await create();
+    const path = `/motorcycles/${bike.id}/records`;
+    const saved = await call(
+      'POST',
+      path,
+      {
+        kind: 'maintenance',
+        data: {
+          title: 'Troca de óleo de teste',
+          date: '2026-01-02',
+          odometerKm: 1200,
+          costCents: 15050,
+          nextOdometerKm: 6000,
+          description: '<script>alert(1)</script>',
+        },
+      },
+      alice,
+    );
+    expect(saved.statusCode, saved.body).toBe(201);
+    const row = saved.json().record;
+    expect((await call('GET', path, undefined, bob)).statusCode).toBe(404);
+    expect((await call('GET', path)).statusCode).toBe(401);
+    expect(
+      (
+        await call(
+          'PATCH',
+          `${path}/${row.id}`,
+          { revision: 1, data: { ...row.data, title: 'Óleo e filtro' } },
+          alice,
+        )
+      ).statusCode,
+    ).toBe(200);
+    expect(
+      (
+        await call(
+          'PATCH',
+          `${path}/${row.id}`,
+          { revision: 1, data: row.data },
+          alice,
+        )
+      ).statusCode,
+    ).toBe(409);
+    expect(
+      (await call('DELETE', `${path}/${row.id}`, { revision: 2 }, bob))
+        .statusCode,
+    ).toBe(404);
+    expect(
+      (await call('DELETE', `${path}/${row.id}`, { revision: 2 }, alice))
+        .statusCode,
+    ).toBe(200);
+    for (const kind of [
+      'note',
+      'insurance',
+      'document',
+      'reminder',
+      'modification',
+    ]) {
+      const r = await call(
+        'POST',
+        path,
+        {
+          kind,
+          data: {
+            title: 'Registro privado ' + kind,
+            ...(kind === 'insurance'
+              ? {
+                  date: '2026-01-01',
+                  endDate: '2027-01-01',
+                  provider: 'Informada',
+                }
+              : {}),
+            ...(kind === 'reminder' ? { nextDate: '2027-01-01' } : {}),
+          },
+        },
+        alice,
+      );
+      expect(r.statusCode, r.body).toBe(201);
+    }
+    const first = await call(
+      'POST',
+      path,
+      {
+        kind: 'odometer',
+        data: {
+          title: 'Painel',
+          date: '2026-01-02',
+          odometerKm: 1000,
+          origin: 'Painel da moto',
+        },
+      },
+      alice,
+    );
+    expect(first.statusCode, first.body).toBe(201);
+    expect(
+      (
+        await call(
+          'POST',
+          path,
+          {
+            kind: 'odometer',
+            data: {
+              title: 'Painel',
+              date: '2026-01-03',
+              odometerKm: 900,
+              origin: 'Painel da moto',
+            },
+          },
+          alice,
+        )
+      ).statusCode,
+    ).toBe(409);
+    const correction = await call(
+      'POST',
+      path,
+      {
+        kind: 'odometer',
+        data: {
+          title: 'Correção',
+          date: '2026-01-03',
+          odometerKm: 900,
+          origin: 'Painel da moto',
+          correctionOf: first.json().record.id,
+          description: 'Leitura anterior digitada errada.',
+        },
+      },
+      alice,
+    );
+    expect(correction.statusCode, correction.body).toBe(201);
+    expect(
+      (
+        await call(
+          'DELETE',
+          `${path}/${first.json().record.id}`,
+          { revision: 1 },
+          alice,
+        )
+      ).statusCode,
+    ).toBe(409);
+    expect(
+      (
+        await call(
+          'POST',
+          path,
+          {
+            kind: 'insurance',
+            data: {
+              title: 'Dados proibidos',
+              date: '2026-01-01',
+              policyNumber: 'x',
+            },
+          },
+          alice,
+        )
+      ).statusCode,
+    ).toBe(400);
+    const publicGarage = (
+      await call('GET', '/users/alice_piloto/motorcycles')
+    ).json();
+    expect(JSON.stringify(publicGarage)).not.toContain('Registro privado');
+    await call('DELETE', `/motorcycles/${bike.id}`, undefined, alice);
+    expect(
+      (await call('GET', `/motorcycles/${bike.id}`, undefined, alice))
+        .statusCode,
+    ).toBe(404);
+    expect(
+      (
+        await call(
+          'GET',
+          `/motorcycles/${bike.id}?archived=true`,
+          undefined,
+          alice,
+        )
+      ).statusCode,
+    ).toBe(200);
+    expect(
+      (await call('GET', path, undefined, alice)).json().items.length,
+    ).toBe(7);
+    expect(
+      (
+        await call(
+          'POST',
+          path,
+          { kind: 'note', data: { title: 'Não editar arquivada' } },
+          alice,
+        )
+      ).statusCode,
+    ).toBe(404);
   });
 });

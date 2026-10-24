@@ -773,4 +773,63 @@ describe.skipIf(!url)('Sessões com PostgreSQL e PostGIS reais', () => {
     expect(detail.motion.samples.at(-1).relative_ms).toBe('3599800');
     expect(detail.motion.stats.validSamples).toBe(18000);
   }, 30000);
+  it('Etapa 6: congela identidade do início ao salvar depois de uma edição e preserva ao arquivar', async () => {
+    const created = await call(
+      'POST',
+      '/motorcycles',
+      {
+        brand: 'Honda',
+        model: 'CB 650R',
+        year: 2026,
+        propulsion: 'combustion',
+        displacementCc: 649,
+        versionName: 'E-Clutch',
+        catalogVariantId: '66000000-0000-4000-8000-000000000002',
+        catalogRevision: 1,
+      },
+      alice,
+    );
+    expect(created.statusCode, created.body).toBe(201);
+    const motorcycleId = created.json().motorcycle.id;
+    const b = { ...activity(), motorcycleId };
+    await pool.query(
+      "UPDATE motorcycle_identity_history SET effective_at=to_timestamp($2::double precision/1000)-interval '1 second' WHERE motorcycle_id=$1",
+      [motorcycleId, b.startedAt],
+    );
+    expect(
+      (
+        await call(
+          'PATCH',
+          `/motorcycles/${motorcycleId}`,
+          {
+            catalogVariantId: null,
+            catalogRevision: null,
+            model: 'Identidade nova',
+          },
+          alice,
+        )
+      ).statusCode,
+    ).toBe(200);
+    const saved = await call('POST', '/rides', b, alice);
+    expect(saved.statusCode, saved.body).toBe(201);
+    const snap = (
+      await pool.query('SELECT motorcycle_snapshot FROM rides WHERE id=$1', [
+        saved.json().id,
+      ])
+    ).rows[0].motorcycle_snapshot;
+    expect(snap).toMatchObject({
+      model: 'CB 650R',
+      catalogRevision: 1,
+      versionName: 'E-Clutch',
+      identityAtStartVerified: true,
+    });
+    await call('DELETE', `/motorcycles/${motorcycleId}`, undefined, alice);
+    expect(
+      (
+        await pool.query('SELECT motorcycle_snapshot FROM rides WHERE id=$1', [
+          saved.json().id,
+        ])
+      ).rows[0].motorcycle_snapshot,
+    ).toEqual(snap);
+  });
 });

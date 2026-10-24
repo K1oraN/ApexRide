@@ -23,6 +23,7 @@ const result = spawnSync(
           'test/events.postgres.test.ts',
           'test/gamification.postgres.test.ts',
           'test/motorcycles.postgres.test.ts',
+          'test/garage-upgrade.postgres.test.ts',
           'test/rides.postgres.test.ts',
           'test/routes.postgres.test.ts',
           'test/history.postgres.test.ts',

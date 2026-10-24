@@ -3,6 +3,16 @@
 Plataforma mobile-first para motociclistas: Garagem, registro de Ride por GPS,
 telemetria estimada, histórico, replay, rotas, vídeos locais e comunidade.
 
+**Refinamento — Etapa 6:** Garagem premium com catálogo brasileiro inicial
+(2 marcas, 3 famílias, 7 versões/ano, todas com fichas parciais e fontes),
+cadastro manual e elétrico, registros privados persistentes de manutenção,
+odômetro, seguro, documentação e notas. Histórico preserva identidade por Ride.
+Veja o [relatório A–R](docs/refinamento/etapa-06-garagem-catalogo.md),
+[catálogo e curadoria](docs/catalogo-motos.md) e
+[matriz de cobertura](docs/catalogo-cobertura.csv).
+Sem deploy, alteração da VPS ou início da Etapa 7.
+As descrições anteriores abaixo são históricas.
+
 **Refinamento — Etapa 5:** preparação compacta, painel de pilotagem, diagnóstico
 individual de sensores e páginas internas de sessões, circuitos, telemetria,
 vídeos e estúdio. Reutiliza coleta, IndexedDB, Histórico e exportação existentes.

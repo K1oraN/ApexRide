@@ -562,6 +562,7 @@ export function Combobox({
   placeholder = 'Selecione uma opção',
   disabled = false,
   hint,
+  onSearch,
 }: {
   label: string;
   value: string;
@@ -570,6 +571,7 @@ export function Combobox({
   placeholder?: string;
   disabled?: boolean;
   hint?: string;
+  onSearch?: (query: string) => void;
 }) {
   const id = useId(),
     input = useRef<HTMLInputElement>(null),
@@ -585,9 +587,11 @@ export function Combobox({
     maxHeight: 240,
   });
   const selected = options.find((option) => option.value === value);
-  const visible = options.filter((option) =>
-    normalize(option.label).includes(normalize(query)),
-  );
+  const visible = onSearch
+    ? options
+    : options.filter((option) =>
+        normalize(option.label).includes(normalize(query)),
+      );
   const place = useCallback(() => {
     const rect = input.current?.getBoundingClientRect();
     if (!rect) return;
@@ -609,6 +613,7 @@ export function Combobox({
     place();
     setOpen(true);
     setQuery('');
+    onSearch?.('');
     setActive(
       Math.max(
         0,
@@ -686,6 +691,7 @@ export function Combobox({
               setOpen(true);
             }
             setQuery(event.target.value);
+            onSearch?.(event.target.value);
             setActive(0);
           }}
           onKeyDown={(event) => {

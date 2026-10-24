@@ -1,3 +1,4 @@
+import { motorcycleEngine } from '../services/motorcycles';
 import { ChevronRight, Plus } from 'lucide-react';
 import { Link } from 'react-router';
 import { RideIcon } from '../components/Brand';
@@ -40,7 +41,7 @@ export function HomeMotorcycle() {
                 {bike.brand} <strong>{bike.model}</strong>
               </h3>
               <p>
-                {bike.year} · {bike.displacementCc.toLocaleString('pt-BR')} cc
+                {bike.year} · {motorcycleEngine(bike)}
               </p>
               <span className="text-link action-link">
                 Ver detalhes <ChevronRight size={18} aria-hidden />

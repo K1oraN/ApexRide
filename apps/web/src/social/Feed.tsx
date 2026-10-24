@@ -380,7 +380,10 @@ export function LivePost({
       {post.motorcycle && (
         <p className="social-summary">
           {post.motorcycle.brand} {post.motorcycle.model} ·{' '}
-          {post.motorcycle.year} · {post.motorcycle.displacementCc} cc
+          {post.motorcycle.year} ·{' '}
+          {post.motorcycle.displacementCc === null
+            ? 'Elétrica'
+            : `${post.motorcycle.displacementCc} cc`}
         </p>
       )}
       {post.motorcycle_id && !post.motorcycle && <p>Moto indisponível.</p>}

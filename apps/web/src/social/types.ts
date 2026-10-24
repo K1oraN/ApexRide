@@ -52,7 +52,7 @@ export interface SocialPost {
     brand: string;
     model: string;
     year: number;
-    displacementCc: number;
+    displacementCc: number | null;
   } | null;
   ride: RideSummary | null;
 }

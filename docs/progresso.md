@@ -1,5 +1,13 @@
 ﻿# Controle de progresso — Apex Ride
 
+**Refinamento oficial — Etapa 6, 24/10/2026:** Garagem premium, catálogo BR
+progressivo com fontes e revisões, cadastro manual/elétrico, registros privados
+persistentes e snapshots da identidade no início do Ride. Cobertura inicial:
+2 marcas, 3 famílias e 7 versões/ano, todas parciais. Veja o
+[relatório A–R](refinamento/etapa-06-garagem-catalogo.md) e a
+[matriz](catalogo-cobertura.csv). Sem deploy/VPS ou início da Etapa 7.
+Os registros anteriores são históricos.
+
 **Refinamento oficial — Etapa 5, 24/10/2026:** Ride reorganizado em preparação,
 pilotagem e resumo; diagnóstico individual de sensores; sessões, circuitos,
 biblioteca e estúdio como páginas internas. Coleta, contratos, vídeos locais e

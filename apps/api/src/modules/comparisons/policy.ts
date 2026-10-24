@@ -5,7 +5,7 @@ import { BIKE_CATEGORIES, CC_BANDS } from '@apex-ride/ride-core/comparison';
 
 export const publicConsent = `r.deleted_at IS NULL AND r.comparison_enabled AND r.visibility='public' AND ps.profile_visibility='public' AND u.account_status='active'`;
 export const categoryJoin = `LEFT JOIN motorcycle_model_categories mc ON lower(mc.brand)=lower(r.motorcycle_snapshot->>'brand') AND lower(mc.model)=lower(r.motorcycle_snapshot->>'model')`;
-export const categorySql = `COALESCE(mc.category,'Não classificada')`;
+export const categorySql = `COALESCE(r.motorcycle_snapshot->>'category',mc.category,'Não classificada')`;
 export function comparisonConfig() {
   const integer = (key: string, fallback: number, min: number, max: number) => {
     const raw = process.env[key],
@@ -107,7 +107,7 @@ export function bikeFilters(
   if (q.ccBand >= 0) {
     const band = CC_BANDS[q.ccBand]!;
     where.push(
-      `(r.motorcycle_snapshot->>'displacementCc')::int BETWEEN ${param(band[0])} AND ${param(band[1])}`,
+      `(r.motorcycle_snapshot->>'displacementCc')::numeric BETWEEN ${param(band[0])} AND ${param(band[1])}`,
     );
   }
   for (const key of ['brand', 'model'] as const)

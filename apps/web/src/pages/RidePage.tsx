@@ -1,3 +1,4 @@
+import { motorcycleEngine } from '../services/motorcycles';
 import { ChoiceSelect } from '../components/design-system';
 import { LocateFixed, Pause, Play, Route, Square, Timer } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -219,7 +220,7 @@ export function RidePage() {
                   ))}
                 </Select>
                 <small>
-                  {bike.year} · {bike.displacementCc} cc
+                  {bike.year} · {motorcycleEngine(bike)}
                 </small>
               </label>
             </div>

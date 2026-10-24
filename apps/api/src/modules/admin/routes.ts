@@ -1,3 +1,4 @@
+import { registerCatalogCuration } from '../motorcycles/catalog.js';
 import { join } from 'node:path';
 import type { FastifyInstance } from 'fastify';
 import type { Pool } from 'pg';
@@ -35,6 +36,7 @@ export async function adminRoutes(
       );
   });
   const ctx = adminContext(app, options.pool, options.config);
+  registerCatalogCuration(ctx);
   registerAdminAuth(app, ctx.db, options.config);
   registerUsers(ctx);
   registerModeration(

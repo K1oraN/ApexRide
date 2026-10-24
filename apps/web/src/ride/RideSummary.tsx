@@ -1,3 +1,4 @@
+import { motorcycleEngine } from '../services/motorcycles';
 import { ChoiceSelect } from '../components/design-system';
 import { RIDE_MODES } from '@apex-ride/ride-core/modes';
 import { Link } from 'react-router';
@@ -68,7 +69,7 @@ export function RideSummary() {
           </section>
         )}
       <p>
-        {a.bike.year} · {a.bike.displacementCc} cc · Modo {a.payload.mode}
+        {a.bike.year} · {motorcycleEngine(a.bike)} · Modo {a.payload.mode}
       </p>
       <p>
         Início: {new Date(a.payload.startedAt).toLocaleString('pt-BR')} · Fim:{' '}

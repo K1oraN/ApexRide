@@ -1,3 +1,4 @@
+import { motorcycleEngine } from '../services/motorcycles';
 import { useState } from 'react';
 import { RideIcon } from '../components/Brand';
 import { CardLink } from '../components/design-system';
@@ -51,7 +52,7 @@ export function MotorcycleCard({ bike }: { bike: Motorcycle }) {
           <span className="motorcycle-model">{bike.model}</span>
         </h3>
         <p>
-          {bike.year} · {bike.displacementCc} cc
+          {bike.year} · {motorcycleEngine(bike)}
         </p>
         <small>Ver detalhes →</small>
       </div>

@@ -39,7 +39,7 @@ export async function ensureSeasons(db: Db) {
 export async function evaluateRides(db: Db, who: string, limit = 100) {
   const rows = (
     await db.query(
-      `SELECT r.*,mc.category,decision.eligible AS decision,
+      `SELECT r.*,COALESCE(r.motorcycle_snapshot->>'category',mc.category) AS category,decision.eligible AS decision,
  (SELECT count(*)::int FROM ride_points p WHERE p.ride_id=r.id) AS points,
  (SELECT avg(accuracy) FROM ride_points p WHERE p.ride_id=r.id) AS accuracy,
  (SELECT COALESCE(sum(CASE WHEN gap BETWEEN 0 AND 30000 AND segment=prev_segment THEN gap ELSE 0 END),0)::float8 FROM

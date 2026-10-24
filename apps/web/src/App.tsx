@@ -17,6 +17,9 @@ const DiscoveriesPage = lazy(() =>
     default: m.DiscoveriesPage,
   })),
 );
+const CatalogPage = lazy(() =>
+  import('./garage/CatalogSheet').then((m) => ({ default: m.CatalogPage })),
+);
 const HomePage = lazy(() =>
   import('./pages/HomePage').then((m) => ({ default: m.HomePage })),
 );
@@ -208,6 +211,10 @@ export function App() {
                     <Route path="explorar" element={<ExplorePage />} />
                     <Route path="explorar/:id" element={<RouteDetailPage />} />
                     <Route path="ride" element={<RidePage />} />
+                    <Route
+                      path="garagem/catalogo/:variantId"
+                      element={<CatalogPage />}
+                    />
                     <Route path="guia" element={<GuidePage />} />
                     <Route path="descobertas" element={<DiscoveriesPage />} />
                     <Route path="ride/sessoes" element={<RideSessionsPage />} />

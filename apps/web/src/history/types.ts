@@ -10,7 +10,7 @@ export interface HistoryRide {
     brand: string;
     model: string;
     year: number;
-    displacementCc: number;
+    displacementCc: number | null;
     historicalFallback?: boolean;
   } | null;
   started_at: string;

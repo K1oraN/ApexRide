@@ -15,6 +15,20 @@ import '../styles/guide.css';
 
 const topics = [
   {
+    id: 'garagem',
+    title: 'Garagem, catálogo e registros pessoais',
+    icon: BookOpen,
+    text: [
+      'Escolha marca, modelo, ano-modelo e versão no catálogo inicial do Brasil ou cadastre manualmente. A cobertura é progressiva: modelos ausentes continuam válidos. Ano de fabricação é um campo separado. Motos elétricas não possuem cilindrada.',
+      'Cada especificação conhecida aponta para uma fonte e sua revisão. Campo ausente significa não informado. Massa seca difere de massa em ordem de marcha; cv e hp são unidades distintas. Conversões aproximadas aparecem identificadas. A ficha vinculada fica fixada na revisão escolhida.',
+      'Sua fotografia pertence à moto cadastrada. Manutenções, seguro, documentação, anotações, modificações, lembretes e leituras de odômetro são privados. Situações de seguro e documentação são declarações suas, sem validação automática. Não envie placa, RENAVAM, apólice ou documentos digitalizados.',
+      'Quilometragem dos Rides e odômetro informado são independentes. Para corrigir uma leitura menor, selecione correção e registre o motivo; o histórico anterior fica preservado. Datas e quilômetros de lembretes são planejamento, sem notificações automáticas.',
+      'Selecionar um card para consulta não muda sua moto principal. A escolha principal vale para a preparação seguinte; um Ride em andamento conserva sua identificação. Arquivar retira a moto da seleção futura e preserva os Rides e registros já salvos. Novos registros e fichas precisam de conexão.',
+    ],
+    to: '/garagem',
+    action: 'Abrir garagem',
+  },
+  {
     id: 'ride',
     title: 'Começar e controlar um Ride',
     icon: Gauge,

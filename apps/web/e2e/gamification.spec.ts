@@ -97,8 +97,8 @@ test('21E meta opcional, prévia e compartilhamento seguro de conquista', async 
     .getByRole('button', { name: 'Compartilhar conquista', exact: true })
     .click();
   await page
-    .getByLabel('Público da publicação', { exact: true })
-    .selectOption('private');
+    .getByRole('radiogroup',{name:'Público da publicação',exact:true})
+    .getByRole('radio',{name:'Somente eu',exact:true}).check();
   await page
     .getByRole('button', { name: 'Visualizar prévia', exact: true })
     .click();

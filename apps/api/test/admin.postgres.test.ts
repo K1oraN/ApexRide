@@ -1554,4 +1554,113 @@ describe.skipIf(!url)('Parte 22 — PostgreSQL/PostGIS e APIs reais', () => {
         .statusCode,
     ).toBe(400);
   });
+  it('Etapa 6: curadoria exige RBAC e MFA recente; mantém revisões, auditoria e referências fixadas', async () => {
+    const id = randomUUID();
+    const original = {
+      model_id: randomUUID(),
+      brand_id: 'honda',
+      brand: 'Honda',
+      model: 'Modelo sintético da curadoria',
+      model_year: 2026,
+      name: 'Versão sintética',
+      propulsion: 'combustion',
+      specifications: { power: { value: 10, unit: 'cv', source: 0 } },
+      sources: [
+        {
+          title: 'Fonte de teste',
+          url: 'https://www.honda.com.br/motos',
+          consultedAt: '2026-01-01',
+          publishedAt: null,
+          scope: 'Fixture sintética, não é ficha comercial.',
+        },
+      ],
+    };
+    const body = {
+      variantId: id,
+      modelId: original.model_id,
+      brandId: original.brand_id,
+      brand: original.brand,
+      model: original.model,
+      year: original.model_year,
+      versionName: original.name,
+      propulsion: original.propulsion,
+      categoryId: 'street',
+      expectedRevision: 0,
+      status: 'reviewed',
+      changeNote: 'Revisão sintética para validar imutabilidade.',
+      specifications: original.specifications,
+      sources: original.sources,
+    };
+    expect(
+      (await call('POST', '/admin/catalog/revisions', body)).statusCode,
+    ).toBe(401);
+    expect(
+      (await call('POST', '/admin/catalog/revisions', body, alice)).statusCode,
+    ).toBe(403);
+    expect(
+      (await call('POST', '/admin/catalog/revisions', body, moderator))
+        .statusCode,
+    ).toBe(403);
+    await pool.query(
+      "UPDATE admin_sessions SET verified_at=now()-interval '6 minutes' WHERE session_id=$1",
+      [superadmin.session],
+    );
+    expect(
+      (await call('POST', '/admin/catalog/revisions', body, superadmin))
+        .statusCode,
+    ).toBe(403);
+    await pool.query(
+      'UPDATE admin_sessions SET verified_at=now() WHERE session_id=$1',
+      [superadmin.session],
+    );
+    const updated = await call(
+      'POST',
+      '/admin/catalog/revisions',
+      body,
+      superadmin,
+    );
+    expect(updated.statusCode, updated.body).toBe(200);
+    expect(updated.json().revision).toBe(1);
+    expect(
+      (await call('POST', '/admin/catalog/revisions', body, superadmin))
+        .statusCode,
+    ).toBe(409);
+    expect(
+      (await call('GET', `/catalog/variants/${id}?revision=1`)).json().variant
+        .specifications,
+    ).toEqual(original.specifications);
+    expect(
+      (
+        await call(
+          'POST',
+          '/admin/catalog/revisions',
+          { ...body, expectedRevision: 1, status: 'draft' },
+          superadmin,
+        )
+      ).statusCode,
+    ).toBe(200);
+    expect(
+      (await call('GET', `/catalog/variants/${id}`)).json().variant.revision,
+    ).toBe(1);
+    expect(
+      (await call('GET', `/catalog/variants/${id}?revision=2`)).statusCode,
+    ).toBe(404);
+    expect(
+      (
+        await pool.query(
+          "SELECT * FROM admin_audit_logs WHERE action='catalog_revision' AND resource_id=$1",
+          [id],
+        )
+      ).rows,
+    ).toHaveLength(2);
+    // Restore public fixture so other administrative tests see the initial catalog.
+    await pool.query(
+      'DELETE FROM motorcycle_catalog_revisions WHERE variant_id=$1 AND revision>1',
+      [id],
+    );
+    await pool.query(
+      'UPDATE motorcycle_catalog_variants SET revision=1 WHERE id=$1',
+      [id],
+    );
+  });
 });

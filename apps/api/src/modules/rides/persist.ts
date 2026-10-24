@@ -79,14 +79,32 @@ export async function persistRide(pool: Pool, ownerId: string, value: unknown) {
       ],
     );
     const motorcycle = bike.rows[0];
+    const identity = (
+      await client.query(
+        'SELECT snapshot FROM motorcycle_identity_history WHERE motorcycle_id=$1 AND effective_at<=to_timestamp($2::double precision/1000) ORDER BY effective_at DESC,revision DESC LIMIT 1',
+        [motorcycle.id, b.startedAt],
+      )
+    ).rows[0]?.snapshot;
     await client.query('UPDATE rides SET motorcycle_snapshot=$1 WHERE id=$2', [
-      JSON.stringify({
-        brand: motorcycle.brand,
-        model: motorcycle.model,
-        year: motorcycle.year,
-        displacementCc: motorcycle.displacement_cc,
-        historicalFallback: false,
-      }),
+      JSON.stringify(
+        identity
+          ? {
+              ...identity,
+              historicalFallback: false,
+              identityAtStartVerified: true,
+            }
+          : {
+              brand: motorcycle.brand,
+              model: motorcycle.model,
+              year: motorcycle.year,
+              displacementCc:
+                motorcycle.displacement_cc === null
+                  ? null
+                  : Number(motorcycle.displacement_cc),
+              historicalFallback: false,
+              identityAtStartVerified: false,
+            },
+      ),
       id,
     ]);
     // Lotes limitados, todos dentro da mesma transação. Não gera 50 mil round trips.
