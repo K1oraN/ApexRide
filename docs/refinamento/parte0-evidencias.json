@@ -1,0 +1,342 @@
+{
+  "date": "2026-10-23",
+  "stage": "Refinamento Parte 0 de 12",
+  "baseline": "c9f40c7bcf43154b70e128ec4c866b0388210fa8",
+  "scope": "Auditoria; sem alteração do produto, migração, deploy ou acesso à VPS",
+  "requirements": 230,
+  "checksCurrent": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "formatBeforeReport": "passed",
+    "standardTests": {
+      "api": 260,
+      "web": 411,
+      "total": 671,
+      "postgresSkipped": 365
+    },
+    "build": "passed; aviso de chunk GPS/MapLibre >500kB",
+    "dependencyAudit": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0
+      },
+      "dependencies": 396,
+      "devDependencies": 0,
+      "optionalDependencies": 0,
+      "totalDependencies": 396
+    },
+    "checkLogSha256": "b965e865713556c022250474305b45add93d7efc24fc7e05c1270abf56ec1ac1"
+  },
+  "historicalEvidenceOnly": {
+    "source": "docs/qa-evidence/test-summary.json, Parte 23 no baseline",
+    "postgres": 365,
+    "chromeDistinct": 80,
+    "recovery": "32 migrações, 93 tabelas e foto sintética; não reexecutado na Parte 0"
+  },
+  "databaseReadOnly": {
+    "access": "SELECT em transação READ ONLY, sem dados pessoais",
+    "postgres": "17.10",
+    "postgis": "3.6.2",
+    "tableCount": 93,
+    "tables": [
+      "account_tokens",
+      "achievement_definitions",
+      "admin_achievement_states",
+      "admin_action_approvals",
+      "admin_audit_logs",
+      "admin_bootstrap",
+      "admin_content_states",
+      "admin_decision_notes",
+      "admin_mfa",
+      "admin_permissions",
+      "admin_ranking_entries",
+      "admin_recovery_codes",
+      "admin_result_states",
+      "admin_role_permissions",
+      "admin_roles",
+      "admin_sessions",
+      "admin_settings_versions",
+      "admin_user_roles",
+      "admin_xp_exclusions",
+      "auth_rate_limits",
+      "circuit_verification_evidence",
+      "event_actions",
+      "event_attendance",
+      "event_invitations",
+      "event_organizers",
+      "event_participants",
+      "event_ride_authorizations",
+      "gamification_audit",
+      "gamification_jobs",
+      "gamification_projection_cursor",
+      "gamification_reviews",
+      "gamification_ride_decisions",
+      "gamification_ride_facts",
+      "group_invitation_uses",
+      "group_invitations",
+      "group_member_restrictions",
+      "group_memberships",
+      "group_moderation_actions",
+      "group_rules_versions",
+      "groups",
+      "leaderboard_participation",
+      "leaderboard_scores",
+      "leaderboard_seasons",
+      "live_location_positions",
+      "live_location_sessions",
+      "moderation_appeals",
+      "moderation_cases",
+      "moderation_decisions",
+      "moderation_sanctions",
+      "motorcycle_model_categories",
+      "motorcycle_photo_cleanup",
+      "motorcycles",
+      "personal_challenges",
+      "privacy_requests",
+      "privacy_settings",
+      "profiles",
+      "ride_deletions",
+      "ride_laps",
+      "ride_motion",
+      "ride_motion_samples",
+      "ride_performance_events",
+      "ride_points",
+      "ride_similarity_index",
+      "ride_similarity_matches",
+      "ride_upload_batches",
+      "ride_uploads",
+      "rides",
+      "route_decisions",
+      "route_favorites",
+      "route_moderators",
+      "route_versions",
+      "route_waypoints",
+      "routes",
+      "schema_migrations",
+      "security_incidents",
+      "similarity_backfill_cursor",
+      "similarity_regions",
+      "social_blocks",
+      "social_events",
+      "social_follows",
+      "social_media_cleanup",
+      "social_post_comments",
+      "social_post_likes",
+      "social_post_media",
+      "social_posts",
+      "social_reports",
+      "user_achievements",
+      "user_progress",
+      "user_sessions",
+      "users",
+      "xp_ledger",
+      "xp_level_config",
+      "xp_rules"
+    ],
+    "migrations": {
+      "files": 32,
+      "applied": 32,
+      "problems": []
+    },
+    "achievements": {
+      "total": 11,
+      "distinct_codes": 11,
+      "enabled": 11
+    },
+    "invalidConstraints": 0,
+    "invalidIndexes": 0,
+    "configuration": {
+      "nodeEnv": "development",
+      "mailMode": "test",
+      "routingConfigured": false,
+      "adminMfaKeyConfigured": false
+    }
+  },
+  "uiCurrent": {
+    "browser": "Chrome desktop headless",
+    "viewports": [320, 390, 1440],
+    "paths": [
+      "/",
+      "/ride",
+      "/explorar",
+      "/entrar",
+      "/cadastro",
+      "/recuperar-senha",
+      "/garagem",
+      "/historico"
+    ],
+    "samples": 24,
+    "noHorizontalOverflow": true,
+    "noPageErrors": true,
+    "allFiveNavItems": true,
+    "historyRedirectsToLogin": true,
+    "notificationsDecorative": true,
+    "positions": [
+      {
+        "viewportWidth": 320,
+        "documentHeight": 3989,
+        "startRideControl": {
+          "top": 3489,
+          "height": 69
+        }
+      },
+      {
+        "viewportWidth": 390,
+        "documentHeight": 3199,
+        "startRideControl": {
+          "top": 2752,
+          "height": 69
+        }
+      },
+      {
+        "viewportWidth": 1440,
+        "documentHeight": 3102,
+        "startRideControl": {
+          "top": 2712,
+          "height": 114
+        }
+      }
+    ],
+    "contrast": {
+      "element": "Explorar rotas, estado hover, 390px",
+      "color": "rgb(247, 248, 248)",
+      "background": "rgb(255, 53, 64)",
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "contrast": 3.382403840335547,
+      "scope": "Uma amostra de texto normal; não representa auditoria WCAG completa."
+    },
+    "physicalDevicesTested": 0,
+    "limits": "Anônimo, sem pilotagem/câmera/sensores; filtros autenticados por código e T1. Capturas em .local/refinamento0/ui/."
+  },
+  "references": [
+    {
+      "name": "mototelemetria",
+      "url": "https://mototelemetria.netlify.app/",
+      "status": 200,
+      "title": "Moto Telemetria",
+      "verification": "Página pública observada; sem validação de backend/hardware concorrente"
+    },
+    {
+      "name": "first2",
+      "url": "https://first2.app/",
+      "status": 200,
+      "title": "FIRST2 | The real life minimap for automotive enthusiasts",
+      "verification": "Página pública observada; sem validação de backend/hardware concorrente"
+    },
+    {
+      "name": "strava",
+      "url": "https://www.strava.com/features",
+      "status": 200,
+      "title": "Assinatura Strava",
+      "verification": "Página pública observada; sem validação de backend/hardware concorrente"
+    }
+  ],
+  "prototypeLocalSections": [
+    "PAINEL",
+    "MAPA",
+    "CÂMERA",
+    "SESSÕES",
+    "RANKING",
+    "MAIS",
+    "diagnóstico de sensores"
+  ],
+  "priorDocuments": [
+    {
+      "path": "docs/parte-01.md",
+      "sha256": "386be2ff7106263153b4b0973af19a7166fa92369edd4206845466bda260741b"
+    },
+    {
+      "path": "docs/parte-02.md",
+      "sha256": "035c02ed3159fc277e72d0a19ddf26d62c3288dca4062df616a94020ceab79a8"
+    },
+    {
+      "path": "docs/parte-03.md",
+      "sha256": "8d403b79f2d2f16d7036dc6d0a1dd4cda7c1e796af84e8c93967babd77e85a4b"
+    },
+    {
+      "path": "docs/parte-04.md",
+      "sha256": "7a1ffe242b7bfed997ee62a0da1c0b0923a3feeafb2c15cc46a1a1b061785124"
+    },
+    {
+      "path": "docs/parte-05.md",
+      "sha256": "96bf768201306619010591463eae7e54aa71d4580bce88348ad970dd376ccb60"
+    },
+    {
+      "path": "docs/parte-06.md",
+      "sha256": "ce1a3bec3cb8a0b52bfae26ffce79c7b1f47373923b7fdcb22b8f33c1a8efe7a"
+    },
+    {
+      "path": "docs/parte-07.md",
+      "sha256": "9e3f81a42abde0f3c29bb3ca5eebb6cdcf611daa44730696a21235d7bd0542d9"
+    },
+    {
+      "path": "docs/parte-08.md",
+      "sha256": "57408cedb18385f5e6f5dc78cb8814d42ccd8b0d02aed479882429dc5a8f9368"
+    },
+    {
+      "path": "docs/parte-09.md",
+      "sha256": "1d8eb2ced721652fb11666b308c750f15a7c37ac314cd79b7d37c57c00616bc6"
+    },
+    {
+      "path": "docs/parte-10.md",
+      "sha256": "f928ed45341fe6eafa74b4f16a8aa9bb86cf0392ab57adb97f3421ee5103926e"
+    },
+    {
+      "path": "docs/parte-11.md",
+      "sha256": "5c5abea47d649c6194fe1a95ab750adafb45c2da150bd03806ff8910c5167d23"
+    },
+    {
+      "path": "docs/parte-12.md",
+      "sha256": "42303845ecfdb235c6892cf61b84bb3679816ff944ae3991131a75f65f1ea266"
+    },
+    {
+      "path": "docs/parte-13.md",
+      "sha256": "1f95ccac5c67959dbf6eee06d9a4b4a002fcb2b5a2440eee4b543f90764c4c30"
+    },
+    {
+      "path": "docs/parte-14.md",
+      "sha256": "bed1f779ae3bcb6b9cdb419954bb77b94b17a4dc5303ad517a0804b741c67239"
+    },
+    {
+      "path": "docs/parte-15.md",
+      "sha256": "9500e8f3a78c2444743d5536b51790bf4d35dac0aca7811c22965c88e9f516df"
+    },
+    {
+      "path": "docs/parte-16.md",
+      "sha256": "0a5b7dc38baf46a7e0ead32bf3a410a2cfb7753b746a081812b9890fe3a6342b"
+    },
+    {
+      "path": "docs/parte-17.md",
+      "sha256": "95ca4735df273825eab99074250eeda5b6a5f00abeba4156fd868f6900a228b2"
+    },
+    {
+      "path": "docs/parte-18.md",
+      "sha256": "4d179a8424650f3f05d1ad579741da59642d3494c3ed2dbbb6cfc412fa8297cd"
+    },
+    {
+      "path": "docs/parte-19.md",
+      "sha256": "3d38715f0d8bdcca3ea452fe11f172dd1d09d82c3add7e2247df6b1b56d67039"
+    },
+    {
+      "path": "docs/parte-20.md",
+      "sha256": "ae4bb8950f119888b24f08fc281209dd576a121a8b62cca0b2de430cc47a0986"
+    },
+    {
+      "path": "docs/parte-21.md",
+      "sha256": "afbb03947dacb652695fd4e820454d1a8a26c2d953875918ba4cb51557bc64ef"
+    },
+    {
+      "path": "docs/parte-22.md",
+      "sha256": "7024de69e9ced12636dd3ccbd524f9969592d2480afc62676267e3344fc78194"
+    },
+    {
+      "path": "docs/parte-23.md",
+      "sha256": "1e65cc8411a7e23254d39e350d03cad1e23a5a01cf019488a40309349554ea9a"
+    }
+  ],
+  "launchDecision": "NO-GO; conclusão de auditoria não equivale a aprovação de lançamento"
+}
