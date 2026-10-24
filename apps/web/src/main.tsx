@@ -14,8 +14,9 @@ import { App } from './App';
 import './styles/global.css';
 import './styles/components.css';
 import './styles/shell.css';
+
 import './styles/vertical-scroll.css';
-import './styles/interface-refinements.css';
+import './styles/explore-mobile-fixes.css';
 
 if (
   import.meta.env.PROD &&

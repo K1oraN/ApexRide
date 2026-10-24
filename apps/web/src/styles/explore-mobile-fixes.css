@@ -1,0 +1,321 @@
+
+/*
+ * APEX RIDE — Ajustes Explorar
+ * Categorias, eventos, filtros e ações mobile.
+ */
+
+/* Categorias: cinco opções mais Eventos */
+
+.explore-refined .explore-categories-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.explore-refined
+  .explore-categories-row
+  .ui-segmented {
+  display: contents;
+}
+
+.explore-refined
+  .explore-categories-row
+  .ui-segmented > .button,
+.explore-refined
+  .explore-categories-row
+  > .explore-events-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  min-width: 0;
+  min-height: 75px;
+
+  padding: 10px 5px;
+
+  border-radius: 12px;
+
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.explore-refined
+  .explore-categories-row
+  .button svg {
+  width: 21px;
+  height: 21px;
+}
+
+.explore-refined
+  .explore-events-button {
+  border-color: #70404a;
+  background: #26151d;
+  color: #ffc1ca;
+}
+
+.explore-refined
+  .explore-events-button:hover {
+  border-color: #ff5266;
+  background: #361923;
+  color: #fff;
+}
+
+/* Ações abaixo do mapa */
+
+.explore-refined .explore-navigation-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.explore-refined
+  .explore-navigation-actions > .button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 49px;
+
+  padding: 11px 10px;
+  border-radius: 12px;
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  white-space: normal;
+}
+
+.explore-refined
+  .explore-navigation-actions .button span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.explore-refined
+  .explore-navigation-actions .button svg {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.explore-refined .explore-map-region-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.explore-refined .explore-location-message {
+  color: #d6dee8;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/*
+ * O mapa já possui somente o estilo escuro
+ * no seletor desabilitado. Removemos esse
+ * controle visual desnecessário.
+ */
+
+.gps-map .map-style {
+  display: none !important;
+}
+
+/* Filtro centralizado: dialog é renderizado no body */
+
+.ui-dialog:has(> .explore-filter-form) {
+  position: fixed;
+
+  width: min(440px, calc(100vw - 24px));
+  max-width: calc(100vw - 24px);
+
+  height: auto;
+  max-height: min(680px, calc(100dvh - 28px));
+
+  margin: auto;
+  padding: 20px;
+
+  border: 1px solid #485669;
+  border-radius: 18px;
+
+  background: #111820;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 65%);
+
+  overflow-y: auto;
+  overflow-x: clip;
+}
+
+.ui-dialog:has(> .explore-filter-form) > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin-bottom: 16px;
+}
+
+.ui-dialog:has(> .explore-filter-form) > header h2 {
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.ui-dialog:has(> .explore-filter-form)
+  .explore-filter-form {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ui-dialog:has(> .explore-filter-form)
+  .explore-filter-form label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ui-dialog:has(> .explore-filter-form)
+  .explore-filter-form .ui-input,
+.ui-dialog:has(> .explore-filter-form)
+  .explore-filter-form .ui-select {
+  width: 100%;
+  min-width: 0;
+  min-height: 43px;
+
+  padding-top: 9px;
+  padding-bottom: 9px;
+
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.ui-dialog:has(> .explore-filter-form)
+  .explore-filter-form .coordinate-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+
+  min-width: 0;
+  margin: 0;
+}
+
+.ui-dialog:has(> .explore-filter-form)
+  .explore-filter-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+
+  margin-top: 5px;
+}
+
+.ui-dialog:has(> .explore-filter-form)
+  .explore-filter-actions .button {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+
+  padding: 9px 10px;
+
+  font-size: 13px;
+  white-space: normal;
+}
+
+/* Desktop e tablets */
+
+@media (max-width: 900px) {
+  .explore-refined .explore-categories-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Smartphone */
+
+@media (max-width: 600px) {
+  .explore-refined .explore-heading {
+    display: block;
+  }
+
+  .explore-refined .explore-categories-row {
+    gap: 7px;
+  }
+
+  .explore-refined
+    .explore-categories-row
+    .ui-segmented > .button,
+  .explore-refined
+    .explore-categories-row
+    > .explore-events-button {
+    min-height: 69px;
+    padding: 8px 4px;
+    font-size: 11px;
+  }
+
+  .explore-refined
+    .explore-categories-row
+    .button svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .explore-refined
+    .explore-navigation-actions {
+    gap: 8px;
+  }
+
+  .explore-refined
+    .explore-navigation-actions > .button {
+    min-height: 50px;
+    padding: 9px 6px;
+    gap: 5px;
+    font-size: 12px;
+  }
+
+  .ui-dialog:has(> .explore-filter-form) {
+    padding: 16px;
+    max-height: calc(100dvh - 24px);
+  }
+}
+
+/* Telefones muito estreitos */
+
+@media (max-width: 345px) {
+  .explore-refined
+    .explore-navigation-actions > .button {
+    flex-direction: column;
+  }
+
+  .explore-refined
+    .explore-categories-row
+    .ui-segmented > .button,
+  .explore-refined
+    .explore-categories-row
+    > .explore-events-button {
+    font-size: 10px;
+  }
+
+  .ui-dialog:has(> .explore-filter-form)
+    .explore-filter-form .coordinate-form {
+    gap: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .explore-refined .button {
+    transition: none;
+  }
+}
