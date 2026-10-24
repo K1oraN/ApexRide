@@ -1,0 +1,202 @@
+/* Apex Ride — refinamento da Home
+   Evolução e desempenho por ciclo
+*/
+
+.home-performance-grid .home-performance-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 185px;
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+
+  background: var(--surface-gradient);
+
+  transition:
+    border-color var(--transition),
+    background var(--transition);
+}
+
+.home-performance-grid .home-performance-item > .ui-card {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+
+  padding: 18px 18px 8px;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+  box-shadow: none;
+}
+
+.home-performance-grid .home-performance-item-link:hover {
+  border-color: var(--border-strong);
+  background: #1a212b;
+}
+
+.home-performance-grid .home-performance-item-link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.home-performance-grid .home-performance-item .ui-stat-icon {
+  color: var(--red);
+}
+
+.home-performance-grid .home-performance-item .ui-stat-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.home-cycle-change {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+
+  min-height: 45px;
+  margin: 0 14px;
+  padding: 9px 4px 11px;
+
+  border-top: 1px solid var(--border);
+
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.home-cycle-change > svg {
+  flex: 0 0 auto;
+}
+
+.home-cycle-change strong {
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.home-cycle-change span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.home-cycle-change.is-positive > svg,
+.home-cycle-change.is-positive strong {
+  color: var(--success);
+}
+
+.home-cycle-change.is-negative > svg,
+.home-cycle-change.is-negative strong {
+  color: var(--warning);
+}
+
+.home-cycle-change.is-neutral > svg,
+.home-cycle-change.is-neutral strong {
+  color: var(--subtle);
+}
+
+/* Minha evolução */
+
+.home-dashboard .home-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.home-dashboard .home-progress .home-section-title {
+  margin-bottom: 18px;
+}
+
+.home-dashboard .home-progress .home-section-title > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.home-dashboard .home-progress .gamification-progress {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+}
+
+.home-dashboard .home-progress .gamification-progress .xp-label {
+  font-size: 17px;
+}
+
+.home-dashboard .home-progress .gamification-progress progress {
+  width: 100%;
+}
+
+.home-dashboard .home-evolution-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 22px;
+}
+
+.home-dashboard .home-evolution-actions .button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+
+  padding: 10px 12px;
+
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.home-dashboard .home-evolution-actions .button svg {
+  width: 17px;
+  height: 17px;
+}
+
+@media (max-width: 700px) {
+  .home-performance-grid .home-performance-item {
+    min-height: 172px;
+  }
+
+  .home-performance-grid .home-performance-item > .ui-card {
+    padding: 14px 12px 7px;
+  }
+
+  .home-cycle-change {
+    margin-inline: 10px;
+    padding-bottom: 10px;
+  }
+
+  .home-cycle-change span {
+    width: 100%;
+    padding-left: 21px;
+  }
+
+  .home-dashboard .home-evolution-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 410px) {
+  .home-dashboard .home-evolution-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-dashboard .home-evolution-actions .button {
+    min-height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-performance-grid .home-performance-item {
+    transition: none;
+  }
+}
