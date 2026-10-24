@@ -1,0 +1,457 @@
+
+/*
+ * APEX RIDE — Refinamentos de interface
+ * Explorar, navegação, coordenadas e formulários.
+ */
+
+/* Campos de seleção: aparência premium escura */
+
+.app-shell select:not([multiple]),
+.public-site select:not([multiple]) {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 48px;
+
+  padding: 12px 43px 12px 15px;
+
+  border: 1px solid #455063;
+  border-radius: 12px;
+
+  color: #edf1f7;
+  background-color: #151b24;
+
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  appearance: none;
+  color-scheme: dark;
+
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23ff6676' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.app-shell select:not([multiple]):hover,
+.public-site select:not([multiple]):hover {
+  border-color: #d34b60;
+  background-color: #1b222d;
+}
+
+.app-shell select:not([multiple]):focus-visible,
+.public-site select:not([multiple]):focus-visible {
+  outline: 2px solid #ff6676;
+  outline-offset: 2px;
+
+  border-color: #ff6676;
+  box-shadow: 0 0 0 4px rgb(240 30 58 / 10%);
+}
+
+.app-shell select:not([multiple]):disabled,
+.public-site select:not([multiple]):disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.app-shell select option,
+.public-site select option,
+.app-shell select optgroup,
+.public-site select optgroup {
+  background-color: #151b24;
+  color: #f0f3f8;
+  font-weight: 500;
+}
+
+/* Evita zoom inesperado em inputs no celular */
+
+@media (max-width: 700px) {
+  .app-shell select,
+  .app-shell input,
+  .public-site select,
+  .public-site input {
+    font-size: 16px;
+  }
+}
+
+/* Explorar: cabeçalho e link de Eventos */
+
+.explore-refined .explore-heading {
+  min-width: 0;
+}
+
+.explore-refined .explore-heading > div {
+  min-width: 0;
+}
+
+.explore-refined .explore-heading > .text-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+  padding: 10px 16px;
+
+  border: 1px solid #465365;
+  border-radius: 11px;
+
+  color: #eef1f7;
+  background: #151b24;
+
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.explore-refined .explore-heading > .text-link:hover {
+  border-color: #ed344c;
+  background: #281820;
+  color: #fff;
+}
+
+/* Navegação: campo de endereço */
+
+.destination-search-premium,
+.destination-search-premium > * {
+  min-width: 0;
+}
+
+.destination-search-premium {
+  display: grid;
+  gap: 12px;
+}
+
+.destination-address-search {
+  display: grid;
+  gap: 14px;
+  padding: 15px;
+
+  border: 1px solid #35404e;
+  border-radius: 13px;
+
+  background: #10161f;
+}
+
+.destination-search-heading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.destination-search-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 41px;
+
+  width: 41px;
+  height: 41px;
+
+  border: 1px solid #65303b;
+  border-radius: 12px;
+
+  background: #2b141d;
+  color: #ff5266;
+}
+
+.destination-search-heading > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.destination-search-heading strong {
+  font-size: 15px;
+}
+
+.destination-search-heading small {
+  color: #aeb9c7;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.destination-address-form {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.destination-address-form > label {
+  min-width: 0;
+}
+
+.destination-address-form .ui-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+
+  border-radius: 11px;
+}
+
+.destination-address-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 9px;
+}
+
+.destination-address-actions > .button {
+  min-width: 0;
+  min-height: 46px;
+
+  justify-content: center;
+}
+
+/* Resultados da busca por endereço */
+
+.destination-search-premium .destination-results {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.destination-search-premium .destination-results li {
+  min-width: 0;
+}
+
+.destination-search-premium .destination-results .button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+
+  white-space: normal;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.destination-search-premium .destination-results .button span {
+  min-width: 0;
+  flex: 1;
+}
+
+/* Entrada manual de coordenadas */
+
+.destination-coordinates {
+  min-width: 0;
+  padding: 0;
+
+  border: 1px solid #364252;
+  border-radius: 12px;
+
+  background: #111720;
+}
+
+.destination-coordinates > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-height: 50px;
+  padding: 13px 15px;
+
+  color: #e8edf5;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.destination-coordinates > summary svg {
+  color: #ff5266;
+}
+
+.destination-coordinates[open] > summary {
+  border-bottom: 1px solid #35404e;
+}
+
+.destination-coordinates-content {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 15px;
+}
+
+.destination-coordinates-content > p {
+  color: #b6c0cc;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.destination-coordinates-content .coordinate-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+  margin: 0;
+  min-width: 0;
+}
+
+.destination-coordinates-content .coordinate-form label {
+  min-width: 0;
+}
+
+.destination-coordinates-content .coordinate-form input {
+  width: 100%;
+  min-width: 0;
+
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.destination-coordinates-content .coordinate-form .button {
+  grid-column: 1 / -1;
+  min-width: 0;
+  width: 100%;
+  min-height: 46px;
+}
+
+.destination-provider-status {
+  align-items: flex-start;
+  min-width: 0;
+  line-height: 1.5;
+}
+
+.destination-provider-status span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.destination-search-message {
+  min-width: 0;
+  color: #cad3df;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* Planejamento e lista de pontos */
+
+.navigation-page {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.navigation-plan-card {
+  min-width: 0;
+}
+
+.navigation-plan-card .navigation-waypoints {
+  min-width: 0;
+}
+
+.navigation-page .navigation-waypoints li {
+  min-width: 0;
+}
+
+.navigation-page .navigation-waypoints li > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.navigation-page .navigation-waypoints .route-tools {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+/*
+ * Oculta o indicador textual superior.
+ * Os estados de navegação continuam presentes
+ * nos painéis e mensagens da tela.
+ */
+.navigation-page .navigation-title > span {
+  display: none;
+}
+
+/* Ajustes móveis */
+
+@media (max-width: 600px) {
+  .explore-refined .explore-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .explore-refined .explore-heading > .text-link {
+    width: 100%;
+    justify-self: stretch;
+
+    min-height: 46px;
+
+    border-color: #8c3443;
+    background: #28151d;
+  }
+
+  .destination-address-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .destination-address-actions .button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 430px) {
+  .destination-address-search,
+  .destination-coordinates-content {
+    padding: 12px;
+  }
+
+  .navigation-page .destination-search
+    .coordinate-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .navigation-page .destination-search
+    .coordinate-form .button {
+    grid-column: 1;
+  }
+
+  .navigation-page .navigation-plan-card {
+    padding: 14px;
+  }
+
+  .navigation-page .navigation-waypoints {
+    padding-left: 0;
+  }
+
+  .navigation-page .navigation-waypoints li {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .navigation-page .navigation-waypoints li::before {
+    grid-column: 1;
+  }
+
+  .navigation-page .navigation-waypoints li > span {
+    grid-column: 2;
+  }
+
+  .navigation-page .navigation-waypoints
+    li .route-tools {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell select,
+  .public-site select {
+    transition: none;
+  }
+}

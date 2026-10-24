@@ -1,3 +1,4 @@
+
 import '@fontsource/roboto-condensed/latin-400.css';
 import '@fontsource/roboto-condensed/latin-500.css';
 import '@fontsource/roboto-condensed/latin-600.css';
@@ -13,9 +14,8 @@ import { App } from './App';
 import './styles/global.css';
 import './styles/components.css';
 import './styles/shell.css';
-
-// Bloqueia o deslocamento horizontal da página.
 import './styles/vertical-scroll.css';
+import './styles/interface-refinements.css';
 
 if (
   import.meta.env.PROD &&
