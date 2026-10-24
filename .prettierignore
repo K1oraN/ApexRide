@@ -1,0 +1,9 @@
+node_modules
+dist
+coverage
+.local
+docs/licenses/third-party/
+pnpm-lock.yaml
+.env
+.env.*
+!.env.example

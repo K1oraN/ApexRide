@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "synthetic": true,
+  "migrations": 32,
+  "tablesCompared": 93,
+  "mediaFilesCompared": 1,
+  "archiveSha256": "e461ffe9835d743fd1b69be353a26a273ab323e5c5c55e16c18eaade4107f184",
+  "postgis": "3.6.2",
+  "backupMs": 566,
+  "restoreMs": 1346,
+  "totalMs": 10325,
+  "checks": [
+    "fresh migrations",
+    "legacy CRLF receipts normalized on PostgreSQL",
+    "tampered receipt rejected with rollback",
+    "populated migration reapply",
+    "all application table hashes",
+    "constraints",
+    "indexes",
+    "SRID 4326",
+    "media bytes",
+    "restored migration reapply",
+    "owner and other-account authorization"
+  ],
+  "limitation": "Ensaio local sintético; não comprova RPO/RTO de produção, armazenamento externo, WAL/PITR ou restauração de roles."
+}

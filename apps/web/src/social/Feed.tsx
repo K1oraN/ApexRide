@@ -1,0 +1,607 @@
+import { useState } from 'react';
+import { Link, useSearchParams } from 'react-router';
+import { Heart, MessageCircle, MoreHorizontal } from 'lucide-react';
+import { useAuth } from '../auth/useAuth';
+import { Avatar, Popover } from '../components/ui';
+import { apiUrl } from '../services/auth';
+import { Composer } from './Composer';
+import { social } from './service';
+import { usePage } from './usePage';
+import type { Comment, SocialPost } from './types';
+import '../styles/social.css';
+export function Report({
+  id,
+  kind,
+  groupId,
+}: {
+  id: string;
+  kind: 'post' | 'comment' | 'profile' | 'group' | 'group_member';
+  groupId?: string;
+}) {
+  const [open, setOpen] = useState(false),
+    [reason, setReason] = useState('spam'),
+    [detail, setDetail] = useState(''),
+    [message, setMessage] = useState(''),
+    [busy, setBusy] = useState(false);
+  async function send() {
+    setBusy(true);
+    try {
+      await social('/reports', 'POST', {
+        id,
+        kind,
+        reason,
+        detail,
+        ...(groupId ? { groupId } : {}),
+      });
+      setMessage('Denúncia recebida para análise.');
+      setOpen(false);
+    } catch (e) {
+      setMessage((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <div>
+      <button className="button" onClick={() => setOpen(!open)}>
+        Denunciar{kind === 'comment' ? ' comentário' : ''}
+      </button>
+      {open && (
+        <div className="account-form">
+          <label className="account-field">
+            Motivo
+            <select value={reason} onChange={(e) => setReason(e.target.value)}>
+              {Object.entries({
+                harassment: 'Assédio',
+                offensive: 'Conteúdo ofensivo',
+                spam: 'Spam',
+                fraud: 'Fraude',
+                personal_data: 'Dados pessoais',
+                dangerous: 'Conteúdo perigoso',
+                other: 'Outro',
+              }).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="account-field">
+            Detalhes opcionais
+            <textarea
+              aria-label="Detalhes opcionais"
+              maxLength={500}
+              value={detail}
+              onChange={(e) => setDetail(e.target.value)}
+            />
+          </label>
+          <button
+            className="button"
+            disabled={busy}
+            onClick={() => void send()}
+          >
+            Enviar denúncia
+          </button>
+        </div>
+      )}
+      {message && <p role="status">{message}</p>}
+    </div>
+  );
+}
+function Moderate({
+  groupId,
+  id,
+  kind,
+  onSaved,
+}: {
+  groupId: string;
+  id: string;
+  kind: 'posts' | 'comments';
+  onSaved: () => void;
+}) {
+  const [reason, setReason] = useState(''),
+    [error, setError] = useState(''),
+    [busy, setBusy] = useState(false);
+  return (
+    <details className="social-summary">
+      <summary>Moderar conteúdo</summary>
+      <label className="account-field">
+        Motivo da ocultação
+        <input
+          maxLength={500}
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+        />
+      </label>
+      <button
+        className="button"
+        disabled={busy || !reason.trim()}
+        onClick={() => {
+          setBusy(true);
+          void social(`/groups/${groupId}/moderate/${kind}/${id}`, 'POST', {
+            reason,
+          })
+            .then(onSaved)
+            .catch((e) => setError(e.message))
+            .finally(() => setBusy(false));
+        }}
+      >
+        Ocultar conteúdo
+      </button>
+      {error && <p role="alert">{error}</p>}
+    </details>
+  );
+}
+function Comments({
+  post,
+  onChange,
+  canModerate = false,
+}: {
+  post: SocialPost;
+  onChange: () => void;
+  canModerate?: boolean;
+}) {
+  const { user } = useAuth(),
+    p = usePage<Comment>(`/posts/${post.id}/comments`);
+  const [text, setText] = useState(''),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState('');
+  async function act(path: string, method: string, body?: unknown) {
+    setBusy(true);
+    setError('');
+    try {
+      await social(path, method, body);
+      if (method === 'POST') setText('');
+      await p.reload();
+      onChange();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <div className="post-comments">
+      <p>Comentários · mais recentes primeiro</p>
+      {p.data.items.map((c) => (
+        <div className="comment" key={c.id}>
+          <Avatar name={c.author.displayName} placeholder />
+          <div>
+            <Link to={`/comunidade/u/${c.author.username}`}>
+              <strong>{c.author.displayName}</strong>
+            </Link>
+            <p>{c.text}</p>
+            <small>{new Date(c.created_at).toLocaleString('pt-BR')}</small>
+            {user?.id === c.author.id ? (
+              <button
+                disabled={busy}
+                className="button"
+                onClick={() => void act(`/comments/${c.id}`, 'DELETE')}
+              >
+                Excluir comentário
+              </button>
+            ) : (
+              user && <Report id={c.id} kind="comment" />
+            )}
+            {canModerate && post.group_id && (
+              <Moderate
+                groupId={post.group_id}
+                id={c.id}
+                kind="comments"
+                onSaved={() => {
+                  void p.reload();
+                  onChange();
+                }}
+              />
+            )}
+          </div>
+        </div>
+      ))}
+      {p.loading && <p role="status">Carregando comentários…</p>}
+      {!p.loading && !p.error && !p.data.items.length && (
+        <p>Nenhum comentário ainda.</p>
+      )}
+      {p.error && (
+        <p role="alert">
+          {p.error}
+          <button className="button" onClick={() => void p.reload()}>
+            Tentar novamente
+          </button>
+        </p>
+      )}
+      {p.data.nextCursor && (
+        <button
+          className="button"
+          disabled={p.loading}
+          onClick={() => void p.more()}
+        >
+          Mais comentários
+        </button>
+      )}
+      {user ? (
+        <form
+          className="account-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void act(`/posts/${post.id}/comments`, 'POST', { text });
+          }}
+        >
+          <label className="account-field">
+            Escrever comentário
+            <textarea
+              aria-label="Escrever comentário"
+              required
+              maxLength={1000}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+            />
+          </label>
+          <button className="button" disabled={busy || !text.trim()}>
+            Enviar comentário
+          </button>
+        </form>
+      ) : (
+        <Link to="/entrar">Entre para comentar</Link>
+      )}
+      {error && <p role="alert">{error}</p>}
+    </div>
+  );
+}
+export function LivePost({
+  post,
+  onUpdate,
+  onRemove,
+  canModerate = false,
+}: {
+  post: SocialPost;
+  onUpdate: (p: SocialPost) => void;
+  onRemove: () => void;
+  canModerate?: boolean;
+}) {
+  const { user } = useAuth();
+  const [comments, setComments] = useState(false),
+    [edit, setEdit] = useState(false),
+    [confirm, setConfirm] = useState(false),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState('');
+  async function refresh() {
+    try {
+      const r = await social<{ post: SocialPost }>(`/posts/${post.id}`);
+      onUpdate(r.post);
+      setError('');
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+  async function action(kind: 'like' | 'delete') {
+    if (busy) return;
+    setBusy(true);
+    setError('');
+    try {
+      if (kind === 'delete') {
+        await social(`/posts/${post.id}`, 'DELETE');
+        onRemove();
+      } else {
+        const r = await social<{ post: SocialPost }>(
+          `/posts/${post.id}/like`,
+          post.liked ? 'DELETE' : 'POST',
+        );
+        onUpdate(r.post);
+      }
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  if (edit)
+    return (
+      <Composer
+        post={post}
+        onCancel={() => setEdit(false)}
+        onSaved={() => {
+          setEdit(false);
+          void refresh();
+        }}
+      />
+    );
+  return (
+    <article
+      className="post panel"
+      aria-label={`Publicação de ${post.author.displayName}`}
+    >
+      <header className="post-heading">
+        <Avatar name={post.author.displayName} placeholder />
+        <div>
+          <Link to={`/comunidade/u/${post.author.username}`}>
+            <strong>{post.author.displayName}</strong>
+          </Link>
+          <small>
+            {new Date(post.created_at).toLocaleString('pt-BR')} ·{' '}
+            {post.group_id
+              ? 'Grupo · acesso autorizado'
+              : post.visibility === 'public'
+                ? 'Público'
+                : post.visibility === 'private'
+                  ? 'Somente eu'
+                  : 'Seguidores'}
+            {post.updated_at !== post.created_at ? ' · editada' : ''}
+          </small>
+        </div>
+        {user && (
+          <Popover
+            label="Opções da publicação"
+            trigger={<MoreHorizontal size={23} />}
+          >
+            {user.id === post.author_id ? (
+              <>
+                <button className="button" onClick={() => setEdit(true)}>
+                  Editar publicação
+                </button>
+                <button className="button" onClick={() => setConfirm(true)}>
+                  Excluir publicação
+                </button>
+              </>
+            ) : (
+              <Report id={post.id} kind="post" />
+            )}
+          </Popover>
+        )}
+      </header>
+      {post.text && <p className="post-text">{post.text}</p>}
+      {post.achievement && (
+        <p className="chip">Conquista · {post.achievement.name}</p>
+      )}
+      <div className="social-post-photos">
+        {post.media.map((m, i) => (
+          <a key={m.id} href={apiUrl(m.url)} target="_blank" rel="noreferrer">
+            <img
+              className="post-photo"
+              src={apiUrl(m.url)}
+              srcSet={`${apiUrl(m.thumbnailUrl)} 480w, ${apiUrl(m.url)} 1600w`}
+              sizes="(max-width: 600px) 100vw, 650px"
+              width={m.width}
+              height={m.height}
+              loading="lazy"
+              alt={`Fotografia ${i + 1} da publicação de ${post.author.displayName}`}
+            />
+          </a>
+        ))}
+      </div>
+      {post.motorcycle && (
+        <p className="social-summary">
+          {post.motorcycle.brand} {post.motorcycle.model} ·{' '}
+          {post.motorcycle.year} · {post.motorcycle.displacementCc} cc
+        </p>
+      )}
+      {post.motorcycle_id && !post.motorcycle && <p>Moto indisponível.</p>}
+      {post.ride ? (
+        <div className="social-summary">
+          <p>
+            {post.ride.mode} · {post.ride.day}
+          </p>
+          <p>
+            {post.ride.distanceKm} km · {post.ride.activeMinutes} min
+          </p>
+          <Link
+            className="text-link"
+            to={`/compartilhar/rides/${post.ride.id}`}
+          >
+            Abrir resumo autorizado do Ride
+          </Link>
+          <small>Resumo sem mapa, GPS ou telemetria detalhada.</small>
+        </div>
+      ) : (
+        post.ride_id && (
+          <p>
+            Resumo do Ride indisponível: confira a privacidade ou exclusão da
+            atividade.
+          </p>
+        )
+      )}
+      <div className="post-actions">
+        <button
+          disabled={!user || busy}
+          aria-label="Curtir publicação"
+          aria-pressed={post.liked}
+          className={post.liked ? 'liked' : ''}
+          onClick={() => void action('like')}
+        >
+          <Heart fill={post.liked ? 'currentColor' : 'none'} />
+          {post.likes}
+        </button>
+        <button aria-expanded={comments} onClick={() => setComments(!comments)}>
+          <MessageCircle />
+          {post.comments}
+          <span className="sr-only"> comentários</span>
+        </button>
+        {user && user.id !== post.author_id && (
+          <Link
+            className="text-link"
+            to={`/comunidade/u/${post.author.username}`}
+          >
+            {post.following ? 'Seguindo' : 'Ver perfil / Seguir'}
+          </Link>
+        )}
+      </div>
+      {confirm && (
+        <div className="social-summary">
+          <p>
+            Excluir esta publicação e suas fotografias? A moto e o Ride serão
+            preservados.
+          </p>
+          <button
+            className="button"
+            disabled={busy}
+            onClick={() => void action('delete')}
+          >
+            Confirmar exclusão
+          </button>
+          <button className="button" onClick={() => setConfirm(false)}>
+            Cancelar exclusão
+          </button>
+        </div>
+      )}
+      {error && <p role="alert">{error}</p>}
+      {canModerate && post.group_id && (
+        <Moderate
+          groupId={post.group_id}
+          id={post.id}
+          kind="posts"
+          onSaved={onRemove}
+        />
+      )}
+      {comments && (
+        <Comments
+          post={post}
+          canModerate={canModerate}
+          onChange={() => void refresh()}
+        />
+      )}
+    </article>
+  );
+}
+export function Feed({
+  username,
+  compact = false,
+  groupId,
+  canPost = true,
+  canModerate = false,
+}: {
+  username?: string;
+  compact?: boolean;
+  groupId?: string;
+  canPost?: boolean;
+  canModerate?: boolean;
+}) {
+  const { user } = useAuth();
+  const [mode, setMode] = useState('public'),
+    [composing, setComposing] = useState(false),
+    [notice, setNotice] = useState('');
+  const [query, setQuery] = useSearchParams();
+  const selectedRide = query.get('ride') ?? '';
+  const path = groupId
+    ? `/groups/${groupId}/posts`
+    : username
+      ? `/users/${encodeURIComponent(username)}/posts`
+      : `/feed${mode === 'following' ? '/following' : ''}${compact ? '?limit=2' : ''}`;
+  const p = usePage<SocialPost>(path);
+  const update = (post: SocialPost) =>
+    p.setData((old) => ({
+      ...old,
+      items: old.items.map((s) => (s.id === post.id ? post : s)),
+    }));
+  function close() {
+    setComposing(false);
+    if (selectedRide) {
+      const next = new URLSearchParams(query);
+      next.delete('ride');
+      setQuery(next, { replace: true });
+    }
+  }
+  return (
+    <div className="social-feed" aria-label="Publicações reais">
+      {!compact && !username && !groupId && (
+        <div className="social-controls">
+          <button
+            className="button"
+            aria-pressed={mode === 'public'}
+            onClick={() => setMode('public')}
+          >
+            Para todos
+          </button>
+          <button
+            className="button"
+            disabled={!user}
+            aria-pressed={mode === 'following'}
+            onClick={() => setMode('following')}
+          >
+            Seguindo
+          </button>
+          <button className="button" onClick={() => void p.reload()}>
+            Atualizar feed
+          </button>
+        </div>
+      )}
+      {!compact &&
+        user &&
+        canPost &&
+        (!username || username === user.username) && (
+          <button
+            className="button button-primary"
+            onClick={() => setComposing(true)}
+          >
+            Criar publicação
+          </button>
+        )}
+      {!compact && user && (composing || selectedRide) && (
+        <Composer
+          groupId={groupId}
+          rideId={selectedRide}
+          onCancel={close}
+          onSaved={() => {
+            close();
+            setNotice(
+              groupId
+                ? 'Publicação confirmada no grupo.'
+                : 'Publicação confirmada. Consulte também seu perfil para posts restritos.',
+            );
+            void p.reload();
+          }}
+        />
+      )}
+      {notice && <p role="status">{notice}</p>}
+      {p.data.items.map((post) => (
+        <LivePost
+          canModerate={canModerate}
+          key={post.id}
+          post={post}
+          onUpdate={update}
+          onRemove={() => {
+            p.setData((old) => ({
+              ...old,
+              items: old.items.filter((s) => s.id !== post.id),
+            }));
+            setNotice('Publicação removida.');
+          }}
+        />
+      ))}
+      {p.loading && <p role="status">Carregando publicações…</p>}
+      {p.error && (
+        <div className="panel social-summary" role="alert">
+          {p.error}
+          <button className="button" onClick={() => void p.reload()}>
+            Tentar novamente
+          </button>
+        </div>
+      )}
+      {!p.loading && !p.error && !p.data.items.length && (
+        <div className="panel social-summary">
+          <p>
+            {mode === 'following'
+              ? 'Nenhuma publicação das contas seguidas. Descubra motociclistas para seguir.'
+              : 'Nenhuma publicação por aqui ainda.'}
+          </p>
+          {!user && (
+            <Link className="text-link" to="/entrar">
+              Entre para participar
+            </Link>
+          )}
+        </div>
+      )}
+      {!compact && p.data.nextCursor && (
+        <button
+          className="button"
+          disabled={p.loading}
+          onClick={() => void p.more()}
+        >
+          Carregar mais publicações
+        </button>
+      )}
+      {!p.loading &&
+        !p.error &&
+        p.data.items.length > 0 &&
+        !p.data.nextCursor && <p role="status">Sem novas publicações.</p>}
+    </div>
+  );
+}

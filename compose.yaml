@@ -1,0 +1,23 @@
+name: apex-ride
+services:
+  database:
+    image: postgis/postgis:17-3.6
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Defina POSTGRES_DB no .env}
+      POSTGRES_USER: ${POSTGRES_USER:?Defina POSTGRES_USER no .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no .env}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    ports:
+      - '127.0.0.1:${POSTGRES_PORT:-55432}:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init/001-postgis.sql:/docker-entrypoint-initdb.d/001-postgis.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
+volumes:
+  postgres_data:

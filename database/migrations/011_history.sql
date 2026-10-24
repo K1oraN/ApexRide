@@ -1,0 +1,11 @@
+ALTER TABLE rides ADD COLUMN title text NOT NULL DEFAULT '' CHECK(length(title)<=120);
+ALTER TABLE rides ADD COLUMN description text NOT NULL DEFAULT '' CHECK(length(description)<=4000);
+ALTER TABLE rides ADD COLUMN deleted_at timestamptz;
+ALTER TABLE rides ADD COLUMN motorcycle_snapshot jsonb;
+UPDATE rides r SET motorcycle_snapshot=jsonb_build_object('brand',m.brand,'model',m.model,'year',m.year,'displacementCc',m.displacement_cc,'historicalFallback',true) FROM motorcycles m WHERE m.id=r.motorcycle_id;
+CREATE INDEX rides_history_mode ON rides(owner_id,mode,started_at DESC,id) WHERE deleted_at IS NULL;
+CREATE INDEX rides_history_motorcycle ON rides(owner_id,motorcycle_id,started_at DESC,id) WHERE deleted_at IS NULL;
+CREATE INDEX rides_history_route ON rides(owner_id,route_id,started_at DESC,id) WHERE deleted_at IS NULL;
+CREATE INDEX rides_history_visibility ON rides(owner_id,visibility,started_at DESC,id) WHERE deleted_at IS NULL;
+CREATE INDEX rides_history_owner ON rides(owner_id,started_at DESC,id) WHERE deleted_at IS NULL;
+CREATE INDEX rides_history_search ON rides USING gin(to_tsvector('portuguese',title||' '||description)) WHERE deleted_at IS NULL;

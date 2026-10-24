@@ -1,0 +1,125 @@
+.gps-map {
+  background: #0b1015;
+}
+.metric-progress-unavailable {
+  height: 8px;
+  margin-top: 8px;
+  background: #252a2e;
+  border-radius: 20px;
+}
+.gps-map-canvas {
+  position: absolute;
+  inset: 0;
+}
+.gps-map .map-panel-title {
+  pointer-events: none;
+}
+.gps-map .map-controls {
+  z-index: 2;
+}
+.gps-map .map-disclaimer {
+  bottom: auto;
+  top: 43px;
+  right: 6px;
+  left: 6px;
+  width: fit-content;
+  max-width: calc(100% - 12px);
+}
+.gps-map .maplibregl-ctrl-bottom-left {
+  max-width: 100%;
+}
+.gps-map .maplibregl-ctrl-attrib {
+  margin: 0;
+  padding: 2px 4px;
+  font:
+    9px/1.4 Arial,
+    sans-serif;
+  background: #080e16ed;
+  color: #d1d8df;
+  max-width: 100%;
+}
+.gps-map .maplibregl-ctrl-attrib a {
+  color: #d1d8df;
+}
+.gps-map .maplibregl-canvas {
+  outline-offset: -3px;
+}
+.gps-map-notice {
+  position: absolute;
+  z-index: 3;
+  inset: 35% 8px auto;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #0b1015ed;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+.gps-map-notice button {
+  display: block;
+  margin: 8px auto 0;
+  min-height: 36px;
+}
+.gps-rider-marker {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: #ff202b;
+  color: white;
+  box-shadow: 0 0 0 5px #ff202b40;
+  font:
+    16px Arial,
+    sans-serif;
+}
+.gps-marker-stale {
+  opacity: 0.5;
+}
+.gps-available,
+.gps-available svg {
+  color: #75d5a0;
+}
+.gps-reduced,
+.gps-stale,
+.gps-unavailable {
+  color: #eabb75;
+}
+.gps-details {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 14px;
+  overflow-wrap: anywhere;
+}
+.gps-details p + p {
+  margin-top: 4px;
+}
+.gps-details .text-link {
+  min-height: 40px;
+}
+.gps-details time {
+  white-space: nowrap;
+}
+@media (max-width: 520px) {
+  .gps-map .map-controls {
+    right: 6px;
+    bottom: 45px;
+    gap: 4px;
+  }
+  .gps-map .map-controls .icon-button {
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+  }
+  .gps-map .map-disclaimer {
+    font-size: 8px;
+    top: 33px;
+  }
+  .gps-map-notice {
+    font-size: 10px;
+    padding: 7px;
+  }
+}

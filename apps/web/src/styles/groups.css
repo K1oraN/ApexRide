@@ -1,0 +1,84 @@
+.groups-page {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+.groups-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+.group-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.group-heading > div {
+  min-width: 0;
+}
+.motorcycle-group-card {
+  display: grid;
+  gap: 10px;
+}
+.group-heading > .avatar {
+  flex-shrink: 0;
+}
+.motorcycle-group-card h3,
+.group-heading h1 {
+  overflow-wrap: anywhere;
+}
+.group-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 12px;
+}
+.group-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  border: 1px solid var(--border);
+  padding: 12px;
+}
+.group-cover {
+  width: 100%;
+  aspect-ratio: 3/1;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.group-rules {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.group-member {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  min-width: 0;
+}
+.group-member input,
+.group-member select,
+.groups-page input,
+.groups-page select {
+  min-width: 0;
+  max-width: 100%;
+}
+.group-member .social-controls {
+  flex-wrap: wrap;
+}
+.groups-page fieldset {
+  min-width: 0;
+}
+.group-member fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.groups-page .section-title {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.groups-page .social-summary {
+  overflow-wrap: anywhere;
+}

@@ -1,0 +1,2088 @@
+{
+  "generatedFrom": "pnpm licenses list --json (lockfile instalado)",
+  "scope": "Dependências de desenvolvimento e execução; não inclui servidor PostgreSQL/PostGIS ou dados externos",
+  "dependencies": [
+    {
+      "name": "@asamuzakjp/css-color",
+      "versions": ["7.1.7"],
+      "license": "MIT",
+      "author": "asamuzaK",
+      "homepage": "https://github.com/asamuzaK/cssColor#readme"
+    },
+    {
+      "name": "@asamuzakjp/dom-selector",
+      "versions": ["10.0.4"],
+      "license": "MIT",
+      "author": "asamuzaK",
+      "homepage": "https://github.com/asamuzaK/domSelector#readme"
+    },
+    {
+      "name": "@babel/code-frame",
+      "versions": ["7.29.7"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://babel.dev/docs/en/next/babel-code-frame"
+    },
+    {
+      "name": "@babel/compat-data",
+      "versions": ["7.29.7"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://github.com/babel/babel#readme"
+    },
+    {
+      "name": "@babel/core",
+      "versions": ["7.29.7"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://babel.dev/docs/en/next/babel-core"
+    },
+    {
+      "name": "@babel/generator",
+      "versions": ["7.29.8"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://babel.dev/docs/en/next/babel-generator"
+    },
+    {
+      "name": "@babel/helper-compilation-targets",
+      "versions": ["7.29.7"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://github.com/babel/babel#readme"
+    },
+    {
+      "name": "@babel/helper-globals",
+      "versions": ["7.29.7"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://github.com/babel/babel#readme"
+    },
+    {
+      "name": "@babel/helper-module-imports",
+      "versions": ["7.29.7"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://babel.dev/docs/en/next/babel-helper-module-imports"
+    },
+    {
+      "name": "@babel/helper-module-transforms",
+      "versions": ["7.29.7"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://babel.dev/docs/en/next/babel-helper-module-transforms"
+    },
+    {
+      "name": "@babel/helper-string-parser",
+      "versions": ["7.29.7"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://babel.dev/docs/en/next/babel-helper-string-parser"
+    },
+    {
+      "name": "@babel/helper-validator-identifier",
+      "versions": ["7.29.7"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://github.com/babel/babel#readme"
+    },
+    {
+      "name": "@babel/helper-validator-option",
+      "versions": ["7.29.7"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://github.com/babel/babel#readme"
+    },
+    {
+      "name": "@babel/helpers",
+      "versions": ["7.29.10"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://babel.dev/docs/en/next/babel-helpers"
+    },
+    {
+      "name": "@babel/parser",
+      "versions": ["7.29.9"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://babel.dev/docs/en/next/babel-parser"
+    },
+    {
+      "name": "@babel/template",
+      "versions": ["7.29.7"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://babel.dev/docs/en/next/babel-template"
+    },
+    {
+      "name": "@babel/traverse",
+      "versions": ["7.29.10"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://babel.dev/docs/en/next/babel-traverse"
+    },
+    {
+      "name": "@babel/types",
+      "versions": ["7.29.8"],
+      "license": "MIT",
+      "author": "The Babel Team",
+      "homepage": "https://babel.dev/docs/en/next/babel-types"
+    },
+    {
+      "name": "@bramus/specificity",
+      "versions": ["2.4.3"],
+      "license": "MIT",
+      "author": "Bramus Van Damme",
+      "homepage": "https://github.com/bramus/specificity#readme"
+    },
+    {
+      "name": "@cacheable/memory",
+      "versions": ["2.2.0"],
+      "license": "MIT",
+      "author": "Jared Wray",
+      "homepage": "https://github.com/jaredwray/cacheable#readme"
+    },
+    {
+      "name": "@cacheable/utils",
+      "versions": ["2.5.0"],
+      "license": "MIT",
+      "author": "Jared Wray",
+      "homepage": "https://github.com/jaredwray/cacheable#readme"
+    },
+    {
+      "name": "@csstools/color-helpers",
+      "versions": ["6.1.2"],
+      "license": "MIT-0",
+      "homepage": "https://github.com/csstools/postcss-plugins/tree/main/packages/color-helpers#readme"
+    },
+    {
+      "name": "@csstools/css-calc",
+      "versions": ["3.4.3"],
+      "license": "MIT",
+      "homepage": "https://github.com/csstools/postcss-plugins/tree/main/packages/css-calc#readme"
+    },
+    {
+      "name": "@csstools/css-color-parser",
+      "versions": ["4.2.6"],
+      "license": "MIT",
+      "homepage": "https://github.com/csstools/postcss-plugins/tree/main/packages/css-color-parser#readme"
+    },
+    {
+      "name": "@csstools/css-parser-algorithms",
+      "versions": ["4.0.2"],
+      "license": "MIT",
+      "homepage": "https://github.com/csstools/postcss-plugins/tree/main/packages/css-parser-algorithms#readme"
+    },
+    {
+      "name": "@csstools/css-syntax-patches-for-csstree",
+      "versions": ["1.1.15"],
+      "license": "MIT-0",
+      "homepage": "https://github.com/csstools/postcss-plugins/tree/main/packages/css-syntax-patches-for-csstree#readme"
+    },
+    {
+      "name": "@csstools/css-tokenizer",
+      "versions": ["4.0.2"],
+      "license": "MIT",
+      "homepage": "https://github.com/csstools/postcss-plugins/tree/main/packages/css-tokenizer#readme"
+    },
+    {
+      "name": "@esbuild/win32-x64",
+      "versions": ["0.28.2"],
+      "license": "MIT",
+      "homepage": "https://github.com/evanw/esbuild#readme"
+    },
+    {
+      "name": "@eslint-community/eslint-utils",
+      "versions": ["4.10.1"],
+      "license": "MIT",
+      "author": "Toru Nagashima",
+      "homepage": "https://github.com/eslint-community/eslint-utils#readme"
+    },
+    {
+      "name": "@eslint-community/regexpp",
+      "versions": ["4.12.2"],
+      "license": "MIT",
+      "author": "Toru Nagashima",
+      "homepage": "https://github.com/eslint-community/regexpp#readme"
+    },
+    {
+      "name": "@eslint/config-array",
+      "versions": ["0.23.5"],
+      "license": "Apache-2.0",
+      "author": "Nicholas C. Zakas",
+      "homepage": "https://github.com/eslint/rewrite/tree/main/packages/config-array#readme"
+    },
+    {
+      "name": "@eslint/config-helpers",
+      "versions": ["0.7.0"],
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/eslint/rewrite/tree/main/packages/config-helpers#readme"
+    },
+    {
+      "name": "@eslint/core",
+      "versions": ["1.2.1"],
+      "license": "Apache-2.0",
+      "author": "Nicholas C. Zakas",
+      "homepage": "https://github.com/eslint/rewrite/tree/main/packages/core#readme"
+    },
+    {
+      "name": "@eslint/js",
+      "versions": ["10.0.1"],
+      "license": "MIT",
+      "homepage": "https://eslint.org"
+    },
+    {
+      "name": "@eslint/object-schema",
+      "versions": ["3.0.5"],
+      "license": "Apache-2.0",
+      "author": "Nicholas C. Zakas",
+      "homepage": "https://github.com/eslint/rewrite/tree/main/packages/object-schema#readme"
+    },
+    {
+      "name": "@eslint/plugin-kit",
+      "versions": ["0.7.3"],
+      "license": "Apache-2.0",
+      "author": "Nicholas C. Zakas",
+      "homepage": "https://github.com/eslint/rewrite/tree/main/packages/plugin-kit#readme"
+    },
+    {
+      "name": "@exodus/bytes",
+      "versions": ["1.16.0"],
+      "license": "MIT",
+      "author": "Exodus Movement, Inc.",
+      "homepage": "https://github.com/ExodusOSS/bytes"
+    },
+    {
+      "name": "@fastify/ajv-compiler",
+      "versions": ["4.0.7"],
+      "license": "MIT",
+      "author": "Manuel Spigolon",
+      "homepage": "https://github.com/fastify/ajv-compiler#readme"
+    },
+    {
+      "name": "@fastify/cookie",
+      "versions": ["11.1.3"],
+      "license": "MIT",
+      "author": "James Sumners",
+      "homepage": "https://github.com/fastify/fastify-cookie#readme"
+    },
+    {
+      "name": "@fastify/cors",
+      "versions": ["11.3.1"],
+      "license": "MIT",
+      "author": "Tomas Della Vedova - @delvedor",
+      "homepage": "https://github.com/fastify/fastify-cors#readme"
+    },
+    {
+      "name": "@fastify/deepmerge",
+      "versions": ["3.2.2"],
+      "license": "MIT",
+      "author": "Aras Abbasi",
+      "homepage": "https://github.com/fastify/deepmerge#readme"
+    },
+    {
+      "name": "@fastify/error",
+      "versions": ["4.2.1"],
+      "license": "MIT",
+      "author": "Tomas Della Vedova",
+      "homepage": "https://github.com/fastify/fastify-error#readme"
+    },
+    {
+      "name": "@fastify/fast-json-stringify-compiler",
+      "versions": ["5.1.1"],
+      "license": "MIT",
+      "author": "Manuel Spigolon",
+      "homepage": "https://github.com/fastify/fast-json-stringify-compiler#readme"
+    },
+    {
+      "name": "@fastify/forwarded",
+      "versions": ["3.1.2"],
+      "license": "MIT",
+      "author": "Douglas Christopher Wilson",
+      "homepage": "https://github.com/fastify/forwarded#readme"
+    },
+    {
+      "name": "@fastify/merge-json-schemas",
+      "versions": ["0.2.2"],
+      "license": "MIT",
+      "author": "Ivan Tymoshenko",
+      "homepage": "https://github.com/fastify/merge-json-schemas#readme"
+    },
+    {
+      "name": "@fastify/proxy-addr",
+      "versions": ["5.1.2"],
+      "license": "MIT",
+      "author": "Douglas Christopher Wilson",
+      "homepage": "https://github.com/fastify/proxy-addr#readme"
+    },
+    {
+      "name": "@fontsource/roboto-condensed",
+      "versions": ["5.3.0"],
+      "license": "OFL-1.1",
+      "author": "Google Inc.",
+      "homepage": "https://fontsource.org/fonts/roboto-condensed"
+    },
+    {
+      "name": "@humanfs/core",
+      "versions": ["0.19.2"],
+      "license": "Apache-2.0",
+      "author": "Nicholas C. Zakas",
+      "homepage": "https://github.com/humanwhocodes/humanfs#readme"
+    },
+    {
+      "name": "@humanfs/node",
+      "versions": ["0.16.8"],
+      "license": "Apache-2.0",
+      "author": "Nicholas C. Zakas",
+      "homepage": "https://github.com/humanwhocodes/humanfs#readme"
+    },
+    {
+      "name": "@humanfs/types",
+      "versions": ["0.15.0"],
+      "license": "Apache-2.0",
+      "author": "Nicholas C. Zakas",
+      "homepage": "https://github.com/humanwhocodes/humanfs#readme"
+    },
+    {
+      "name": "@humanwhocodes/module-importer",
+      "versions": ["1.0.1"],
+      "license": "Apache-2.0",
+      "author": "Nicholas C. Zaks",
+      "homepage": "https://github.com/humanwhocodes/module-importer#readme"
+    },
+    {
+      "name": "@humanwhocodes/retry",
+      "versions": ["0.4.3"],
+      "license": "Apache-2.0",
+      "author": "Nicholas C. Zaks",
+      "homepage": "https://github.com/humanwhocodes/retry#readme"
+    },
+    {
+      "name": "@img/colour",
+      "versions": ["1.1.0"],
+      "license": "MIT",
+      "homepage": "https://github.com/lovell/colour#readme"
+    },
+    {
+      "name": "@img/sharp-win32-x64",
+      "versions": ["0.35.5"],
+      "license": "Apache-2.0 AND LGPL-3.0-or-later",
+      "author": "Lovell Fuller",
+      "homepage": "https://sharp.pixelplumbing.com"
+    },
+    {
+      "name": "@jridgewell/gen-mapping",
+      "versions": ["0.3.13"],
+      "license": "MIT",
+      "author": "Justin Ridgewell",
+      "homepage": "https://github.com/jridgewell/sourcemaps/tree/main/packages/gen-mapping"
+    },
+    {
+      "name": "@jridgewell/remapping",
+      "versions": ["2.3.5"],
+      "license": "MIT",
+      "author": "Justin Ridgewell",
+      "homepage": "https://github.com/jridgewell/sourcemaps/tree/main/packages/remapping"
+    },
+    {
+      "name": "@jridgewell/resolve-uri",
+      "versions": ["3.1.2"],
+      "license": "MIT",
+      "author": "Justin Ridgewell",
+      "homepage": "https://github.com/jridgewell/resolve-uri#readme"
+    },
+    {
+      "name": "@jridgewell/sourcemap-codec",
+      "versions": ["1.6.0"],
+      "license": "MIT",
+      "author": "Justin Ridgewell",
+      "homepage": "https://github.com/jridgewell/sourcemaps/tree/main/packages/sourcemap-codec"
+    },
+    {
+      "name": "@jridgewell/trace-mapping",
+      "versions": ["0.3.31"],
+      "license": "MIT",
+      "author": "Justin Ridgewell",
+      "homepage": "https://github.com/jridgewell/sourcemaps/tree/main/packages/trace-mapping"
+    },
+    {
+      "name": "@keyv/bigmap",
+      "versions": ["1.3.1"],
+      "license": "MIT",
+      "author": "Jared Wray",
+      "homepage": "https://github.com/jaredwray/keyv"
+    },
+    {
+      "name": "@keyv/serialize",
+      "versions": ["1.1.1"],
+      "license": "MIT",
+      "author": "Jared Wray",
+      "homepage": "https://github.com/jaredwray/keyv"
+    },
+    {
+      "name": "@mapbox/jsonlint-lines-primitives",
+      "versions": ["2.0.3"],
+      "license": "MIT",
+      "author": "Zach Carter",
+      "homepage": "https://github.com/mapbox/jsonlint#readme"
+    },
+    {
+      "name": "@mapbox/point-geometry",
+      "versions": ["1.1.0"],
+      "license": "ISC",
+      "author": "Tom MacWright",
+      "homepage": "https://github.com/mapbox/point-geometry"
+    },
+    {
+      "name": "@mapbox/tiny-sdf",
+      "versions": ["2.3.0"],
+      "license": "BSD-2-Clause",
+      "author": "Vladimir Agafonkin",
+      "homepage": "https://github.com/mapbox/tiny-sdf#readme"
+    },
+    {
+      "name": "@mapbox/unitbezier",
+      "versions": ["1.0.0"],
+      "license": "BSD-2-Clause",
+      "homepage": "https://github.com/mapbox/unitbezier"
+    },
+    {
+      "name": "@mapbox/vector-tile",
+      "versions": ["3.0.0"],
+      "license": "BSD-3-Clause",
+      "homepage": "https://github.com/mapbox/vector-tile-js#readme"
+    },
+    {
+      "name": "@maplibre/geojson-vt",
+      "versions": ["6.3.0"],
+      "license": "ISC",
+      "author": "Vladimir Agafonkin",
+      "homepage": "https://github.com/maplibre/geojson-vt#readme"
+    },
+    {
+      "name": "@maplibre/maplibre-gl-style-spec",
+      "versions": ["26.4.4"],
+      "license": "ISC",
+      "author": "MapLibre",
+      "homepage": "https://maplibre.org/maplibre-style-spec/"
+    },
+    {
+      "name": "@maplibre/mlt",
+      "versions": ["1.3.0"],
+      "license": "(MIT OR Apache-2.0)",
+      "homepage": "https://github.com/maplibre/maplibre-tile-spec/#readme"
+    },
+    {
+      "name": "@maplibre/vt-pbf",
+      "versions": ["4.3.2"],
+      "license": "MIT",
+      "author": "Anand Thakker",
+      "homepage": "https://github.com/maplibre/vt-pbf#readme"
+    },
+    {
+      "name": "@noble/hashes",
+      "versions": ["1.8.0"],
+      "license": "MIT",
+      "author": "Paul Miller",
+      "homepage": "https://paulmillr.com/noble/"
+    },
+    {
+      "name": "@oxc-project/types",
+      "versions": ["0.155.0"],
+      "license": "MIT",
+      "author": "Boshen and oxc contributors",
+      "homepage": "https://oxc.rs"
+    },
+    {
+      "name": "@pinojs/redact",
+      "versions": ["0.4.0"],
+      "license": "MIT",
+      "author": "Matteo Collina",
+      "homepage": "https://github.com/pinojs/redact#readme"
+    },
+    {
+      "name": "@playwright/test",
+      "versions": ["1.64.1"],
+      "license": "Apache-2.0",
+      "author": "Microsoft Corporation",
+      "homepage": "https://playwright.dev"
+    },
+    {
+      "name": "@remix-run/route-pattern",
+      "versions": ["0.22.1"],
+      "license": "MIT",
+      "homepage": "https://github.com/remix-run/remix/tree/main/packages/route-pattern#readme"
+    },
+    {
+      "name": "@rolldown/binding-win32-x64-msvc",
+      "versions": ["1.2.15"],
+      "license": "MIT",
+      "homepage": "https://rolldown.rs/"
+    },
+    {
+      "name": "@rolldown/pluginutils",
+      "versions": ["1.0.1"],
+      "license": "MIT",
+      "homepage": "https://github.com/rolldown/plugins/tree/main/packages/pluginutils#readme"
+    },
+    {
+      "name": "@types/chai",
+      "versions": ["5.2.3"],
+      "license": "MIT",
+      "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/chai"
+    },
+    {
+      "name": "@types/deep-eql",
+      "versions": ["4.0.2"],
+      "license": "MIT",
+      "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/deep-eql"
+    },
+    {
+      "name": "@types/esrecurse",
+      "versions": ["4.3.1"],
+      "license": "MIT",
+      "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/esrecurse"
+    },
+    {
+      "name": "@types/estree",
+      "versions": ["1.0.9"],
+      "license": "MIT",
+      "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/estree"
+    },
+    {
+      "name": "@types/geojson",
+      "versions": ["7946.0.16"],
+      "license": "MIT",
+      "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/geojson"
+    },
+    {
+      "name": "@types/json-schema",
+      "versions": ["7.0.15"],
+      "license": "MIT",
+      "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/json-schema"
+    },
+    {
+      "name": "@types/node",
+      "versions": ["24.19.2"],
+      "license": "MIT",
+      "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node"
+    },
+    {
+      "name": "@types/nodemailer",
+      "versions": ["8.0.2"],
+      "license": "MIT",
+      "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/nodemailer"
+    },
+    {
+      "name": "@types/pg",
+      "versions": ["8.23.1"],
+      "license": "MIT",
+      "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/pg"
+    },
+    {
+      "name": "@types/react",
+      "versions": ["19.3.0"],
+      "license": "MIT",
+      "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react"
+    },
+    {
+      "name": "@types/react-dom",
+      "versions": ["19.3.0"],
+      "license": "MIT",
+      "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-dom"
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "versions": ["8.72.0"],
+      "license": "MIT",
+      "homepage": "https://typescript-eslint.io/packages/eslint-plugin"
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "versions": ["8.72.0"],
+      "license": "MIT",
+      "homepage": "https://typescript-eslint.io/packages/parser"
+    },
+    {
+      "name": "@typescript-eslint/project-service",
+      "versions": ["8.72.0"],
+      "license": "MIT",
+      "homepage": "https://typescript-eslint.io"
+    },
+    {
+      "name": "@typescript-eslint/scope-manager",
+      "versions": ["8.72.0"],
+      "license": "MIT",
+      "homepage": "https://typescript-eslint.io/packages/scope-manager"
+    },
+    {
+      "name": "@typescript-eslint/tsconfig-utils",
+      "versions": ["8.72.0"],
+      "license": "MIT",
+      "homepage": "https://typescript-eslint.io"
+    },
+    {
+      "name": "@typescript-eslint/type-utils",
+      "versions": ["8.72.0"],
+      "license": "MIT",
+      "homepage": "https://typescript-eslint.io"
+    },
+    {
+      "name": "@typescript-eslint/types",
+      "versions": ["8.72.0"],
+      "license": "MIT",
+      "homepage": "https://typescript-eslint.io"
+    },
+    {
+      "name": "@typescript-eslint/typescript-estree",
+      "versions": ["8.72.0"],
+      "license": "MIT",
+      "homepage": "https://typescript-eslint.io/packages/typescript-estree"
+    },
+    {
+      "name": "@typescript-eslint/utils",
+      "versions": ["8.72.0"],
+      "license": "MIT",
+      "homepage": "https://typescript-eslint.io/packages/utils"
+    },
+    {
+      "name": "@typescript-eslint/visitor-keys",
+      "versions": ["8.72.0"],
+      "license": "MIT",
+      "homepage": "https://typescript-eslint.io"
+    },
+    {
+      "name": "@vitejs/plugin-react",
+      "versions": ["6.1.2"],
+      "license": "MIT",
+      "author": "Evan You",
+      "homepage": "https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#readme"
+    },
+    {
+      "name": "@vitest/mocker",
+      "versions": ["5.0.5"],
+      "license": "MIT",
+      "homepage": "https://github.com/vitest-dev/vitest/tree/main/packages/mocker"
+    },
+    {
+      "name": "@vitest/spy",
+      "versions": ["5.0.5"],
+      "license": "MIT",
+      "homepage": "https://vitest.dev/api/mock"
+    },
+    {
+      "name": "abstract-logging",
+      "versions": ["2.0.1"],
+      "license": "MIT",
+      "author": "James Sumners",
+      "homepage": "https://github.com/jsumners/abstract-logging#readme"
+    },
+    {
+      "name": "acorn",
+      "versions": ["8.19.0"],
+      "license": "MIT",
+      "homepage": "https://github.com/acornjs/acorn"
+    },
+    {
+      "name": "acorn-jsx",
+      "versions": ["5.3.2"],
+      "license": "MIT",
+      "homepage": "https://github.com/acornjs/acorn-jsx"
+    },
+    {
+      "name": "ajv",
+      "versions": ["6.15.0", "8.20.0"],
+      "license": "MIT",
+      "author": "Evgeny Poberezkin",
+      "homepage": "https://ajv.js.org"
+    },
+    {
+      "name": "ajv-formats",
+      "versions": ["3.0.1"],
+      "license": "MIT",
+      "author": "Evgeny Poberezkin",
+      "homepage": "https://github.com/ajv-validator/ajv-formats#readme"
+    },
+    {
+      "name": "assertion-error",
+      "versions": ["2.0.1"],
+      "license": "MIT",
+      "author": "Jake Luer",
+      "homepage": "https://github.com/chaijs/assertion-error#readme"
+    },
+    {
+      "name": "atomic-sleep",
+      "versions": ["1.0.0"],
+      "license": "MIT",
+      "author": "David Mark Clements",
+      "homepage": "https://github.com/davidmarkclements/atomic-sleep#readme"
+    },
+    {
+      "name": "avvio",
+      "versions": ["9.3.1"],
+      "license": "MIT",
+      "author": "Matteo Collina",
+      "homepage": "https://github.com/fastify/avvio#readme"
+    },
+    {
+      "name": "balanced-match",
+      "versions": ["4.0.4"],
+      "license": "MIT",
+      "homepage": "https://github.com/juliangruber/balanced-match#readme"
+    },
+    {
+      "name": "baseline-browser-mapping",
+      "versions": ["2.11.30"],
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/web-platform-dx/baseline-browser-mapping#readme"
+    },
+    {
+      "name": "bidi-js",
+      "versions": ["1.1.0"],
+      "license": "MIT",
+      "author": "Jason Johnston",
+      "homepage": "https://github.com/lojjic/bidi-js#readme"
+    },
+    {
+      "name": "brace-expansion",
+      "versions": ["5.0.12"],
+      "license": "MIT",
+      "homepage": "https://github.com/juliangruber/brace-expansion#readme"
+    },
+    {
+      "name": "browserslist",
+      "versions": ["4.29.4"],
+      "license": "MIT",
+      "author": "Andrey Sitnik",
+      "homepage": "https://github.com/browserslist/browserslist#readme"
+    },
+    {
+      "name": "cacheable",
+      "versions": ["2.5.0"],
+      "license": "MIT",
+      "author": "Jared Wray",
+      "homepage": "https://github.com/jaredwray/cacheable#readme"
+    },
+    {
+      "name": "caniuse-lite",
+      "versions": ["1.0.30001818"],
+      "license": "CC-BY-4.0",
+      "author": "Ben Briggs",
+      "homepage": "https://github.com/browserslist/caniuse-lite#readme"
+    },
+    {
+      "name": "chai",
+      "versions": ["6.3.0"],
+      "license": "MIT",
+      "author": "Jake Luer",
+      "homepage": "http://chaijs.com"
+    },
+    {
+      "name": "convert-source-map",
+      "versions": ["2.0.0"],
+      "license": "MIT",
+      "author": "Thorsten Lorenz",
+      "homepage": "https://github.com/thlorenz/convert-source-map"
+    },
+    {
+      "name": "cookie",
+      "versions": ["2.0.1"],
+      "license": "MIT",
+      "author": "Roman Shtylman",
+      "homepage": "https://github.com/jshttp/cookie#readme"
+    },
+    {
+      "name": "cookie-es",
+      "versions": ["3.1.1"],
+      "license": "MIT",
+      "homepage": "https://github.com/unjs/cookie-es#readme"
+    },
+    {
+      "name": "cross-spawn",
+      "versions": ["7.0.6"],
+      "license": "MIT",
+      "author": "André Cruz",
+      "homepage": "https://github.com/moxystudio/node-cross-spawn"
+    },
+    {
+      "name": "css-tree",
+      "versions": ["3.2.1"],
+      "license": "MIT",
+      "author": "Roman Dvornov",
+      "homepage": "https://github.com/csstree/csstree#readme"
+    },
+    {
+      "name": "csstype",
+      "versions": ["3.2.3"],
+      "license": "MIT",
+      "author": "Fredrik Nicol",
+      "homepage": "https://github.com/frenic/csstype#readme"
+    },
+    {
+      "name": "data-urls",
+      "versions": ["8.0.0"],
+      "license": "MIT",
+      "author": "Domenic Denicola",
+      "homepage": "https://github.com/jsdom/data-urls#readme"
+    },
+    {
+      "name": "debug",
+      "versions": ["4.4.3"],
+      "license": "MIT",
+      "author": "Josh Junon",
+      "homepage": "https://github.com/debug-js/debug#readme"
+    },
+    {
+      "name": "decimal.js",
+      "versions": ["10.6.0"],
+      "license": "MIT",
+      "author": "Michael Mclaughlin",
+      "homepage": "https://github.com/MikeMcl/decimal.js#readme"
+    },
+    {
+      "name": "deep-is",
+      "versions": ["0.1.4"],
+      "license": "MIT",
+      "author": "Thorsten Lorenz",
+      "homepage": "https://github.com/thlorenz/deep-is#readme"
+    },
+    {
+      "name": "dequal",
+      "versions": ["2.0.3"],
+      "license": "MIT",
+      "author": "Luke Edwards",
+      "homepage": "https://github.com/lukeed/dequal#readme"
+    },
+    {
+      "name": "detect-libc",
+      "versions": ["2.1.2"],
+      "license": "Apache-2.0",
+      "author": "Lovell Fuller",
+      "homepage": "https://github.com/lovell/detect-libc#readme"
+    },
+    {
+      "name": "earcut",
+      "versions": ["3.2.4"],
+      "license": "ISC",
+      "author": "Volodymyr Agafonkin",
+      "homepage": "https://github.com/mapbox/earcut#readme"
+    },
+    {
+      "name": "electron-to-chromium",
+      "versions": ["1.5.463"],
+      "license": "ISC",
+      "author": "Kilian Valkhof",
+      "homepage": "https://github.com/Kilian/electron-to-chromium#readme"
+    },
+    {
+      "name": "entities",
+      "versions": ["8.1.0"],
+      "license": "BSD-2-Clause",
+      "author": "Felix Boehm",
+      "homepage": "https://github.com/fb55/entities#readme"
+    },
+    {
+      "name": "es-module-lexer",
+      "versions": ["2.3.2"],
+      "license": "MIT",
+      "author": "Guy Bedford",
+      "homepage": "https://github.com/guybedford/es-module-lexer#readme"
+    },
+    {
+      "name": "esbuild",
+      "versions": ["0.28.2"],
+      "license": "MIT",
+      "homepage": "https://github.com/evanw/esbuild#readme"
+    },
+    {
+      "name": "escalade",
+      "versions": ["3.2.0"],
+      "license": "MIT",
+      "author": "Luke Edwards",
+      "homepage": "https://github.com/lukeed/escalade#readme"
+    },
+    {
+      "name": "escape-string-regexp",
+      "versions": ["4.0.0"],
+      "license": "MIT",
+      "author": "Sindre Sorhus",
+      "homepage": "https://github.com/sindresorhus/escape-string-regexp#readme"
+    },
+    {
+      "name": "eslint",
+      "versions": ["10.13.0"],
+      "license": "MIT",
+      "author": "Nicholas C. Zakas",
+      "homepage": "https://eslint.org"
+    },
+    {
+      "name": "eslint-plugin-react-hooks",
+      "versions": ["7.1.1"],
+      "license": "MIT",
+      "homepage": "https://react.dev/"
+    },
+    {
+      "name": "eslint-plugin-react-refresh",
+      "versions": ["0.5.7"],
+      "license": "MIT",
+      "author": "Arnaud Barré",
+      "homepage": "https://github.com/ArnaudBarre/eslint-plugin-react-refresh#readme"
+    },
+    {
+      "name": "eslint-scope",
+      "versions": ["9.1.2"],
+      "license": "BSD-2-Clause",
+      "homepage": "https://github.com/eslint/js/blob/main/packages/eslint-scope/README.md"
+    },
+    {
+      "name": "eslint-visitor-keys",
+      "versions": ["3.4.3", "5.0.1"],
+      "license": "Apache-2.0",
+      "author": "Toru Nagashima",
+      "homepage": "https://github.com/eslint/js/blob/main/packages/eslint-visitor-keys/README.md"
+    },
+    {
+      "name": "espree",
+      "versions": ["11.2.0"],
+      "license": "BSD-2-Clause",
+      "author": "Nicholas C. Zakas",
+      "homepage": "https://github.com/eslint/js/blob/main/packages/espree/README.md"
+    },
+    {
+      "name": "esquery",
+      "versions": ["1.7.0"],
+      "license": "BSD-3-Clause",
+      "author": "Joel Feenstra",
+      "homepage": "https://github.com/estools/esquery/"
+    },
+    {
+      "name": "esrecurse",
+      "versions": ["4.3.0"],
+      "license": "BSD-2-Clause",
+      "homepage": "https://github.com/estools/esrecurse"
+    },
+    {
+      "name": "estraverse",
+      "versions": ["5.3.0"],
+      "license": "BSD-2-Clause",
+      "homepage": "https://github.com/estools/estraverse"
+    },
+    {
+      "name": "estree-walker",
+      "versions": ["3.0.3"],
+      "license": "MIT",
+      "author": "Rich Harris",
+      "homepage": "https://github.com/Rich-Harris/estree-walker#readme"
+    },
+    {
+      "name": "esutils",
+      "versions": ["2.0.3"],
+      "license": "BSD-2-Clause",
+      "homepage": "https://github.com/estools/esutils"
+    },
+    {
+      "name": "expect-type",
+      "versions": ["1.4.0"],
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/mmkal/expect-type#readme"
+    },
+    {
+      "name": "fake-indexeddb",
+      "versions": ["6.2.6"],
+      "license": "Apache-2.0",
+      "author": "Jeremy Scheff",
+      "homepage": "https://github.com/dumbmatter/fakeIndexedDB"
+    },
+    {
+      "name": "fast-decode-uri-component",
+      "versions": ["1.0.1"],
+      "license": "MIT",
+      "author": "Tomas Della Vedova - @delvedor",
+      "homepage": "https://github.com/delvedor/fast-decode-uri-component#readme"
+    },
+    {
+      "name": "fast-deep-equal",
+      "versions": ["3.1.3"],
+      "license": "MIT",
+      "author": "Evgeny Poberezkin",
+      "homepage": "https://github.com/epoberezkin/fast-deep-equal#readme"
+    },
+    {
+      "name": "fast-json-stable-stringify",
+      "versions": ["2.1.0"],
+      "license": "MIT",
+      "author": "James Halliday",
+      "homepage": "https://github.com/epoberezkin/fast-json-stable-stringify"
+    },
+    {
+      "name": "fast-json-stringify",
+      "versions": ["7.1.2"],
+      "license": "MIT",
+      "author": "Matteo Collina",
+      "homepage": "https://github.com/fastify/fast-json-stringify#readme"
+    },
+    {
+      "name": "fast-levenshtein",
+      "versions": ["2.0.6"],
+      "license": "MIT",
+      "author": "Ramesh Nair",
+      "homepage": "https://github.com/hiddentao/fast-levenshtein#readme"
+    },
+    {
+      "name": "fast-querystring",
+      "versions": ["1.1.2"],
+      "license": "MIT",
+      "author": "Yagiz Nizipli",
+      "homepage": "https://github.com/anonrig/fast-querystring#readme"
+    },
+    {
+      "name": "fast-uri",
+      "versions": ["3.1.9", "4.2.3"],
+      "license": "BSD-3-Clause",
+      "author": "Vincent Le Goff",
+      "homepage": "https://github.com/fastify/fast-uri"
+    },
+    {
+      "name": "fastify",
+      "versions": ["5.12.7"],
+      "license": "MIT",
+      "author": "Matteo Collina",
+      "homepage": "https://fastify.dev/"
+    },
+    {
+      "name": "fastify-plugin",
+      "versions": ["6.0.1"],
+      "license": "MIT",
+      "author": "Tomas Della Vedova - @delvedor",
+      "homepage": "https://github.com/fastify/fastify-plugin#readme"
+    },
+    {
+      "name": "fastq",
+      "versions": ["1.20.3"],
+      "license": "ISC",
+      "author": "Matteo Collina",
+      "homepage": "https://github.com/mcollina/fastq#readme"
+    },
+    {
+      "name": "fdir",
+      "versions": ["6.5.0"],
+      "license": "MIT",
+      "author": "thecodrr",
+      "homepage": "https://github.com/thecodrr/fdir#readme"
+    },
+    {
+      "name": "file-entry-cache",
+      "versions": ["11.1.5"],
+      "license": "MIT",
+      "author": "Jared Wray",
+      "homepage": "https://github.com/jaredwray/cacheable#readme"
+    },
+    {
+      "name": "find-my-way",
+      "versions": ["9.10.0"],
+      "license": "MIT",
+      "author": "Tomas Della Vedova - @delvedor",
+      "homepage": "https://github.com/delvedor/find-my-way#readme"
+    },
+    {
+      "name": "find-up",
+      "versions": ["5.0.0"],
+      "license": "MIT",
+      "author": "Sindre Sorhus",
+      "homepage": "https://github.com/sindresorhus/find-up#readme"
+    },
+    {
+      "name": "flat-cache",
+      "versions": ["6.1.23"],
+      "license": "MIT",
+      "author": "Jared Wray",
+      "homepage": "https://github.com/jaredwray/cacheable#readme"
+    },
+    {
+      "name": "flatted",
+      "versions": ["3.4.4"],
+      "license": "ISC",
+      "author": "Andrea Giammarchi",
+      "homepage": "https://github.com/WebReflection/flatted#readme"
+    },
+    {
+      "name": "gensync",
+      "versions": ["1.0.0-beta.2"],
+      "license": "MIT",
+      "author": "Logan Smyth",
+      "homepage": "https://github.com/loganfsmyth/gensync"
+    },
+    {
+      "name": "gl-matrix",
+      "versions": ["3.4.4"],
+      "license": "MIT",
+      "homepage": "http://glmatrix.net"
+    },
+    {
+      "name": "glob-parent",
+      "versions": ["6.0.2"],
+      "license": "ISC",
+      "author": "Gulp Team",
+      "homepage": "https://github.com/gulpjs/glob-parent#readme"
+    },
+    {
+      "name": "globals",
+      "versions": ["17.13.0"],
+      "license": "MIT",
+      "author": "Sindre Sorhus",
+      "homepage": "https://github.com/sindresorhus/globals#readme"
+    },
+    {
+      "name": "hashery",
+      "versions": ["1.5.1"],
+      "license": "MIT",
+      "author": "Jared Wray",
+      "homepage": "https://github.com/jaredwray/hashery#readme"
+    },
+    {
+      "name": "hermes-estree",
+      "versions": ["0.25.1"],
+      "license": "MIT",
+      "homepage": "https://github.com/facebook/hermes#readme"
+    },
+    {
+      "name": "hermes-parser",
+      "versions": ["0.25.1"],
+      "license": "MIT",
+      "homepage": "https://github.com/facebook/hermes#readme"
+    },
+    {
+      "name": "hookified",
+      "versions": ["1.15.1", "2.2.0"],
+      "license": "MIT",
+      "author": "Jared Wray",
+      "homepage": "https://github.com/jaredwray/hookified#readme"
+    },
+    {
+      "name": "html-encoding-sniffer",
+      "versions": ["7.0.0"],
+      "license": "MIT",
+      "author": "Domenic Denicola",
+      "homepage": "https://github.com/jsdom/html-encoding-sniffer#readme"
+    },
+    {
+      "name": "ignore",
+      "versions": ["5.3.2", "7.0.13"],
+      "license": "MIT",
+      "author": "kael",
+      "homepage": "https://github.com/kaelzhang/node-ignore#readme"
+    },
+    {
+      "name": "imurmurhash",
+      "versions": ["0.1.4"],
+      "license": "MIT",
+      "author": "Jens Taylor",
+      "homepage": "https://github.com/jensyt/imurmurhash-js"
+    },
+    {
+      "name": "ipaddr.js",
+      "versions": ["2.5.0"],
+      "license": "MIT",
+      "author": "whitequark",
+      "homepage": "https://github.com/whitequark/ipaddr.js#readme"
+    },
+    {
+      "name": "is-extglob",
+      "versions": ["2.1.1"],
+      "license": "MIT",
+      "author": "Jon Schlinkert",
+      "homepage": "https://github.com/jonschlinkert/is-extglob"
+    },
+    {
+      "name": "is-glob",
+      "versions": ["4.0.3"],
+      "license": "MIT",
+      "author": "Jon Schlinkert",
+      "homepage": "https://github.com/micromatch/is-glob"
+    },
+    {
+      "name": "is-potential-custom-element-name",
+      "versions": ["1.0.1"],
+      "license": "MIT",
+      "author": "Mathias Bynens",
+      "homepage": "https://github.com/mathiasbynens/is-potential-custom-element-name"
+    },
+    {
+      "name": "isexe",
+      "versions": ["2.0.0"],
+      "license": "ISC",
+      "author": "Isaac Z. Schlueter",
+      "homepage": "https://github.com/isaacs/isexe#readme"
+    },
+    {
+      "name": "js-tokens",
+      "versions": ["4.0.0"],
+      "license": "MIT",
+      "author": "Simon Lydell",
+      "homepage": "https://github.com/lydell/js-tokens#readme"
+    },
+    {
+      "name": "jsdom",
+      "versions": ["30.1.3"],
+      "license": "MIT",
+      "homepage": "https://github.com/jsdom/jsdom#readme"
+    },
+    {
+      "name": "jsesc",
+      "versions": ["3.1.0"],
+      "license": "MIT",
+      "author": "Mathias Bynens",
+      "homepage": "https://mths.be/jsesc"
+    },
+    {
+      "name": "json-schema-ref-resolver",
+      "versions": ["3.0.1"],
+      "license": "MIT",
+      "author": "Ivan Tymoshenko",
+      "homepage": "https://github.com/fastify/json-schema-ref-resolver#readme"
+    },
+    {
+      "name": "json-schema-traverse",
+      "versions": ["0.4.1", "1.0.0"],
+      "license": "MIT",
+      "author": "Evgeny Poberezkin",
+      "homepage": "https://github.com/epoberezkin/json-schema-traverse#readme"
+    },
+    {
+      "name": "json-stable-stringify-without-jsonify",
+      "versions": ["1.0.1"],
+      "license": "MIT",
+      "author": "James Halliday",
+      "homepage": "https://github.com/samn/json-stable-stringify"
+    },
+    {
+      "name": "json-stringify-pretty-compact",
+      "versions": ["4.0.0"],
+      "license": "MIT",
+      "author": "Simon Lydell",
+      "homepage": "https://github.com/lydell/json-stringify-pretty-compact#readme"
+    },
+    {
+      "name": "json5",
+      "versions": ["2.2.3"],
+      "license": "MIT",
+      "author": "Aseem Kishore",
+      "homepage": "http://json5.org/"
+    },
+    {
+      "name": "kdbush",
+      "versions": ["4.1.0"],
+      "license": "ISC",
+      "author": "Vladimir Agafonkin",
+      "homepage": "https://github.com/mourner/kdbush#readme"
+    },
+    {
+      "name": "keyv",
+      "versions": ["5.6.0"],
+      "license": "MIT",
+      "author": "Jared Wray",
+      "homepage": "https://github.com/jaredwray/keyv"
+    },
+    {
+      "name": "levn",
+      "versions": ["0.4.1"],
+      "license": "MIT",
+      "author": "George Zahariev",
+      "homepage": "https://github.com/gkz/levn"
+    },
+    {
+      "name": "light-my-request",
+      "versions": ["6.8.0"],
+      "license": "BSD-3-Clause",
+      "author": "Tomas Della Vedova - @delvedor",
+      "homepage": "https://github.com/fastify/light-my-request#readme"
+    },
+    {
+      "name": "lightningcss",
+      "versions": ["1.33.0"],
+      "license": "MPL-2.0",
+      "homepage": "https://github.com/parcel-bundler/lightningcss#readme"
+    },
+    {
+      "name": "lightningcss-win32-x64-msvc",
+      "versions": ["1.33.0"],
+      "license": "MPL-2.0",
+      "homepage": "https://github.com/parcel-bundler/lightningcss#readme"
+    },
+    {
+      "name": "locate-path",
+      "versions": ["6.0.0"],
+      "license": "MIT",
+      "author": "Sindre Sorhus",
+      "homepage": "https://github.com/sindresorhus/locate-path#readme"
+    },
+    {
+      "name": "lru-cache",
+      "versions": ["5.1.1"],
+      "license": "ISC",
+      "author": "Isaac Z. Schlueter",
+      "homepage": "https://github.com/isaacs/node-lru-cache#readme"
+    },
+    {
+      "name": "lru-cache",
+      "versions": ["11.5.3"],
+      "license": "BlueOak-1.0.0",
+      "author": "Isaac Z. Schlueter",
+      "homepage": "https://github.com/isaacs/node-lru-cache#readme"
+    },
+    {
+      "name": "lucide-react",
+      "versions": ["1.61.0"],
+      "license": "ISC",
+      "author": "Eric Fennis",
+      "homepage": "https://lucide.dev"
+    },
+    {
+      "name": "magic-string",
+      "versions": ["1.4.3"],
+      "license": "MIT",
+      "author": "Rich Harris",
+      "homepage": "https://github.com/Rich-Harris/magic-string#readme"
+    },
+    {
+      "name": "maplibre-gl",
+      "versions": ["6.15.0"],
+      "license": "BSD-3-Clause",
+      "homepage": "https://maplibre.org/"
+    },
+    {
+      "name": "mdn-data",
+      "versions": ["2.27.1"],
+      "license": "CC0-1.0",
+      "author": "Mozilla Developer Network",
+      "homepage": "https://developer.mozilla.org"
+    },
+    {
+      "name": "minimatch",
+      "versions": ["10.2.6"],
+      "license": "BlueOak-1.0.0",
+      "author": "Isaac Z. Schlueter",
+      "homepage": "https://github.com/isaacs/minimatch#readme"
+    },
+    {
+      "name": "minimist",
+      "versions": ["1.2.8"],
+      "license": "MIT",
+      "author": "James Halliday",
+      "homepage": "https://github.com/minimistjs/minimist"
+    },
+    {
+      "name": "ms",
+      "versions": ["2.1.3"],
+      "license": "MIT",
+      "homepage": "https://github.com/vercel/ms#readme"
+    },
+    {
+      "name": "murmurhash-js",
+      "versions": ["1.0.0"],
+      "license": "MIT",
+      "author": "Gary Court",
+      "homepage": "https://github.com/mikolalysenko/murmurhash-js#readme"
+    },
+    {
+      "name": "nanoid",
+      "versions": ["3.3.20"],
+      "license": "MIT",
+      "author": "Andrey Sitnik",
+      "homepage": "https://github.com/ai/nanoid#readme"
+    },
+    {
+      "name": "natural-compare",
+      "versions": ["1.4.0"],
+      "license": "MIT",
+      "author": "Lauri Rooden",
+      "homepage": "https://github.com/litejs/natural-compare-lite#readme"
+    },
+    {
+      "name": "node-releases",
+      "versions": ["2.0.59"],
+      "license": "MIT",
+      "author": "Sergey Rubanov",
+      "homepage": "https://github.com/chicoxyzzy/node-releases#readme"
+    },
+    {
+      "name": "nodemailer",
+      "versions": ["10.2.0"],
+      "license": "MIT-0",
+      "author": "Andris Reinman",
+      "homepage": "https://nodemailer.com/"
+    },
+    {
+      "name": "obug",
+      "versions": ["3.0.0"],
+      "license": "MIT",
+      "author": "Kevin Deng",
+      "homepage": "https://github.com/sxzz/obug#readme"
+    },
+    {
+      "name": "on-exit-leak-free",
+      "versions": ["2.1.2"],
+      "license": "MIT",
+      "author": "Matteo Collina",
+      "homepage": "https://github.com/mcollina/on-exit-or-gc#readme"
+    },
+    {
+      "name": "optionator",
+      "versions": ["0.9.4"],
+      "license": "MIT",
+      "author": "George Zahariev",
+      "homepage": "https://github.com/gkz/optionator"
+    },
+    {
+      "name": "otpauth",
+      "versions": ["9.4.1"],
+      "license": "MIT",
+      "author": "Héctor Molinero Fernández",
+      "homepage": "https://github.com/hectorm/otpauth"
+    },
+    {
+      "name": "p-limit",
+      "versions": ["3.1.0"],
+      "license": "MIT",
+      "author": "Sindre Sorhus",
+      "homepage": "https://github.com/sindresorhus/p-limit#readme"
+    },
+    {
+      "name": "p-locate",
+      "versions": ["5.0.0"],
+      "license": "MIT",
+      "author": "Sindre Sorhus",
+      "homepage": "https://github.com/sindresorhus/p-locate#readme"
+    },
+    {
+      "name": "parse5",
+      "versions": ["8.0.1"],
+      "license": "MIT",
+      "author": "Ivan Nikulin",
+      "homepage": "https://parse5.js.org"
+    },
+    {
+      "name": "path-exists",
+      "versions": ["4.0.0"],
+      "license": "MIT",
+      "author": "Sindre Sorhus",
+      "homepage": "https://github.com/sindresorhus/path-exists#readme"
+    },
+    {
+      "name": "path-key",
+      "versions": ["3.1.1"],
+      "license": "MIT",
+      "author": "Sindre Sorhus",
+      "homepage": "https://github.com/sindresorhus/path-key#readme"
+    },
+    {
+      "name": "pbf",
+      "versions": ["5.1.2"],
+      "license": "BSD-3-Clause",
+      "author": "Konstantin Kaefer",
+      "homepage": "https://github.com/mapbox/pbf"
+    },
+    {
+      "name": "pg",
+      "versions": ["8.23.1"],
+      "license": "MIT",
+      "author": "Brian Carlson",
+      "homepage": "https://github.com/brianc/node-postgres"
+    },
+    {
+      "name": "pg-cloudflare",
+      "versions": ["1.4.1"],
+      "license": "MIT",
+      "homepage": "https://github.com/brianc/node-postgres#readme"
+    },
+    {
+      "name": "pg-connection-string",
+      "versions": ["2.14.1"],
+      "license": "MIT",
+      "author": "Blaine Bublitz",
+      "homepage": "https://github.com/brianc/node-postgres/tree/master/packages/pg-connection-string"
+    },
+    {
+      "name": "pg-int8",
+      "versions": ["1.0.1"],
+      "license": "ISC",
+      "homepage": "https://github.com/charmander/pg-int8#readme"
+    },
+    {
+      "name": "pg-pool",
+      "versions": ["3.14.0"],
+      "license": "MIT",
+      "author": "Brian M. Carlson",
+      "homepage": "https://github.com/brianc/node-postgres/tree/master/packages/pg-pool#readme"
+    },
+    {
+      "name": "pg-protocol",
+      "versions": ["1.16.1"],
+      "license": "MIT",
+      "homepage": "https://github.com/brianc/node-postgres#readme"
+    },
+    {
+      "name": "pg-types",
+      "versions": ["2.2.0"],
+      "license": "MIT",
+      "author": "Brian M. Carlson",
+      "homepage": "https://github.com/brianc/node-pg-types"
+    },
+    {
+      "name": "pgpass",
+      "versions": ["1.0.5"],
+      "license": "MIT",
+      "author": "Hannes Hörl",
+      "homepage": "https://github.com/hoegaarden/pgpass#readme"
+    },
+    {
+      "name": "picocolors",
+      "versions": ["1.1.1"],
+      "license": "ISC",
+      "author": "Alexey Raspopov",
+      "homepage": "https://github.com/alexeyraspopov/picocolors#readme"
+    },
+    {
+      "name": "picomatch",
+      "versions": ["4.0.7"],
+      "license": "MIT",
+      "author": "Jon Schlinkert",
+      "homepage": "https://github.com/micromatch/picomatch"
+    },
+    {
+      "name": "pino",
+      "versions": ["10.4.0"],
+      "license": "MIT",
+      "author": "Matteo Collina",
+      "homepage": "https://getpino.io"
+    },
+    {
+      "name": "pino-abstract-transport",
+      "versions": ["3.0.0"],
+      "license": "MIT",
+      "author": "Matteo Collina",
+      "homepage": "https://github.com/pinojs/pino-abstract-transport#readme"
+    },
+    {
+      "name": "pino-std-serializers",
+      "versions": ["7.1.0"],
+      "license": "MIT",
+      "author": "James Sumners",
+      "homepage": "https://github.com/pinojs/pino-std-serializers#readme"
+    },
+    {
+      "name": "playwright",
+      "versions": ["1.64.1"],
+      "license": "Apache-2.0",
+      "author": "Microsoft Corporation",
+      "homepage": "https://playwright.dev"
+    },
+    {
+      "name": "playwright-core",
+      "versions": ["1.64.1"],
+      "license": "Apache-2.0",
+      "author": "Microsoft Corporation",
+      "homepage": "https://playwright.dev"
+    },
+    {
+      "name": "postcss",
+      "versions": ["8.5.31"],
+      "license": "MIT",
+      "author": "Andrey Sitnik",
+      "homepage": "https://postcss.org/"
+    },
+    {
+      "name": "postgres-array",
+      "versions": ["2.0.0"],
+      "license": "MIT",
+      "author": "Ben Drucker",
+      "homepage": "https://github.com/bendrucker/postgres-array#readme"
+    },
+    {
+      "name": "postgres-bytea",
+      "versions": ["1.0.1"],
+      "license": "MIT",
+      "author": "Ben Drucker",
+      "homepage": "https://github.com/bendrucker/postgres-bytea#readme"
+    },
+    {
+      "name": "postgres-date",
+      "versions": ["1.0.7"],
+      "license": "MIT",
+      "author": "Ben Drucker",
+      "homepage": "https://github.com/bendrucker/postgres-date#readme"
+    },
+    {
+      "name": "postgres-interval",
+      "versions": ["1.2.0"],
+      "license": "MIT",
+      "author": "Ben Drucker",
+      "homepage": "https://github.com/bendrucker/postgres-interval#readme"
+    },
+    {
+      "name": "potpack",
+      "versions": ["2.1.0"],
+      "license": "ISC",
+      "author": "Vladimir Agafonkin",
+      "homepage": "https://mapbox.github.io/potpack/"
+    },
+    {
+      "name": "prelude-ls",
+      "versions": ["1.2.1"],
+      "license": "MIT",
+      "author": "George Zahariev",
+      "homepage": "http://preludels.com"
+    },
+    {
+      "name": "prettier",
+      "versions": ["3.9.10"],
+      "license": "MIT",
+      "author": "James Long",
+      "homepage": "https://prettier.io"
+    },
+    {
+      "name": "process-warning",
+      "versions": ["5.1.1"],
+      "license": "MIT",
+      "author": "Tomas Della Vedova",
+      "homepage": "https://github.com/fastify/fastify-warning#readme"
+    },
+    {
+      "name": "protocol-buffers-schema",
+      "versions": ["3.6.1"],
+      "license": "MIT",
+      "author": "Mathias Buus",
+      "homepage": "https://github.com/mafintosh/protocol-buffers-schema"
+    },
+    {
+      "name": "punycode",
+      "versions": ["2.3.1"],
+      "license": "MIT",
+      "author": "Mathias Bynens",
+      "homepage": "https://mths.be/punycode"
+    },
+    {
+      "name": "qified",
+      "versions": ["0.10.1"],
+      "license": "MIT",
+      "author": "Jared Wray",
+      "homepage": "https://github.com/jaredwray/qified#readme"
+    },
+    {
+      "name": "quick-format-unescaped",
+      "versions": ["4.0.4"],
+      "license": "MIT",
+      "author": "David Mark Clements",
+      "homepage": "https://github.com/davidmarkclements/quick-format#readme"
+    },
+    {
+      "name": "quickselect",
+      "versions": ["3.0.0"],
+      "license": "ISC",
+      "author": "Vladimir Agafonkin",
+      "homepage": "https://github.com/mourner/quickselect#readme"
+    },
+    {
+      "name": "react",
+      "versions": ["19.3.1"],
+      "license": "MIT",
+      "homepage": "https://react.dev/"
+    },
+    {
+      "name": "react-dom",
+      "versions": ["19.3.1"],
+      "license": "MIT",
+      "homepage": "https://react.dev/"
+    },
+    {
+      "name": "react-router",
+      "versions": ["8.5.0"],
+      "license": "MIT",
+      "author": "Remix Software",
+      "homepage": "https://github.com/remix-run/react-router#readme"
+    },
+    {
+      "name": "real-require",
+      "versions": ["1.0.0"],
+      "license": "MIT",
+      "author": "Paolo Insogna",
+      "homepage": "https://github.com/pinojs/real-require"
+    },
+    {
+      "name": "require-from-string",
+      "versions": ["2.0.2"],
+      "license": "MIT",
+      "author": "Vsevolod Strukchinsky",
+      "homepage": "https://github.com/floatdrop/require-from-string#readme"
+    },
+    {
+      "name": "resolve-protobuf-schema",
+      "versions": ["2.1.0"],
+      "license": "MIT",
+      "author": "Mathias Buus",
+      "homepage": "https://github.com/mafintosh/resolve-protobuf-schema"
+    },
+    {
+      "name": "ret",
+      "versions": ["0.5.1"],
+      "license": "MIT",
+      "author": "fent",
+      "homepage": "https://github.com/fent/ret.js#readme"
+    },
+    {
+      "name": "reusify",
+      "versions": ["1.1.0"],
+      "license": "MIT",
+      "author": "Matteo Collina",
+      "homepage": "https://github.com/mcollina/reusify#readme"
+    },
+    {
+      "name": "rfdc",
+      "versions": ["1.4.1"],
+      "license": "MIT",
+      "author": "David Mark Clements",
+      "homepage": "https://github.com/davidmarkclements/rfdc#readme"
+    },
+    {
+      "name": "rolldown",
+      "versions": ["1.2.15"],
+      "license": "MIT",
+      "homepage": "https://rolldown.rs/"
+    },
+    {
+      "name": "safe-regex2",
+      "versions": ["5.1.2"],
+      "license": "MIT",
+      "author": "James Halliday",
+      "homepage": "https://github.com/fastify/safe-regex2"
+    },
+    {
+      "name": "safe-stable-stringify",
+      "versions": ["2.5.0"],
+      "license": "MIT",
+      "author": "Ruben Bridgewater",
+      "homepage": "https://github.com/BridgeAR/safe-stable-stringify#readme"
+    },
+    {
+      "name": "saxes",
+      "versions": ["6.0.0"],
+      "license": "ISC",
+      "author": "Louis-Dominique Dubeau",
+      "homepage": "https://github.com/lddubeau/saxes#readme"
+    },
+    {
+      "name": "scheduler",
+      "versions": ["0.28.0"],
+      "license": "MIT",
+      "homepage": "https://react.dev/"
+    },
+    {
+      "name": "secure-json-parse",
+      "versions": ["4.1.1"],
+      "license": "BSD-3-Clause",
+      "author": "Eran Hammer",
+      "homepage": "https://github.com/fastify/secure-json-parse#readme"
+    },
+    {
+      "name": "semver",
+      "versions": ["6.3.1", "7.8.5"],
+      "license": "ISC",
+      "author": "GitHub Inc.",
+      "homepage": "https://github.com/npm/node-semver#readme"
+    },
+    {
+      "name": "set-cookie-parser",
+      "versions": ["3.2.1"],
+      "license": "MIT",
+      "author": "Nathan Friedly",
+      "homepage": "https://github.com/nfriedly/set-cookie-parser"
+    },
+    {
+      "name": "sharp",
+      "versions": ["0.35.5"],
+      "license": "Apache-2.0",
+      "author": "Lovell Fuller",
+      "homepage": "https://sharp.pixelplumbing.com"
+    },
+    {
+      "name": "shebang-command",
+      "versions": ["2.0.0"],
+      "license": "MIT",
+      "author": "Kevin Mårtensson",
+      "homepage": "https://github.com/kevva/shebang-command#readme"
+    },
+    {
+      "name": "shebang-regex",
+      "versions": ["3.0.0"],
+      "license": "MIT",
+      "author": "Sindre Sorhus",
+      "homepage": "https://github.com/sindresorhus/shebang-regex#readme"
+    },
+    {
+      "name": "sonic-boom",
+      "versions": ["4.2.1"],
+      "license": "MIT",
+      "author": "Matteo Collina",
+      "homepage": "https://github.com/pinojs/sonic-boom#readme"
+    },
+    {
+      "name": "source-map-js",
+      "versions": ["1.2.2"],
+      "license": "BSD-3-Clause",
+      "author": "Valentin 7rulnik Semirulnik",
+      "homepage": "https://github.com/7rulnik/source-map-js"
+    },
+    {
+      "name": "split2",
+      "versions": ["4.2.0"],
+      "license": "ISC",
+      "author": "Matteo Collina",
+      "homepage": "https://github.com/mcollina/split2#readme"
+    },
+    {
+      "name": "std-env",
+      "versions": ["4.3.0"],
+      "license": "MIT",
+      "homepage": "https://github.com/unjs/std-env#readme"
+    },
+    {
+      "name": "thread-stream",
+      "versions": ["4.2.0"],
+      "license": "MIT",
+      "author": "Matteo Collina",
+      "homepage": "https://github.com/mcollina/thread-stream#readme"
+    },
+    {
+      "name": "tinybench",
+      "versions": ["6.2.2"],
+      "license": "MIT",
+      "homepage": "https://github.com/tinylibs/tinybench#readme"
+    },
+    {
+      "name": "tinyexec",
+      "versions": ["1.3.1"],
+      "license": "MIT",
+      "author": "James Garbutt",
+      "homepage": "https://github.com/tinylibs/tinyexec#readme"
+    },
+    {
+      "name": "tinyglobby",
+      "versions": ["0.2.17"],
+      "license": "MIT",
+      "author": "Superchupu",
+      "homepage": "https://superchupu.dev/tinyglobby"
+    },
+    {
+      "name": "tinyqueue",
+      "versions": ["3.0.0"],
+      "license": "ISC",
+      "homepage": "https://github.com/mourner/tinyqueue"
+    },
+    {
+      "name": "tldts",
+      "versions": ["7.4.19"],
+      "license": "MIT",
+      "author": "Rémi Berson",
+      "homepage": "https://github.com/remusao/tldts#readme"
+    },
+    {
+      "name": "tldts-core",
+      "versions": ["7.4.19"],
+      "license": "MIT",
+      "author": "Rémi Berson",
+      "homepage": "https://github.com/remusao/tldts#readme"
+    },
+    {
+      "name": "toad-cache",
+      "versions": ["3.7.4"],
+      "license": "MIT",
+      "author": "Igor Savin",
+      "homepage": "https://github.com/kibertoad/toad-cache"
+    },
+    {
+      "name": "tough-cookie",
+      "versions": ["6.0.2"],
+      "license": "BSD-3-Clause",
+      "author": "Jeremy Stashewsky",
+      "homepage": "https://github.com/salesforce/tough-cookie"
+    },
+    {
+      "name": "tr46",
+      "versions": ["7.0.0"],
+      "license": "MIT",
+      "author": "Sebastian Mayr",
+      "homepage": "https://github.com/jsdom/tr46#readme"
+    },
+    {
+      "name": "ts-api-utils",
+      "versions": ["2.5.0"],
+      "license": "MIT",
+      "author": "JoshuaKGoldberg",
+      "homepage": "https://github.com/JoshuaKGoldberg/ts-api-utils#readme"
+    },
+    {
+      "name": "tsx",
+      "versions": ["4.23.15"],
+      "license": "MIT",
+      "author": "Hiroki Osame",
+      "homepage": "https://tsx.hirok.io"
+    },
+    {
+      "name": "type-check",
+      "versions": ["0.4.0"],
+      "license": "MIT",
+      "author": "George Zahariev",
+      "homepage": "https://github.com/gkz/type-check"
+    },
+    {
+      "name": "typescript",
+      "versions": ["6.0.3"],
+      "license": "Apache-2.0",
+      "author": "Microsoft Corp.",
+      "homepage": "https://www.typescriptlang.org/"
+    },
+    {
+      "name": "typescript-eslint",
+      "versions": ["8.72.0"],
+      "license": "MIT",
+      "homepage": "https://typescript-eslint.io/packages/typescript-eslint"
+    },
+    {
+      "name": "undici",
+      "versions": ["8.12.3"],
+      "license": "MIT",
+      "homepage": "https://undici.nodejs.org"
+    },
+    {
+      "name": "undici-types",
+      "versions": ["7.24.6"],
+      "license": "MIT",
+      "homepage": "https://undici.nodejs.org"
+    },
+    {
+      "name": "update-browserslist-db",
+      "versions": ["1.3.4"],
+      "license": "MIT",
+      "author": "Andrey Sitnik",
+      "homepage": "https://github.com/browserslist/update-db#readme"
+    },
+    {
+      "name": "uri-js",
+      "versions": ["4.4.1"],
+      "license": "BSD-2-Clause",
+      "author": "Gary Court",
+      "homepage": "https://github.com/garycourt/uri-js"
+    },
+    {
+      "name": "vite",
+      "versions": ["8.3.5"],
+      "license": "MIT",
+      "author": "Evan You",
+      "homepage": "https://vite.dev"
+    },
+    {
+      "name": "vitest",
+      "versions": ["5.0.5"],
+      "license": "MIT",
+      "author": "Anthony Fu",
+      "homepage": "https://vitest.dev"
+    },
+    {
+      "name": "w3c-xmlserializer",
+      "versions": ["6.0.0"],
+      "license": "MIT",
+      "homepage": "https://github.com/jsdom/w3c-xmlserializer#readme"
+    },
+    {
+      "name": "webidl-conversions",
+      "versions": ["8.0.1"],
+      "license": "BSD-2-Clause",
+      "author": "Domenic Denicola",
+      "homepage": "https://github.com/jsdom/webidl-conversions#readme"
+    },
+    {
+      "name": "whatwg-mimetype",
+      "versions": ["5.0.0"],
+      "license": "MIT",
+      "author": "Domenic Denicola",
+      "homepage": "https://github.com/jsdom/whatwg-mimetype#readme"
+    },
+    {
+      "name": "whatwg-url",
+      "versions": ["17.3.0"],
+      "license": "MIT",
+      "author": "Sebastian Mayr",
+      "homepage": "https://github.com/jsdom/whatwg-url#readme"
+    },
+    {
+      "name": "which",
+      "versions": ["2.0.2"],
+      "license": "ISC",
+      "author": "Isaac Z. Schlueter",
+      "homepage": "https://github.com/isaacs/node-which#readme"
+    },
+    {
+      "name": "why-is-node-running",
+      "versions": ["3.2.1"],
+      "license": "MIT",
+      "author": "Mathias Buus",
+      "homepage": "https://github.com/mafintosh/why-is-node-running"
+    },
+    {
+      "name": "word-wrap",
+      "versions": ["1.2.5"],
+      "license": "MIT",
+      "author": "Jon Schlinkert",
+      "homepage": "https://github.com/jonschlinkert/word-wrap"
+    },
+    {
+      "name": "xml-name-validator",
+      "versions": ["5.0.0"],
+      "license": "Apache-2.0",
+      "author": "Domenic Denicola",
+      "homepage": "https://github.com/jsdom/xml-name-validator#readme"
+    },
+    {
+      "name": "xmlchars",
+      "versions": ["2.2.0"],
+      "license": "MIT",
+      "author": "Louis-Dominique Dubeau",
+      "homepage": "https://github.com/lddubeau/xmlchars#readme"
+    },
+    {
+      "name": "xtend",
+      "versions": ["4.0.2"],
+      "license": "MIT",
+      "author": "Raynos",
+      "homepage": "https://github.com/Raynos/xtend"
+    },
+    {
+      "name": "yallist",
+      "versions": ["3.1.1"],
+      "license": "ISC",
+      "author": "Isaac Z. Schlueter",
+      "homepage": "https://github.com/isaacs/yallist#readme"
+    },
+    {
+      "name": "yocto-queue",
+      "versions": ["0.1.0"],
+      "license": "MIT",
+      "author": "Sindre Sorhus",
+      "homepage": "https://github.com/sindresorhus/yocto-queue#readme"
+    },
+    {
+      "name": "zod",
+      "versions": ["4.6.7"],
+      "license": "MIT",
+      "author": "Colin McDonnell",
+      "homepage": "https://zod.dev"
+    },
+    {
+      "name": "zod-validation-error",
+      "versions": ["4.0.2"],
+      "license": "MIT",
+      "author": "Dimitrios C. Michalakos",
+      "homepage": "https://github.com/causaly/zod-validation-error#readme"
+    }
+  ]
+}

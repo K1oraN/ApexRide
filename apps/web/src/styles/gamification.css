@@ -1,0 +1,117 @@
+.gamification-page {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+.gamification-card {
+  padding: 20px;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.gamification-card h2,
+.gamification-card p {
+  margin: 0;
+}
+.gamification-card small,
+.gamification-progress small {
+  color: var(--muted);
+  display: block;
+}
+.gamification-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.gamification-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.gamification-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.gamification-progress {
+  display: grid;
+  gap: 10px;
+}
+.achievement-unlocked > svg,
+.achievement-preview > svg {
+  color: var(--red);
+}
+.achievement-locked > svg,
+.achievement-revoked > svg {
+  color: var(--subtle);
+}
+.achievement-preview {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.achievements > p,
+.achievements > a {
+  grid-column: 1 / -1;
+}
+.xp-entry {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+}
+.xp-entry > strong {
+  white-space: nowrap;
+}
+.ranking-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ranking-list li {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.ranking-list li > div {
+  flex: 1;
+  min-width: 0;
+}
+.ranking-list small {
+  color: var(--muted);
+  display: block;
+}
+.gamification-preferences {
+  display: grid;
+  gap: 16px;
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.gamification-preferences label:has(input[type='checkbox']) {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+}
+@media (max-width: 760px) {
+  .gamification-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .gamification-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .gamification-grid,
+  .gamification-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .gamification-card {
+    padding: 16px;
+  }
+}

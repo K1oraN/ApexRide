@@ -1,0 +1,135 @@
+.replay-content {
+  display: grid;
+  gap: 18px;
+}
+.replay-controls {
+  display: grid;
+  gap: 14px;
+}
+.replay-controls p {
+  margin: 0;
+}
+.replay-controls label {
+  display: grid;
+  gap: 6px;
+}
+.replay-controls label:has(input[type='checkbox']) {
+  display: flex;
+  align-items: center;
+}
+.history-detail .replay-controls input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
+  flex-shrink: 0;
+}
+.replay-timeline input {
+  width: 100%;
+  min-height: 44px;
+  accent-color: var(--red, #ff202b);
+  touch-action: pan-y;
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+.replay-timeline input::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    #ff202b var(--replay-progress),
+    #2b3339 var(--replay-progress)
+  );
+}
+.replay-timeline input::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    #ff202b var(--replay-progress),
+    #2b3339 var(--replay-progress)
+  );
+}
+.replay-timeline input::-webkit-slider-thumb {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: -8px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #ff202b;
+}
+.replay-timeline input::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #ff202b;
+}
+.replay-content .gps-map .map-controls .icon-button {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+}
+.replay-time {
+  display: flex;
+  justify-content: space-between;
+  font-variant-numeric: tabular-nums;
+}
+.replay-ticks {
+  width: 100%;
+  height: 24px;
+}
+.replay-controls .button,
+.replay-controls select,
+.replay-marks .button {
+  min-height: 44px;
+}
+.replay-overview {
+  position: absolute;
+  left: 12px;
+  top: 48px;
+  z-index: 2;
+  min-height: 44px;
+  font-size: 12px;
+}
+.replay-telemetry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+.replay-telemetry .speedometer {
+  width: min(100%, 320px);
+  justify-self: center;
+}
+.replay-metrics,
+.replay-marks {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.replay-marks .button {
+  display: grid;
+  text-align: left;
+  white-space: normal;
+}
+.replay-marks [aria-pressed='true'] {
+  border-color: #ff202b;
+}
+.replay-marks small {
+  color: var(--text-muted, #a5adb5);
+}
+@media (min-width: 760px) {
+  .replay-telemetry {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .replay-content *,
+  .replay-content *::before,
+  .replay-content *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

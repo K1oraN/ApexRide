@@ -1,0 +1,63 @@
+.route-map-search {
+  position: absolute;
+  bottom: 38px;
+  left: 12px;
+  z-index: 2;
+}
+.route-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-block: 12px;
+}
+.route-editor {
+  display: grid;
+  gap: 16px;
+}
+.route-editor label {
+  display: grid;
+  gap: 6px;
+}
+.route-editor input,
+.route-editor textarea,
+.route-editor select,
+.route-tools select {
+  max-width: 100%;
+  min-height: 44px;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+}
+.route-editor ol {
+  padding-left: 24px;
+}
+.route-editor li {
+  margin-block: 8px;
+}
+.route-progress {
+  padding: 12px;
+  margin-block: 10px;
+}
+.route-progress progress {
+  width: 100%;
+  accent-color: var(--red);
+}
+.route-editor .map-caption {
+  pointer-events: none;
+}
+.route-detail {
+  display: grid;
+  gap: 14px;
+}
+.route-detail dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+}
+.route-detail dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}

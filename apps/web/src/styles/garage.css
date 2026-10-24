@@ -1,0 +1,173 @@
+.garage-page {
+  display: grid;
+  gap: 24px;
+}
+.garage-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.garage-heading h1 {
+  font-size: clamp(28px, 6vw, 40px);
+}
+.garage-heading p {
+  color: var(--muted);
+  margin-top: 6px;
+}
+.garage-empty {
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  gap: 18px;
+  padding: 28px;
+  min-height: 230px;
+  overflow-wrap: anywhere;
+}
+.garage-empty > svg {
+  color: var(--red);
+}
+.garage-empty p {
+  color: var(--muted);
+  max-width: 520px;
+}
+.motorcycle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr));
+  gap: 20px;
+}
+.profile-motorcycles {
+  display: grid;
+  gap: 16px;
+}
+.motorcycle-card {
+  display: block;
+  text-decoration: none;
+  color: var(--text);
+  min-width: 0;
+}
+.motorcycle-card .garage-bike-info {
+  right: 20px;
+  overflow-wrap: anywhere;
+}
+.motorcycle-card .garage-bike-info h3 {
+  font-size: clamp(24px, 5vw, 32px);
+}
+.motorcycle-brand {
+  display: block;
+  font-size: 0.7em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+.motorcycle-model {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.motorcycle-card .garage-bike-info small {
+  display: block;
+  margin-top: 8px;
+}
+.motorcycle-primary {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+}
+.motorcycle-photo {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: inherit;
+}
+.motorcycle-card .motorcycle-photo {
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+.motorcycle-photo-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, var(--panel-light), var(--background));
+  color: var(--muted);
+  text-align: center;
+  padding: 16px;
+}
+.motorcycle-card .motorcycle-photo-empty {
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding: 24px;
+}
+.motorcycle-card .motorcycle-photo-empty > svg {
+  width: 48px;
+  height: 48px;
+}
+.motorcycle-card .motorcycle-photo-empty span {
+  display: none;
+}
+.motorcycle-detail {
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+  padding: clamp(16px, 4vw, 28px);
+  max-width: 780px;
+  margin: 20px auto;
+  overflow-wrap: anywhere;
+}
+.motorcycle-detail > .motorcycle-photo {
+  max-height: 440px;
+}
+.motorcycle-detail h1 {
+  font-size: clamp(30px, 7vw, 44px);
+}
+.garage-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.garage-actions .button {
+  min-height: 48px;
+  white-space: normal;
+}
+.garage-confirm {
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+  border-color: var(--red);
+}
+.garage-page .form-error,
+.motorcycle-detail .form-error {
+  color: #ff9299;
+}
+.motorcycle-form input[type='file'] {
+  font-size: 14px;
+}
+.motorcycle-form .motorcycle-photo {
+  max-height: 320px;
+}
+.garage-page .form-message {
+  border-left: 3px solid var(--red);
+  padding: 12px;
+}
+@media (max-width: 430px) {
+  .garage-heading .button {
+    width: 100%;
+  }
+  .garage-empty {
+    padding: 20px;
+  }
+  .garage-actions > .button {
+    flex: 1 1 100%;
+  }
+}

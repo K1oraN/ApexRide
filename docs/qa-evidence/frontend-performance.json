@@ -1,0 +1,27 @@
+{
+  "environment": "chromium desktop headless; viewport 390x844; loopback; sem throttling; provedor de mapas simulado",
+  "records": [
+    {
+      "path": "/",
+      "domContentLoadedMs": 114,
+      "loadMs": 114,
+      "firstContentfulPaintMs": null,
+      "resources": 22
+    },
+    {
+      "path": "/ride",
+      "domContentLoadedMs": 108,
+      "loadMs": 110,
+      "firstContentfulPaintMs": 488,
+      "resources": 42
+    },
+    {
+      "path": "/comunidade",
+      "domContentLoadedMs": 45,
+      "loadMs": 45,
+      "firstContentfulPaintMs": 88,
+      "resources": 35
+    }
+  ],
+  "limitations": "Não mede INP, LCP/CLS de campo, bateria, memória móvel ou capacidade de produção."
+}

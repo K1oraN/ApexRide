@@ -1,0 +1,15 @@
+:root {
+  color-scheme: dark;
+  --background: #080b0d;
+  --panel: #101519;
+  --panel-light: #191f24;
+  --border: #283036;
+  --red: #ff202d;
+  --red-deep: #cf0713;
+  --text: #f7f8f8;
+  --muted: #aeb7c3;
+  --subtle: #87919b;
+  --radius: 15px;
+  --content-width: 1120px;
+  --font-body: 'Roboto Condensed', 'Arial Narrow', Arial, sans-serif;
+}

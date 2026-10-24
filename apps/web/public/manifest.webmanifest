@@ -1,0 +1,9 @@
+{
+  "name": "Apex Ride",
+  "short_name": "Apex Ride",
+  "start_url": "/ride",
+  "display": "standalone",
+  "background_color": "#0b0b0d",
+  "theme_color": "#0b0b0d",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

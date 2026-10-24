@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-23",
+  "decision": "NO-GO",
+  "node": "24.16.0",
+  "pnpm": "10.34.7",
+  "postgis": "3.6.2",
+  "chromeDesktop": "155.0.8059.85",
+  "standard": {
+    "api": 260,
+    "web": 411,
+    "total": 671,
+    "postgresSkippedInStandard": 365
+  },
+  "postgres": {
+    "passed": 365,
+    "suites": 12
+  },
+  "chrome": {
+    "distinctPassed": 80,
+    "initial": {
+      "passed": 74,
+      "failed": 2,
+      "notRun": 1
+    },
+    "reruns": {
+      "events": 4,
+      "groups": 3,
+      "additionalQA": 3,
+      "offline": 3
+    }
+  },
+  "distinctAutomatedPassed": 1116,
+  "physicalDevicesTested": 0,
+  "productionDeployed": false,
+  "notes": "Contagem consolidada sem somar repetições. Logs completos são locais e não incluídos para evitar exposição de informações de teste. Hashes identificam os arquivos usados no fechamento.",
+  "evidence": [
+    {
+      "execution": "check-closure",
+      "logSha256": "556490fd1efe7e9105cbe46197a5351c597e8d250594cfd33821d837ca0caad9"
+    },
+    {
+      "execution": "postgres-closure",
+      "logSha256": "f8c582e5d22c3152945038e879e099f31bfe625fdfc6dc4f03b5566cb38146a5"
+    },
+    {
+      "execution": "groups-final",
+      "logSha256": "fc30be12a4610662d4a4358bd7dcd1c77e99ffc1c7e38218d2613f4f18e73277"
+    },
+    {
+      "execution": "events-final",
+      "logSha256": "91cfb403465cbc11d4ff1158875b40367f48fa3a52097dae48ac4c3801f75719"
+    },
+    {
+      "execution": "qa-closure",
+      "logSha256": "18c181dacd301bd8ca86172bcd781994d220ea318a0647b79707da14e4e8709c"
+    },
+    {
+      "execution": "offline-closure",
+      "logSha256": "176f61fb9b07ec2be682b889d2d35a59b4a506f87e5ec5fde4897e242c08fdb5"
+    },
+    {
+      "execution": "recovery-final",
+      "logSha256": "d2eb482b815e70f3f7409b671f7d12dfaca2d0178f9d80c8f12537c67af56fee"
+    }
+  ]
+}

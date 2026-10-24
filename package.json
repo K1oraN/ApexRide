@@ -1,0 +1,45 @@
+{
+  "name": "apex-ride",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "packageManager": "pnpm@10.34.7",
+  "engines": {
+    "node": ">=24.16.0 <25",
+    "pnpm": ">=10.34.7 <11"
+  },
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "dev:web": "pnpm --filter @apex-ride/web dev",
+    "dev:api": "pnpm --filter @apex-ride/api dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "pnpm -r test",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm build",
+    "db:up": "docker compose up -d --wait database",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f database",
+    "db:check": "node scripts/check-database.mjs",
+    "db:migrate": "pnpm --filter @apex-ride/api db:migrate",
+    "test:postgres": "pnpm --filter @apex-ride/api test:postgres",
+    "test:recovery": "pnpm --filter @apex-ride/api test:recovery",
+    "similarity:regions": "pnpm --filter @apex-ride/api similarity:regions",
+    "gamification:reconcile": "pnpm --filter @apex-ride/api gamification:reconcile",
+    "admin:bootstrap": "pnpm --filter @apex-ride/api admin:bootstrap"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.19.2",
+    "eslint": "10.13.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-react-refresh": "0.5.7",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.0"
+  }
+}

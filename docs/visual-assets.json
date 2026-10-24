@@ -1,0 +1,44 @@
+{
+  "generator": "Ferramenta integrada imagegen",
+  "purpose": "Recursos ilustrativos temporários da Parte 02; os mockups não incluíam imagens originais isoladas.",
+  "references": [
+    "01_inicio.png",
+    "02_explorar.png",
+    "03_modo_misto.png",
+    "04_perfil_comunidade.png"
+  ],
+  "assets": [
+    {
+      "file": "apps/web/public/assets/coastal-ride.webp",
+      "prompt": "Create ONLY an independent landscape photograph, no UI. Use the coastal motorcycling banner in reference image 1 as composition guidance. Wide 3:2 photograph of a black and red sport motorcycle with fully helmeted rider leaning into an asphalt coastal bend in northeastern Brazil, turquoise ocean, pale beaches, red coastal cliffs, palm trees. Rider and motorcycle on the right third, scenery across the left. Clear daylight, realistic photography, strong but natural detail. No words, no logos, no watermark, no borders, no phone, no UI."
+    },
+    {
+      "file": "apps/web/public/assets/sunset-bike.webp",
+      "prompt": "Create ONLY an independent landscape photograph, no UI. Match the sunset motorcycle photograph in the profile/publication area of reference image 2: red and black naked street motorcycle parked sideways at a coastal overlook, black full-face helmeted rider seated looking out at the ocean, palms and coastal town in background, warm orange sunset sky, realistic detailed photography. Wide 3:2 framing. No words, no logos, no watermark, no phone, no UI."
+    },
+    {
+      "file": "apps/web/public/assets/coastal-road.webp",
+      "prompt": "Create ONLY an independent landscape photograph, no UI. Match the road photograph in the last-ride card of reference image 1: winding coastal asphalt road overlooking turquoise water, white tropical beach, green hills, coconut palms, northeast Brazilian coastline, bright blue daytime sky and white clouds. Wide 3:2 framing, realistic photography. No words, no watermark, no UI, no borders."
+    },
+    {
+      "file": "apps/web/public/assets/rider-avatar.webp",
+      "prompt": "Create ONLY a square photographic avatar for an illustrative motorcyclist, matching the helmeted avatar shown in reference image 2. Tight portrait of black full-face motorcycle helmet with red racing accents and dark gold visor, black riding jacket, blue and orange sunset coastal background. Helmet dominates composition, no exposed face, realistic photograph. No lettering, no logos, no circle border, no UI."
+    },
+    {
+      "file": "apps/web/public/assets/camera-preview.webp",
+      "prompt": "Create ONLY an independent landscape photograph, no UI. Match the camera preview photograph in reference image 3: first person motorcycle handlebar view, front dashboard and mirrors in lower part, road bending along tropical blue ocean on right, palm trees, another motorcycle far ahead, bright blue sky with white clouds. Wide 3:2 photo, realistic. No REC text, no letters, no icons, no frame, no UI, no logos."
+    },
+    {
+      "file": "apps/web/public/assets/satellite-terrain.webp",
+      "prompt": "Create ONLY a high-detail top-down satellite-style terrain illustration for a demonstrative map. Reference image 4 provides the desired dark green textured terrain, intricate sandy local roads, curving Atlantic shoreline. Land covers left 70%, deep navy and blue ocean right 30%, northeastern Brazilian coastal character. No place labels, no route lines, no markers, no icons, no text, no UI, no frame. This is illustrative terrain, not geospatial data. Landscape 3:2 asset."
+    },
+    {
+      "file": "apps/web/public/assets/garage-bike.webp",
+      "prompt": "Independent landscape photograph only, using reference image for visual guidance. A red Honda CB 650R naked street motorcycle, parked alone in side three-quarter view at a tropical coastal lookout in daylight, turquoise sea and red cliffs, black engine and four gold exhaust headers, black seat. The whole motorcycle dominates center frame. No rider, no people. Match the motorcycle garage photo inside the supplied mockup. No UI, no phone, no captions, no watermark."
+    },
+    {
+      "file": "apps/web/public/assets/profile-cover.webp",
+      "prompt": "Independent wide landscape photographic background only. Match profile header image in provided reference: a fully helmeted black-clad motorcyclist on a red and black motorcycle seen from rear, positioned on RIGHT THIRD of frame, at a coastal overlook during sunset, tropical town and sea, palm trees, warm sky. Left half has dark unobtrusive scenery for overlay text. No UI, no phone, no text, no watermark."
+    }
+  ]
+}

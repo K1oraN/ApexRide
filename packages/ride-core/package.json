@@ -1,0 +1,45 @@
+{
+  "name": "@apex-ride/ride-core",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    "./comparison": {
+      "types": "./comparison.d.ts",
+      "default": "./comparison.js"
+    },
+    "./motion": {
+      "types": "./motion.d.ts",
+      "default": "./motion.js"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./speed": {
+      "types": "./speed.d.ts",
+      "default": "./speed.js"
+    },
+    "./modes": {
+      "types": "./modes.d.ts",
+      "default": "./modes.js"
+    },
+    "./telemetry": {
+      "types": "./telemetry.d.ts",
+      "default": "./telemetry.js"
+    },
+    "./routes": {
+      "types": "./routes.d.ts",
+      "default": "./routes.js"
+    },
+    "./charts": {
+      "types": "./charts.d.ts",
+      "default": "./charts.js"
+    },
+    "./history": {
+      "types": "./history.d.ts",
+      "default": "./history.js"
+    }
+  }
+}

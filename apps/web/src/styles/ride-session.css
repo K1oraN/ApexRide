@@ -1,0 +1,216 @@
+.ride-preparation,
+.session-summary {
+  padding: 16px;
+  margin: 16px 0;
+}
+.ride-preparation h2,
+.session-summary h2 {
+  font-size: 20px;
+  margin: 6px 0;
+}
+.ride-preparation p,
+.session-summary p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.ride-bike-selection {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+}
+.ride-bike-selection .motorcycle-photo {
+  width: 100%;
+  height: 85px;
+  min-height: 0;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.ride-bike-selection .motorcycle-photo-empty span {
+  display: none;
+}
+.ride-bike-selection select,
+.session-summary select,
+.motion-preparation select {
+  max-width: 100%;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px;
+  background: var(--panel-light);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.motion-preparation .account-field {
+  margin: 12px 0;
+}
+.motion-confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.motion-confirm input {
+  margin-top: 3px;
+  accent-color: var(--red);
+  flex-shrink: 0;
+}
+.session-summary-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+.session-summary-metrics div {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.session-summary-metrics dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+.session-summary-metrics dd {
+  margin: 6px 0 0;
+  font-weight: 700;
+  font-size: 22px;
+}
+.session-summary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.session-summary-actions .button {
+  flex: 1;
+  min-width: 130px;
+}
+.session-summary .gps-map {
+  height: clamp(260px, 45vw, 420px);
+  min-height: 260px;
+  aspect-ratio: auto;
+}
+.session-summary .gps-rider-marker {
+  display: none;
+}
+.gps-endpoint {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: white;
+  background: #111923;
+  border: 2px solid #ff202b;
+  font:
+    bold 11px Arial,
+    sans-serif;
+}
+@media (max-width: 360px) {
+  .ride-bike-selection {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 8px;
+  }
+  .session-summary-metrics dd {
+    font-size: 18px;
+  }
+}
+
+.speed-source {
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+  margin: 0 0 8px;
+}
+
+.session-summary-metrics .event-result {
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+.telemetry-plot {
+  margin: 16px 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.telemetry-plot svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.telemetry-plot figcaption,
+.telemetry-plot h3 {
+  font-size: 14px;
+  margin: 0;
+}
+.telemetry-plot text {
+  fill: var(--muted);
+  font: 12px sans-serif;
+}
+.telemetry-axis {
+  fill: none;
+  stroke: var(--border);
+}
+.telemetry-line {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 2;
+}
+.telemetry-dot {
+  fill: var(--red);
+}
+.telemetry-event {
+  stroke: var(--muted);
+  stroke-dasharray: 3 4;
+}
+.telemetry-events {
+  padding-left: 20px;
+  overflow-wrap: anywhere;
+}
+.telemetry-events li {
+  margin: 12px 0;
+}
+.offline-panel {
+  font-size: 0.875rem;
+}
+.offline-panel summary {
+  cursor: pointer;
+  padding-block: 0.5rem;
+}
+.offline-panel .text-link {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+.offline-panel .text-link:disabled {
+  color: #888;
+  cursor: default;
+}
+.offline-panel p {
+  overflow-wrap: anywhere;
+}
+.offline-panel .offline-storage {
+  color: var(--text-muted, #aaa);
+  font-size: 0.8rem;
+}
+.offline-item {
+  border-top: 1px solid #333;
+  padding-block: 0.75rem;
+}
+.offline-item button {
+  margin-inline-end: 1rem;
+}
+.offline-trace {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #161619;
+}
