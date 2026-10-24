@@ -1,0 +1,100 @@
+/*
+ * APEX RIDE
+ * Controle global de rolagem
+ *
+ * A página deve rolar verticalmente.
+ * O documento não deve apresentar rolagem horizontal.
+ * Mapas e controles internos preservam suas interações.
+ */
+
+/* Impede deslocamento lateral do documento */
+
+html {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  overflow-x: clip;
+  overflow-y: auto;
+
+  overscroll-behavior-x: none;
+}
+
+body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 100%;
+
+  margin: 0;
+
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+}
+
+/* Contêiner principal do React */
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 100%;
+
+  overflow-x: clip;
+}
+
+/* Limites do aplicativo */
+
+.app-shell {
+  width: 100%;
+  min-width: 0;
+}
+
+.page-content {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Evita que os grids da Home alarguem a página */
+
+.home-dashboard,
+.home-dashboard > *,
+.home-performance-grid,
+.home-performance-grid > *,
+.home-recent,
+.home-progress,
+.home-inline-empty {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Textos longos não podem expandir os cartões */
+
+.home-dashboard .home-section-title h2,
+.home-dashboard .home-recent-empty-copy,
+.home-dashboard .home-recent-card > div,
+.home-dashboard .home-quick-ride > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Imagens não ultrapassam o contêiner */
+
+.home-dashboard img {
+  max-width: 100%;
+}
+
+/* Botões respeitam a largura disponível */
+
+.home-dashboard .button {
+  max-width: 100%;
+}
+
+/* Evita deslocamento lateral por gestos nas bordas */
+
+@media (pointer: coarse) {
+  html,
+  body {
+    overscroll-behavior-x: none;
+  }
+}

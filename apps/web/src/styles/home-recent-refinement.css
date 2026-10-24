@@ -1,0 +1,226 @@
+/* Apex Ride — Atividades recentes
+   Refinamento visual de botões e alinhamentos
+*/
+
+.home-dashboard .home-recent {
+  min-width: 0;
+}
+
+/* Título e botão superior */
+
+.home-dashboard .home-recent-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 12px;
+
+  min-width: 0;
+  margin-bottom: 12px;
+}
+
+.home-dashboard .home-recent-heading h2 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.home-dashboard .home-recent-all-link {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 44px;
+  padding: 9px 14px;
+
+  border-radius: var(--radius-sm);
+
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.home-dashboard .home-recent-all-link svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Card sem atividades */
+
+.home-dashboard .home-recent .home-recent-empty {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 16px;
+
+  padding: 20px;
+  min-width: 0;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  background: var(--surface-gradient);
+}
+
+/* Ícone, título e descrição */
+
+.home-dashboard .home-recent-empty-main {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+
+  min-width: 0;
+}
+
+.home-dashboard .home-recent-empty-icon {
+  display: grid;
+  place-items: center;
+
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid rgb(243 19 39 / 25%);
+  border-radius: 12px;
+
+  background: rgb(243 19 39 / 8%);
+  color: var(--red);
+}
+
+.home-dashboard .home-recent-empty-copy {
+  display: grid;
+  align-content: center;
+  gap: 6px;
+
+  min-width: 0;
+  padding: 0;
+}
+
+.home-dashboard .home-recent-empty-copy h3 {
+  margin: 0;
+
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+
+  overflow-wrap: anywhere;
+}
+
+.home-dashboard .home-recent-empty-copy p {
+  margin: 0;
+
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Botão em área própria, abaixo do texto */
+
+.home-dashboard .home-recent-empty-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  min-width: 0;
+  padding-top: 14px;
+
+  border-top: 1px solid var(--border);
+}
+
+.home-dashboard .home-recent-empty-actions .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  flex: 0 1 auto;
+
+  min-width: 205px;
+  min-height: 46px;
+
+  margin: 0;
+  padding: 11px 15px;
+
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.home-dashboard .home-recent-empty-actions .button svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* Responsividade */
+
+@media (max-width: 700px) {
+  .home-dashboard .home-recent-heading {
+    gap: 8px;
+  }
+
+  .home-dashboard .home-recent-heading h2 {
+    font-size: 14px;
+  }
+
+  .home-dashboard .home-recent-all-link {
+    padding: 9px 11px;
+    font-size: 12px;
+  }
+
+  .home-dashboard .home-recent .home-recent-empty {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .home-dashboard .home-recent-empty-main {
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .home-dashboard .home-recent-empty-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .home-dashboard .home-recent-empty-copy h3 {
+    font-size: 17px;
+  }
+
+  .home-dashboard .home-recent-empty-actions {
+    padding-top: 12px;
+  }
+
+  .home-dashboard .home-recent-empty-actions .button {
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 359px) {
+  .home-dashboard .home-recent .home-recent-empty {
+    padding: 14px 12px;
+  }
+
+  .home-dashboard .home-recent-empty-main {
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .home-dashboard .home-recent-empty-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .home-dashboard .home-recent-empty-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .home-dashboard .home-recent-empty-copy h3 {
+    font-size: 16px;
+  }
+}

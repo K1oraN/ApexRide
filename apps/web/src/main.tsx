@@ -3,13 +3,20 @@ import '@fontsource/roboto-condensed/latin-500.css';
 import '@fontsource/roboto-condensed/latin-600.css';
 import '@fontsource/roboto-condensed/latin-700-italic.css';
 import '@fontsource/roboto-condensed/latin-700.css';
+
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
+
 import { App } from './App';
+
 import './styles/global.css';
 import './styles/components.css';
 import './styles/shell.css';
+
+// Bloqueia o deslocamento horizontal da página.
+import './styles/vertical-scroll.css';
+
 if (
   import.meta.env.PROD &&
   'serviceWorker' in navigator &&
@@ -21,7 +28,11 @@ if (
 }
 
 const root = document.getElementById('root');
-if (!root) throw new Error('Elemento raiz não encontrado');
+
+if (!root) {
+  throw new Error('Elemento raiz não encontrado');
+}
+
 createRoot(root).render(
   <StrictMode>
     <BrowserRouter>
