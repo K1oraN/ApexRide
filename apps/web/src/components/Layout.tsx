@@ -30,6 +30,7 @@ import { ButtonLink, EmptyState } from './design-system';
 import { Avatar, Popover } from './ui';
 import { PageErrorBoundary } from './PageErrorBoundary';
 import '../styles/guide.css';
+import '../styles/apex-stage-01.css';
 
 export function Layout() {
   const { snapshot: ride } = useRide();
@@ -136,7 +137,9 @@ export function Layout() {
             }
           >
             <p>{region || 'Você ainda não definiu sua região.'}</p>
-            <small>Informação do seu perfil. O GPS não é consultado aqui.</small>
+            <small>
+              Informação do seu perfil. O GPS não é consultado aqui.
+            </small>
             <ButtonLink to="/configuracoes" variant="ghost">
               {region ? 'Editar região' : 'Definir região'}
             </ButtonLink>
@@ -147,14 +150,17 @@ export function Layout() {
             trigger={<Bell size={25} />}
           >
             <EmptyState title="Notificações" icon={<Bell size={24} />}>
-              As notificações ainda não estão disponíveis. Nenhum alerta foi gerado.
+              As notificações ainda não estão disponíveis. Nenhum alerta foi
+              gerado.
             </EmptyState>
           </Popover>
           <Link
             className="profile-link"
             to={user ? '/perfil' : '/entrar'}
             aria-label={
-              user ? `Abrir perfil de ${user.displayName}` : 'Entrar na sua conta'
+              user
+                ? `Abrir perfil de ${user.displayName}`
+                : 'Entrar na sua conta'
             }
           >
             <Avatar name={user?.displayName ?? 'Visitante'} placeholder />
