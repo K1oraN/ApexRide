@@ -1,0 +1,7 @@
+ apps/web/src/garage/CatalogPicker.tsx           |  561 [32m++++++++[m[31m----[m
+ apps/web/src/garage/CatalogSheet.tsx            |  631 [32m++++++++++[m[31m---[m
+ apps/web/src/pages/GaragePage.tsx               |   20 [32m+[m[31m-[m
+ apps/web/src/styles/catalog-directory.css       |   69 [32m++[m
+ apps/web/src/styles/catalog-technical-sheet.css |  281 [32m++++++[m
+ database/motos_brasil_base_curadoria.csv        | 1098 [32m+++++++++++++++++++++++[m
+ 6 files changed, 2355 insertions(+), 305 deletions(-)

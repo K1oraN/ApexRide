@@ -1,0 +1,8 @@
+﻿marca;modelo;ano;versao;campos_base;novos_campos_verificados;campos_totais_apos_migracao;limite_campos_tela;observacao
+Honda;CB 650R;2024;ABS;10;20;30;48;"Fontes mistas explicitadas por campo; campos nao documentados permanecem ausentes."
+Honda;CB 650R;2026;E-Clutch;21;19;40;48;"Fontes mistas explicitadas por campo; campos nao documentados permanecem ausentes."
+Bajaj;Dominar 400;2025;Padrão;18;17;35;48;"Fontes mistas explicitadas por campo; campos nao documentados permanecem ausentes."
+Honda;CG 160;2025;Titan ABS;11;23;34;48;"Fontes mistas explicitadas por campo; campos nao documentados permanecem ausentes."
+Honda;CG 160;2025;Fan CBS;11;19;30;48;"Fontes mistas explicitadas por campo; campos nao documentados permanecem ausentes."
+Honda;CG 160;2025;Start CBS;11;18;29;48;"Fontes mistas explicitadas por campo; campos nao documentados permanecem ausentes."
+Honda;CG 160;2025;Cargo CBS;11;18;29;48;"Fontes mistas explicitadas por campo; campos nao documentados permanecem ausentes."
