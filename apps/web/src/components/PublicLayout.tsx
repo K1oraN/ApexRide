@@ -2,6 +2,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Suspense, useEffect, useRef } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
 import '../styles/public.css';
+import '../styles/apex-stage-02.css';
 import { Logo } from './Brand';
 
 export function PublicLayout() {
