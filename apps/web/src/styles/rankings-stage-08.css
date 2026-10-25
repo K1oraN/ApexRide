@@ -1,0 +1,338 @@
+/* Apex Ride — Etapa 08: classificações reais, no visual racing existente. */
+.apex-ranking-stage-08 {
+  gap: 22px;
+  padding-bottom: 24px;
+}
+
+.apex-ranking-stage-08 > .action-link {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 5px;
+}
+
+.apex-rank-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: 198px;
+  overflow: hidden;
+  padding: clamp(22px, 4vw, 34px);
+  background:
+    radial-gradient(circle at 91% 33%, rgb(243 19 39 / 15%), transparent 35%),
+    linear-gradient(125deg, #181a20 0%, #0b0e13 74%);
+}
+
+.apex-rank-hero > div:first-child { position: relative; z-index: 1; }
+.apex-rank-hero h1 {
+  margin: 11px 0;
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 5vw, 46px);
+  font-weight: 900;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+.apex-rank-hero h1 em { color: var(--red); }
+.apex-rank-hero p {
+  max-width: 49ch;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.apex-rank-hero-mark {
+  position: absolute;
+  right: 9%;
+  top: 50%;
+  color: rgb(243 19 39 / 42%);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.apex-rank-navigation {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.apex-rank-navigation a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+.apex-rank-navigation a:hover { background: var(--panel-light); color: var(--text); }
+.apex-rank-navigation a.is-current {
+  border-color: #a33040;
+  background: #35121a;
+  color: #fff;
+}
+.apex-rank-navigation a.is-current svg { color: #ff6574; }
+
+.apex-ranking-stage-08 .apex-ranking-filters { gap: 18px; }
+.apex-rank-filters-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.apex-rank-filters-heading h2,
+.apex-rank-results-title h2,
+.apex-rank-section-heading h3 {
+  margin: 6px 0 0;
+  font-family: var(--font-heading);
+  font-size: clamp(20px, 3vw, 26px);
+}
+.apex-rank-filters-heading > small { margin: 0; }
+.apex-ranking-stage-08 .apex-ranking-scope {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.apex-ranking-stage-08 .apex-ranking-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.apex-ranking-stage-08 .account-field { min-width: 0; }
+
+.apex-rank-results,
+.apex-rank-podium-section { display: grid; gap: 15px; min-width: 0; }
+.apex-rank-results-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.apex-rank-results-indicator {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.apex-rank-results-indicator svg { color: var(--red); }
+
+.apex-rank-podium {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 13px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.apex-rank-podium-card {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  max-width: 320px;
+  gap: 10px;
+  padding: 22px 14px;
+  border: 1px solid #393841;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(150deg, #22242b 0%, #11141a 100%);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.apex-rank-podium-card.apex-rank-podium-1 {
+  border-color: #a4484a;
+  background: linear-gradient(160deg, #38171c 0%, #171319 76%);
+  box-shadow: inset 0 3px 0 #f13b4d;
+}
+.apex-rank-podium-2 { box-shadow: inset 0 3px 0 #9ba6b6; }
+.apex-rank-podium-3 { box-shadow: inset 0 3px 0 #ae7656; }
+.apex-rank-podium-position {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #d7dbe4;
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+.apex-rank-podium-1 .apex-rank-podium-position { color: #ff7785; }
+.apex-rank-podium-avatar {
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  border: 2px solid #383c45;
+  border-radius: 50%;
+}
+.apex-rank-podium-1 .apex-rank-podium-avatar { border-color: var(--red); }
+.apex-rank-rider-link {
+  max-width: 100%;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+.apex-rank-rider-link:hover,
+.apex-rank-table-rider a:hover { color: #ff7481; }
+.apex-rank-location {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.apex-rank-location svg { flex: 0 0 auto; }
+.apex-rank-score {
+  margin-top: auto;
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: clamp(18px, 2.6vw, 25px);
+}
+.apex-rank-podium-1 .apex-rank-score { color: #ff5c70; }
+
+.apex-rank-table-panel { padding: 20px; min-width: 0; }
+.apex-rank-table { margin-top: 12px; }
+.apex-rank-table-head,
+.apex-rank-table-row {
+  display: grid;
+  grid-template-columns: minmax(80px, .32fr) minmax(0, 1.6fr) minmax(100px, .6fr);
+  align-items: center;
+  gap: 12px;
+}
+.apex-rank-table-head {
+  padding: 10px 16px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+.apex-rank-table-head span:last-child { text-align: right; }
+.apex-rank-table-row {
+  padding: 15px 16px;
+  border-top: 1px solid var(--border);
+}
+.apex-rank-table-position {
+  color: #ff7281;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 900;
+}
+.apex-rank-table-rider {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+.apex-rank-table-rider > div:last-child {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.apex-rank-table-rider a {
+  width: fit-content;
+  max-width: 100%;
+  color: var(--text);
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+.apex-rank-table-rider .apex-rank-location { justify-content: start; }
+.apex-rank-table-score {
+  color: var(--text);
+  text-align: right;
+  white-space: nowrap;
+}
+.apex-rank-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.apex-rank-pagination { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.apex-rank-pagination > span { color: var(--muted); font-size: 13px; }
+.apex-rank-me { margin: 0; color: var(--muted); }
+.apex-rank-me strong { color: var(--text); }
+
+.apex-rank-participation {
+  display: grid;
+  gap: 12px;
+  padding: 18px 20px;
+}
+.apex-rank-participation-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.apex-rank-participation-heading > svg { color: #ff7785; }
+.apex-rank-participation-heading > div { display: grid; gap: 2px; }
+.apex-rank-participation-heading small { color: var(--muted); }
+.apex-rank-participation p,
+.apex-rank-safety-note { margin: 0; color: var(--muted); line-height: 1.5; }
+.apex-rank-participation .apex-rank-hint { color: #ffae87; }
+.apex-rank-consent { display: flex; align-items: start; gap: 9px; }
+.apex-rank-control-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.apex-rank-control-feedback { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.apex-rank-safety-note { display: flex; align-items: start; gap: 8px; font-size: 13px; }
+.apex-rank-safety-note svg { flex: 0 0 auto; color: var(--red); }
+.apex-ranking-stage-08 a:focus-visible,
+.apex-ranking-stage-08 button:focus-visible,
+.apex-ranking-stage-08 input:focus-visible,
+.apex-ranking-stage-08 select:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+@media (max-width: 780px) {
+  .apex-ranking-stage-08 .apex-ranking-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .apex-rank-hero-mark { right: 3%; opacity: .28; }
+  .apex-rank-podium { gap: 7px; }
+  .apex-rank-podium-card { padding: 18px 8px; }
+  .apex-rank-rider-link { font-size: 14px; }
+  .apex-rank-score { font-size: 17px; }
+}
+@media (max-width: 560px) {
+  .apex-ranking-stage-08 .apex-ranking-grid { grid-template-columns: minmax(0, 1fr); }
+  .apex-rank-hero { min-height: 190px; padding: 22px 18px; }
+  .apex-rank-hero-mark { opacity: .15; }
+  .apex-rank-navigation { gap: 3px; padding: 5px; }
+  .apex-rank-navigation a { flex-direction: column; gap: 4px; font-size: 11px; }
+  .apex-rank-navigation svg { width: 18px; height: 18px; }
+  .apex-rank-podium { flex-direction: column; }
+  .apex-rank-podium-1 { order: -1; }
+  .apex-rank-podium-card {
+    display: grid;
+    grid-template-columns: 53px minmax(0, 1fr);
+    grid-template-rows: repeat(3, auto);
+    align-items: center;
+    column-gap: 11px;
+    width: 100%;
+    max-width: none;
+    padding: 14px;
+    text-align: left;
+  }
+  .apex-rank-podium-avatar { grid-column: 1; grid-row: 1 / 4; width: 52px; height: 52px; }
+  .apex-rank-podium-position { grid-column: 2; grid-row: 1; font-size: 11px; }
+  .apex-rank-podium-card .apex-rank-rider-link { grid-column: 2; grid-row: 2; }
+  .apex-rank-podium-card .apex-rank-location { display: none; }
+  .apex-rank-podium-card .apex-rank-score { grid-column: 2; grid-row: 3; margin: 0; }
+  .apex-rank-table-panel { padding: 13px; }
+  .apex-rank-table-head { display: none; }
+  .apex-rank-table-row { grid-template-columns: 44px minmax(0, 1fr); gap: 9px; padding: 14px 3px; }
+  .apex-rank-table-position { grid-column: 1; grid-row: 1 / 3; align-self: start; }
+  .apex-rank-table-rider { grid-column: 2; grid-row: 1; }
+  .apex-rank-table-score { grid-column: 2; grid-row: 2; padding-left: 53px; text-align: left; }
+  .apex-rank-footer { align-items: start; flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .apex-ranking-stage-08 * { scroll-behavior: auto; }
+}

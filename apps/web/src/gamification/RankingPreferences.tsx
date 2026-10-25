@@ -3,13 +3,14 @@ import { StateField } from '../components/AccountFields';
 import { Button, Checkbox, Input } from '../components/design-system';
 import type { Preferences } from './types';
 import { changeGamification, useGamification } from './useGamification';
+
 export function RankingPreferences() {
   const { data, error, reload } = useGamification<{ preferences: Preferences }>(
     '/gamification/me/ranking-preferences',
   );
   return (
     <section className="panel gamification-card">
-      <h2>Privacidade da progressão</h2>
+      <h2>Preferências avançadas dos rankings</h2>
       {error && (
         <p role="alert">
           {error}
@@ -22,6 +23,7 @@ export function RankingPreferences() {
     </section>
   );
 }
+
 function PreferencesForm({ initial }: { initial: Preferences }) {
   const [p, setP] = useState(initial),
     [consent, setConsent] = useState(false),
