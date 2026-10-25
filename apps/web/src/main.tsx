@@ -1,4 +1,3 @@
-
 import '@fontsource/roboto-condensed/latin-400.css';
 import '@fontsource/roboto-condensed/latin-500.css';
 import '@fontsource/roboto-condensed/latin-600.css';
@@ -17,6 +16,7 @@ import './styles/shell.css';
 
 import './styles/vertical-scroll.css';
 import './styles/explore-mobile-fixes.css';
+import './styles/apex-ui-overhaul.css';
 
 if (
   import.meta.env.PROD &&

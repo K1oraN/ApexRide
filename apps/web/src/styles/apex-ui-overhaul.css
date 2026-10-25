@@ -1,0 +1,445 @@
+/* APEX RIDE — ajustes visuais compartilhados, 2026-10-24.
+   Carregado ao final em main.tsx. Sem alterar lógica de permissões/dados. */
+:root {
+  --apex-accent: #ff1734;
+  --apex-border: #343d49;
+  --apex-card: #10161d;
+  --apex-raised: #171f29;
+}
+
+/* Base: controles escuros legíveis, sem larguras mínimas que quebrem grid/flex. */
+.app-shell,
+.app-shell :is(.panel, .account-field, label, fieldset, .filter-label, .gamification-filters, .choice-cards),
+.app-shell :is(.panel, .account-field, label, fieldset, .filter-label, .gamification-filters, .choice-cards) > * {
+  min-width: 0;
+}
+.app-shell :is(.ui-input, .ui-select, .ui-textarea, input:not([type='checkbox']):not([type='radio']), select, textarea) {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.app-shell select:not([multiple]),
+.public-site select:not([multiple]) {
+  width: 100%;
+  min-width: 0;
+  min-height: 49px;
+  white-space: normal;
+  font-size: 15px;
+  letter-spacing: normal;
+  padding: 11px 42px 11px 15px;
+  border: 1px solid #4b5765;
+  border-radius: 12px;
+  background-color: #151c25;
+  background-position: right 13px center;
+  background-size: 19px 19px;
+  color: #f3f6fa;
+  text-overflow: ellipsis;
+}
+.app-shell select option,
+.public-site select option {
+  color: #f5f7fb;
+  background: #151c25;
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: normal;
+}
+.app-shell :is(.ui-input, .ui-select, .ui-textarea, select, input, textarea):focus-visible {
+  border-color: #ff4e64;
+  outline: 2px solid rgb(255 42 72 / 44%);
+  outline-offset: 2px;
+}
+.app-shell :is(.panel, .metric-card, .gamification-card) {
+  border-radius: 16px;
+}
+.app-shell .button,
+.app-shell .ui-button {
+  min-width: 0;
+  max-width: 100%;
+  min-height: 44px;
+  padding-inline: 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  text-align: center;
+  gap: 8px;
+}
+.app-shell .button-primary,
+.app-shell .ui-button.button-primary {
+  color: #fff;
+  border-color: #ff283d;
+  background: linear-gradient(135deg, #ff1835 0%, #d40822 100%);
+  box-shadow: 0 5px 22px rgb(245 17 44 / 22%);
+}
+.app-shell .button-primary:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+.app-shell .button-secondary,
+.app-shell .button-outline {
+  border: 1px solid #465361;
+  background-color: #17202a;
+  color: #f3f6fc;
+}
+.app-shell .button-ghost {
+  color: #e7eef7;
+  border: 1px solid #465361;
+  background-color: #111821;
+}
+.app-shell .button:disabled {
+  opacity: .60;
+  box-shadow: none;
+}
+
+/* A seleção em cartões usada por várias telas nunca pode comprimir palavras
+   até ficarem verticais: opções têm tamanho mínimo, texto fluido e quebra normal. */
+.app-shell .choice-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  align-items: stretch;
+}
+.app-shell .choice-cards > label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 55px;
+  padding: 12px 14px;
+  border: 1px solid #42505d;
+  border-radius: 12px;
+  background: #151c25;
+  color: #eef2f8;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+}
+.app-shell .choice-cards > label > span {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: normal;
+  word-break: normal;
+  white-space: normal;
+  line-height: 1.35;
+}
+.app-shell .choice-cards > label > input[type='radio'] {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--apex-accent);
+}
+.app-shell .choice-cards > label.selected,
+.app-shell .choice-cards > label:has(input:checked) {
+  border-color: #ff304a;
+  background: linear-gradient(125deg, #30151d, #1a1c25);
+  box-shadow: inset 0 0 0 1px rgb(255 44 71 / 25%);
+}
+.app-shell .choice-cards > label:focus-within { outline: 2px solid #ff6c7e; outline-offset: 2px; }
+
+/* Cabeçalho compacto com menu realmente utilizável em telas pequenas. */
+.app-shell .app-header { gap: 10px; }
+.app-shell .header-tools { gap: clamp(6px, 1.5vw, 18px); }
+.app-shell .app-more-menu .popover-content {
+  width: clamp(240px, 78vw, 310px);
+  min-width: min(240px, calc(100vw - 32px));
+  border: 1px solid #394653;
+  border-radius: 16px;
+  padding: 12px;
+  background: #0f151d;
+  box-shadow: 0 16px 38px #0009;
+}
+.app-shell .app-menu-links { display: grid; gap: 6px; }
+.app-shell .app-menu-links a,
+.app-shell .app-menu-signout {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+  padding: 12px 14px;
+  min-height: 46px;
+  color: #edf3fb;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1px solid #2d3844;
+  border-radius: 11px;
+  background: #151e27;
+}
+.app-shell .app-menu-links svg,
+.app-shell .app-menu-signout svg { flex: 0 0 auto; color: #ff304d; }
+.app-shell .app-menu-links a:hover,
+.app-shell .app-menu-signout:hover:not(:disabled) { background: #261923; border-color: #bd3448; }
+.app-shell .app-menu-footer { margin-top: 10px; padding-top: 10px; border-top: 1px solid #34404b; }
+.app-shell .app-menu-signout { cursor: pointer; border-color: #632936; background: #27161e; }
+.app-shell .app-menu-signout:disabled { opacity: .6; cursor: not-allowed; }
+.app-shell .app-menu-footer p { margin: 7px 0; color: #ff9baf; font-size: 12px; }
+
+/* Busca de endereços: input, ação primária, limpar secundário. */
+.app-shell .destination-search-premium {
+  border-radius: 16px;
+  overflow: visible;
+}
+.app-shell .destination-address-search {
+  gap: 16px;
+  padding: clamp(15px, 3vw, 23px);
+  border: 1px solid #414d5a;
+  border-radius: 16px;
+  background: linear-gradient(155deg, #151d27, #0d131b);
+}
+.app-shell .destination-search-heading > div { gap: 5px; }
+.app-shell .destination-search-heading strong { color: #f9fbff; font-size: 17px; }
+.app-shell .destination-search-heading small { color: #b6c1d0; font-size: 13px; }
+.app-shell .destination-address-form { gap: 13px; }
+.app-shell .destination-address-form > label { display: grid; gap: 8px; font-size: 13px; font-weight: 700; }
+.app-shell .destination-address-form .ui-input { min-height: 53px; border-color: #485663; border-radius: 12px; }
+.app-shell .destination-address-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(100px, .7fr);
+  gap: 12px;
+  width: 100%;
+}
+.app-shell .destination-address-actions > .button {
+  display: inline-flex;
+  justify-content: center;
+  min-height: 49px;
+  width: 100%;
+  padding-inline: 10px;
+  white-space: normal;
+  font-size: 14px;
+}
+.app-shell .destination-address-actions > .button[type='button'] {
+  border-color: #566374;
+  background: #212b36;
+}
+.app-shell .destination-provider-status {
+  display: flex;
+  gap: 10px;
+  padding: 12px 13px;
+  border: 1px solid #4b4d56;
+  border-radius: 10px;
+  background: #241f25;
+  font-size: 13px;
+}
+.app-shell .destination-provider-status svg { flex: 0 0 auto; color: #ffb45a; }
+.app-shell .destination-results { padding: 0; margin: 0; }
+.app-shell .destination-results .button { min-height: 50px; }
+.app-shell .destination-coordinates { border-radius: 13px; }
+
+/* Cards e tabelas de seleção para rankings. */
+.app-shell .apex-ranking-page { gap: 22px; }
+.app-shell .apex-ranking-page > header {
+  padding: clamp(16px, 3vw, 28px);
+  border: 1px solid #343e4a;
+  border-radius: 18px;
+  background: radial-gradient(ellipse at top right, #35131f, transparent 52%), #101720;
+}
+.app-shell .apex-ranking-page h1 {
+  font-size: clamp(25px, 5vw, 40px);
+  font-style: italic;
+  text-transform: uppercase;
+  margin-block: 5px 10px;
+}
+.app-shell .apex-ranking-page > header p { color: #b9c2d0; max-width: 62ch; line-height: 1.5; }
+.app-shell .apex-ranking-filters { padding: clamp(16px, 3vw, 24px); gap: 19px; }
+.app-shell .apex-ranking-scope {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+.app-shell .apex-ranking-scope > .button { min-width: 0; min-height: 49px; font-size: 14px; }
+.app-shell .apex-ranking-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  align-items: end;
+  gap: 15px;
+}
+.app-shell .apex-ranking-grid > .account-field,
+.app-shell .apex-ranking-grid > label { display: grid; align-content: end; gap: 8px; min-width: 0; }
+.app-shell .apex-ranking-grid select,
+.app-shell .apex-ranking-grid input { width: 100%; min-height: 49px; }
+.app-shell .apex-ranking-results { padding: clamp(16px, 3vw, 24px); }
+.app-shell .apex-ranking-results-heading { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+.app-shell .apex-ranking-results .ranking-list li { min-height: 71px; }
+.app-shell .apex-ranking-results .ranking-list li > strong:last-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.app-shell .apex-ranking-results .page-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; margin-block: 15px; }
+
+/* Comunidade agora é feed + rankings + eventos: sem sidebar de identidade. */
+.app-shell .community-hub--feed .community-hub-grid {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: min(100%, 960px);
+  margin-inline: auto;
+}
+.app-shell .community-hub--feed .community-hub-navigation {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.app-shell .community-hub--feed .community-hub-tab {
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  min-height: 53px;
+  padding-inline: 9px;
+  text-align: center;
+  font-size: clamp(12px, 2vw, 15px);
+}
+.app-shell .community-hub--feed .community-hub-feed-wrap { min-width: 0; }
+
+@media (max-width: 700px) {
+  .app-shell .header-tools .profile-link > span { display: none; }
+  .app-shell .header-tools .location-menu .popover-trigger > span { max-width: 85px; }
+  .app-shell .app-header { padding-block: max(13px, env(safe-area-inset-top)) 10px; }
+  .app-shell .apex-ranking-grid { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .choice-cards { grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr)); }
+}
+@media (max-width: 460px) {
+  .app-shell .header-tools .location-menu .popover-trigger { gap: 3px; }
+  .app-shell .header-tools .location-menu .popover-trigger > span { max-width: 60px; }
+  .app-shell .destination-address-actions { grid-template-columns: minmax(0, 1fr); }
+  .app-shell .destination-address-actions > .button { min-height: 49px; }
+  .app-shell .apex-ranking-scope { gap: 6px; }
+  .app-shell .apex-ranking-scope > .button { padding-inline: 5px; font-size: 12px; }
+  .app-shell .community-hub--feed .community-hub-tab { flex-direction: column; gap: 5px; padding-block: 8px; }
+  .app-shell .choice-cards { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .button, .app-shell .ui-input, .app-shell select { transition: none; }
+}
+
+/* Identidade visual consistente com as referências: preto profundo,
+   vermelho elétrico, tipografia condensada e cartões bem proporcionados. */
+.app-shell .home-dashboard { gap: 18px; }
+.app-shell .home-banner {
+  border-color: #46505a;
+  border-radius: 22px;
+  min-height: clamp(280px, 34vw, 390px);
+  box-shadow: 0 18px 45px #0005;
+}
+.app-shell .home-banner::after {
+  background:
+    linear-gradient(90deg, #05080bf5 0%, #05080bc5 40%, #05080b10 85%),
+    linear-gradient(0deg, #05080b80, transparent 65%);
+}
+.app-shell .home-banner-copy { padding: clamp(21px, 4vw, 40px); }
+.app-shell .home-banner-copy .button { min-height: 54px; padding-inline: 22px; }
+.app-shell .home-status-item,
+.app-shell .home-motorcycle,
+.app-shell .home-performance,
+.app-shell .home-progress {
+  border: 1px solid var(--apex-border);
+  border-radius: 17px;
+  background: linear-gradient(140deg, #171f27, #0d1319);
+}
+.app-shell .home-status-item {
+  min-height: 88px;
+  padding: clamp(12px, 2vw, 18px);
+  box-shadow: 0 6px 20px #0002;
+}
+.app-shell .home-status-item > svg { flex: 0 0 auto; color: var(--apex-accent); }
+
+.app-shell .garage-premium .garage-toolbar { gap: 12px; }
+.app-shell .garage-premium .garage-bike-strip { gap: 12px; }
+.app-shell .garage-premium .garage-bike-tile {
+  border-radius: 16px;
+  border-color: #3c4753;
+  background: linear-gradient(125deg, #19222b, #0c1118);
+  box-shadow: 0 6px 18px #0003;
+}
+.app-shell .garage-premium .garage-bike-tile.selected {
+  border-color: #ff2442;
+  box-shadow: 0 0 0 1px #ff244250, inset 0 -3px #fd1537, 0 8px 22px #0005;
+}
+.app-shell .garage-premium .garage-hero {
+  border-color: #404a54;
+  border-radius: 22px;
+  box-shadow: 0 13px 36px #0005;
+}
+.app-shell .garage-premium .garage-hero-copy { padding: clamp(21px, 4vw, 42px); }
+.app-shell .garage-premium .garage-hero-copy :is(h1,h2) {
+  font-style: italic;
+  letter-spacing: -.015em;
+  text-wrap: balance;
+}
+.app-shell .garage-premium .garage-hero.has-photo::after {
+  background: linear-gradient(90deg, #05090bf4, #05090bb2 42%, #05090b08 85%);
+}
+.app-shell .explore-refined .explore-map-area {
+  border-radius: 20px;
+  border-color: #3d4854;
+  box-shadow: 0 13px 36px #0004;
+}
+.app-shell .explore-refined .explore-map-heading {
+  border-color: #44515e;
+  border-radius: 15px;
+  background: #101820ee;
+  backdrop-filter: blur(10px);
+}
+.app-shell .explore-refined .ui-segmented {
+  gap: 8px;
+  border-radius: 14px;
+}
+.app-shell .explore-refined .ui-segmented > .button { min-height: 48px; }
+
+/* Autenticação pública: cartões e CTA seguem o mesmo sistema visual. */
+.auth-page .auth-story::before {
+  background:
+    linear-gradient(90deg, #07090b50, #07090b28 42%, #07090be9 70%),
+    linear-gradient(0deg, #07090b, transparent 70%),
+    url('/assets/profile-cover.webp') 140% center / cover no-repeat;
+}
+.auth-page .auth-form-card {
+  border-color: #3e4653;
+  border-radius: 20px;
+  background: #090e14ee;
+  box-shadow: 0 18px 48px #0007;
+}
+.auth-page .auth-form-card .account-field {
+  border-color: #414e5c;
+  border-radius: 14px;
+  min-height: 70px;
+  background: linear-gradient(125deg, #18212a, #0e151c);
+}
+.auth-page .auth-form-card .account-field:focus-within {
+  border-color: #ff3853;
+  box-shadow: 0 0 0 2px #ff233426;
+}
+.auth-page .auth-form-card .public-button.primary {
+  border-radius: 14px;
+  background: linear-gradient(140deg, #ff182f, #c90020);
+  border-color: #ff5268;
+  box-shadow: 0 6px 26px #ed1b3544;
+  min-height: 57px;
+  font-weight: 800;
+}
+.auth-page .auth-form-card .public-button.secondary {
+  border-radius: 14px;
+  background: #111820;
+  border-color: #73808d;
+  min-height: 53px;
+}
+@media (max-width: 520px) {
+  .app-shell .home-banner { min-height: 315px; }
+  .app-shell .home-banner-copy { max-width: 100%; }
+  .app-shell .home-banner::after { background: linear-gradient(90deg, #05080bec, #05080b80 76%); }
+  .app-shell .home-status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .app-shell .home-status-item { padding: 12px; min-height: 78px; }
+  .app-shell .garage-premium .garage-bike-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .app-shell .garage-premium .garage-bike-tile { grid-template-columns: minmax(0, 1fr); justify-items: start; }
+  .app-shell .garage-premium .garage-bike-tile > .motorcycle-photo { width: 100%; height: 85px; }
+  .app-shell .garage-premium .garage-hero-copy { max-width: 92%; }
+  .auth-page .auth-form-card { box-shadow: none; }
+}

@@ -4,13 +4,22 @@ import {
   ChevronDown,
   Compass,
   House,
+  LogOut,
   MapPin,
   Menu,
   Settings,
-  ScanSearch,
+  Target,
+  Trophy,
+  UserRound,
   UsersRound,
 } from 'lucide-react';
-import { Suspense, useEffect, useRef, useSyncExternalStore } from 'react';
+import {
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 import { useNavigation } from '../navigation/context';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { useAuth } from '../auth/useAuth';
@@ -29,17 +38,37 @@ export function Layout() {
     navigation.subscribe,
     navigation.getSnapshot,
   );
-  const { user, status, error, refresh } = useAuth();
+  const { user, status, error, refresh, logout } = useAuth();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState('');
   const location = useLocation();
   const main = useRef<HTMLElement>(null);
   const previousPath = useRef(location.pathname);
   const region = [user?.city, user?.state].filter(Boolean).join(', ');
+
   useEffect(() => {
     if (previousPath.current === location.pathname) return;
     previousPath.current = location.pathname;
     window.scrollTo({ top: 0, behavior: 'instant' });
     main.current?.focus({ preventScroll: true });
   }, [location.pathname]);
+
+  async function signOut() {
+    if (loggingOut) return;
+    setLogoutError('');
+    setLoggingOut(true);
+    try {
+      // The auth provider handles pending offline activities and cancellation.
+      await logout();
+    } catch (cause) {
+      setLogoutError(
+        cause instanceof Error ? cause.message : 'Não foi possível sair.',
+      );
+    } finally {
+      setLoggingOut(false);
+    }
+  }
+
   return (
     <div className="app-shell">
       <a className="skip-link" href="#conteudo">
@@ -57,19 +86,43 @@ export function Layout() {
             trigger={<Menu size={23} />}
           >
             <nav aria-label="Mais opções" className="app-menu-links">
+              <Link to="/perfil">
+                <UserRound size={19} />
+                Meu perfil
+              </Link>
+              <Link to="/comunidade/grupos?filter=mine">
+                <UsersRound size={19} />
+                Meus grupos
+              </Link>
+              <Link to="/perfil/conquistas">
+                <Trophy size={19} />
+                Missões e conquistas
+              </Link>
+              <Link to="/perfil/xp">
+                <Target size={19} />
+                Minha evolução
+              </Link>
               <Link to="/guia">
-                <BookOpen size={20} />
+                <BookOpen size={19} />
                 Guia
               </Link>
               <Link to="/configuracoes">
-                <Settings size={20} />
+                <Settings size={19} />
                 Configurações
               </Link>
-              <Link to="/descobertas">
-                <ScanSearch size={20} />
-                Descobertas
-              </Link>
             </nav>
+            <div className="app-menu-footer">
+              <button
+                type="button"
+                className="app-menu-signout"
+                disabled={!user || loggingOut}
+                onClick={() => void signOut()}
+              >
+                <LogOut size={19} aria-hidden />
+                {loggingOut ? 'Saindo…' : 'Sair da conta'}
+              </button>
+              {logoutError && <p role="alert">{logoutError}</p>}
+            </div>
           </Popover>
           <Popover
             label="Localização"
@@ -83,9 +136,7 @@ export function Layout() {
             }
           >
             <p>{region || 'Você ainda não definiu sua região.'}</p>
-            <small>
-              Informação do seu perfil. O GPS não é consultado aqui.
-            </small>
+            <small>Informação do seu perfil. O GPS não é consultado aqui.</small>
             <ButtonLink to="/configuracoes" variant="ghost">
               {region ? 'Editar região' : 'Definir região'}
             </ButtonLink>
@@ -93,24 +144,17 @@ export function Layout() {
           <Popover
             label="Notificações"
             className="notifications"
-            trigger={
-              <>
-                <Bell size={27} />
-              </>
-            }
+            trigger={<Bell size={25} />}
           >
             <EmptyState title="Notificações" icon={<Bell size={24} />}>
-              As notificações ainda não estão disponíveis. Nenhum alerta foi
-              gerado.
+              As notificações ainda não estão disponíveis. Nenhum alerta foi gerado.
             </EmptyState>
           </Popover>
           <Link
             className="profile-link"
             to={user ? '/perfil' : '/entrar'}
             aria-label={
-              user
-                ? `Abrir perfil de ${user.displayName}`
-                : 'Entrar na sua conta'
+              user ? `Abrir perfil de ${user.displayName}` : 'Entrar na sua conta'
             }
           >
             <Avatar name={user?.displayName ?? 'Visitante'} placeholder />
@@ -122,10 +166,6 @@ export function Layout() {
           </Link>
         </div>
       </header>
-      <div className="demo-notice">
-        <span />
-        Pré-lançamento · homologação pendente
-      </div>
       <LiveBanner />
       {navigating.active &&
         !location.pathname.startsWith('/explorar/navegar') && (

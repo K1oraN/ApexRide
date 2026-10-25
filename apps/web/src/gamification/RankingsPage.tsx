@@ -1,32 +1,31 @@
-import { ChoiceSelect } from '../components/design-system';
 import { BIKE_CATEGORIES } from '@apex-ride/ride-core/comparison';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { StateField } from '../components/AccountFields';
 import { Button, Input, Select } from '../components/design-system';
 import { Avatar } from '../components/ui';
-import '../styles/gamification.css';
-import { RankingPreferences } from './RankingPreferences';
-import type { Preferences, Ranking, Season } from './types';
 import { useGamification } from './useGamification';
+import type { Ranking, Season } from './types';
+import '../styles/gamification.css';
+
+type Scope = 'br' | 'state' | 'city';
+
 export function RankingsPage() {
-  const [season, setSeason] = useState(''),
-    [kind, setKind] = useState('xp'),
-    [state, setState] = useState(''),
-    [city, setCity] = useState(''),
-    [region, setRegion] = useState(''),
-    [category, setCategory] = useState(''),
-    [band, setBand] = useState(''),
-    [page, setPage] = useState(1);
-  const seasons = useGamification<{ items: Season[] }>('/gamification/seasons'),
-    prefs = useGamification<{ preferences: Preferences }>(
-      '/gamification/me/ranking-preferences',
-    );
+  const [season, setSeason] = useState('');
+  const [kind, setKind] = useState('xp');
+  const [scope, setScope] = useState<Scope>('br');
+  const [state, setState] = useState('');
+  const [city, setCity] = useState('');
+  const [category, setCategory] = useState('');
+  const [band, setBand] = useState('');
+  const [page, setPage] = useState(1);
+
+  const seasons = useGamification<{ items: Season[] }>('/gamification/seasons');
   const q = new URLSearchParams({
     page: String(page),
-    state,
-    city,
-    region,
+    state: scope !== 'br' ? state : '',
+    city: scope === 'city' ? city.trim() : '',
+    region: '',
     category,
     ccBand: band,
     ...(season ? { season } : {}),
@@ -34,105 +33,91 @@ export function RankingsPage() {
   const { data, error, reload } = useGamification<Ranking>(
     `/gamification/leaderboards/${kind}?${q}`,
   );
-  const change = (set: (v: string) => void) => (v: string) => {
-    set(v);
+  const change = (setter: (value: string) => void) => (value: string) => {
+    setter(value);
     setPage(1);
   };
+  const regionIsReady = scope === 'br' || Boolean(state) && (scope !== 'city' || Boolean(city.trim()));
+
   return (
-    <div className="gamification-page">
+    <div className="gamification-page apex-ranking-page">
       <Link className="text-link action-link" to="/comunidade">
         Voltar à Comunidade
       </Link>
       <header>
-        <span className="eyebrow">PARTICIPAÇÃO VOLUNTÁRIA</span>
-        <h1>Rankings</h1>
-        <p>
-          Participação, exploração e comunidade. Sem classificação de velocidade
-          em vias públicas.
-        </p>
+        <span className="eyebrow">APEX RIDE / CLASSIFICAÇÕES</span>
+        <h1>Rankings dos riders</h1>
+        <p>Explore os destaques do Brasil, do seu estado e da sua cidade. Sem classificação por velocidade em vias públicas.</p>
       </header>
-      <div className="panel gamification-card">
-        <div className="gamification-filters">
+      <section className="panel gamification-card apex-ranking-filters" aria-label="Filtros dos rankings">
+        <div className="apex-ranking-scope" role="group" aria-label="Abrangência do ranking">
+          {([
+            ['br', 'Brasil'],
+            ['state', 'Estados'],
+            ['city', 'Cidades'],
+          ] as const).map(([value, name]) => (
+            <Button
+              key={value}
+              type="button"
+              variant={scope === value ? 'primary' : 'secondary'}
+              aria-pressed={scope === value}
+              onClick={() => { setScope(value); setPage(1); }}
+            >
+              {name}
+            </Button>
+          ))}
+        </div>
+        <div className="gamification-filters apex-ranking-grid">
           <label className="account-field">
             Temporada
-            <Select
-              value={season}
-              onChange={(e) => change(setSeason)(e.target.value)}
-            >
+            <Select value={season} onChange={(e) => change(setSeason)(e.target.value)}>
               <option value="">Temporada ativa</option>
-              {seasons.data?.items.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name} ·{' '}
-                  {s.status === 'active'
-                    ? 'Ativa'
-                    : s.status === 'scheduled'
-                      ? 'Agendada'
-                      : 'Encerrada'}
-                </option>
+              {seasons.data?.items.map((item) => (
+                <option key={item.id} value={item.id}>{item.name}</option>
               ))}
             </Select>
           </label>
-          <div className="account-field">
-            <span>Classificação</span>
-            <ChoiceSelect
-              aria-label="Classificação"
-              value={kind}
-              onChange={(e) => change(setKind)(e.target.value)}
-            >
+          <label className="account-field">
+            Classificação
+            <Select value={kind} onChange={(e) => change(setKind)(e.target.value)}>
               <option value="xp">XP da temporada</option>
               <option value="community">Participação comunitária</option>
               <option value="exploration">Exploração</option>
-            </ChoiceSelect>
-          </div>
-          <StateField
-            value={state}
-            onChange={(v) => {
-              change(setState)(v);
-              setCity('');
-            }}
-          />
-          <label className="account-field">
-            Município (opcional)
-            <Input
-              value={city}
-              disabled={!state}
-              maxLength={80}
-              onChange={(e) => change(setCity)(e.target.value)}
-            />
-          </label>
-          <label className="account-field">
-            Região
-            <Select
-              value={region}
-              onChange={(e) => change(setRegion)(e.target.value)}
-            >
-              <option value="">Todas</option>
-              {['Norte', 'Nordeste', 'Centro-Oeste', 'Sudeste', 'Sul'].map(
-                (r) => (
-                  <option key={r}>{r}</option>
-                ),
-              )}
             </Select>
           </label>
+          {scope !== 'br' && (
+            <StateField
+              value={state}
+              onChange={(value) => {
+                setState(value);
+                setCity('');
+                setPage(1);
+              }}
+            />
+          )}
+          {scope === 'city' && (
+            <label className="account-field">
+              Cidade
+              <Input
+                value={city}
+                disabled={!state}
+                maxLength={80}
+                placeholder="Ex.: Maceió"
+                onChange={(e) => change(setCity)(e.target.value)}
+              />
+            </label>
+          )}
           <label className="account-field">
-            Categoria da moto
-            <Select
-              value={category}
-              onChange={(e) => change(setCategory)(e.target.value)}
-            >
-              <option value="">Todas</option>
-              {BIKE_CATEGORIES.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
+            Categoria / estilo da moto
+            <Select value={category} onChange={(e) => change(setCategory)(e.target.value)}>
+              <option value="">Todas as categorias</option>
+              {BIKE_CATEGORIES.map((item) => <option key={item}>{item}</option>)}
             </Select>
           </label>
           <label className="account-field">
             Cilindrada
-            <Select
-              value={band}
-              onChange={(e) => change(setBand)(e.target.value)}
-            >
-              <option value="">Todas</option>
+            <Select value={band} onChange={(e) => change(setBand)(e.target.value)}>
+              <option value="">Todas as cilindradas</option>
               <option value="up-to-300">Até 300 cc</option>
               <option value="301-600">301–600 cc</option>
               <option value="601-1000">601–1000 cc</option>
@@ -141,98 +126,55 @@ export function RankingsPage() {
             </Select>
           </label>
         </div>
-        <small>
-          Região escolhida por cada participante. Grupos regionais exigem pelo
-          menos cinco pessoas elegíveis. Categoria baseada na moto da atividade;
-          modelos sem mapeamento ficam não classificados.
-        </small>
-      </div>
-      {error && (
+        <small>Os filtros respeitam as regiões declaradas e os consentimentos existentes; dados privados não são expostos automaticamente.</small>
+      </section>
+      {!regionIsReady ? (
+        <div className="panel gamification-card" role="status">
+          {scope === 'city' ? 'Selecione o estado e informe a cidade para consultar o ranking municipal.' : 'Selecione um estado para consultar o ranking estadual.'}
+        </div>
+      ) : error ? (
         <div className="panel gamification-card" role="alert">
           <p>{error}</p>
-          <p>Sem conexão, a classificação remota fica indisponível.</p>
-          <Button variant="secondary" onClick={reload}>
-            Tentar novamente
-          </Button>
+          <Button variant="secondary" onClick={reload}>Tentar novamente</Button>
         </div>
-      )}
-      {data && (
-        <section className="panel gamification-card">
-          <h2>{data.season?.name ?? 'Temporada indisponível'}</h2>
-          {data.season && (
-            <p>
-              {data.season.status === 'active'
-                ? 'Ativa'
-                : data.season.status === 'scheduled'
-                  ? 'Agendada'
-                  : 'Encerrada'}{' '}
-              · Revisão {data.season.revision}
-            </p>
-          )}
+      ) : data ? (
+        <section className="panel gamification-card apex-ranking-results">
+          <div className="apex-ranking-results-heading">
+            <div>
+              <span className="eyebrow">{scope === 'br' ? 'GERAL / BRASIL' : scope === 'state' ? `ESTADO / ${state}` : `CIDADE / ${city}`}</span>
+              <h2>{data.season?.name ?? 'Temporada'}</h2>
+            </div>
+          </div>
           {data.unavailable ? (
             <p role="status">{data.unavailable}</p>
           ) : (
             <>
-              <p>
-                Empates compartilham a posição. Ordenação estável entre pessoas
-                empatadas.
-              </p>
               <ol className="ranking-list">
-                {data.items.map((e) => (
-                  <li key={e.user_id}>
-                    <strong>{e.position}º</strong>
-                    <Avatar name={e.display_name} placeholder />
+                {data.items.map((entry) => (
+                  <li key={entry.user_id}>
+                    <strong>{entry.position}º</strong>
+                    <Avatar name={entry.display_name} placeholder />
                     <div>
-                      <Link to={`/comunidade/u/${e.username}`}>
-                        {e.display_name}
+                      <Link to={`/comunidade/u/${entry.username}`}>
+                        {entry.display_name}
                       </Link>
-                      <small>
-                        {[e.city, e.state].filter(Boolean).join(', ') ||
-                          'Região não divulgada'}
-                      </small>
+                      <small>{[entry.city, entry.state].filter(Boolean).join(', ') || 'Região não divulgada'}</small>
                     </div>
-                    <strong>{e.score} XP</strong>
+                    <strong>{entry.score} {kind === 'xp' ? 'XP' : 'pts'}</strong>
                   </li>
                 ))}
               </ol>
-              {data.items.length === 0 && (
-                <p>Nenhum participante elegível nesta seleção.</p>
-              )}
+              {data.items.length === 0 && <p>Nenhum participante disponível para os filtros escolhidos.</p>}
               <div className="page-pagination">
-                <Button
-                  variant="secondary"
-                  disabled={page <= 1}
-                  onClick={() => setPage((n) => n - 1)}
-                >
-                  Anterior
-                </Button>
+                <Button variant="secondary" disabled={page <= 1} onClick={() => setPage((value) => value - 1)}>Anterior</Button>
                 <span>Página {page}</span>
-                <Button
-                  variant="secondary"
-                  disabled={!data.hasMore}
-                  onClick={() => setPage((n) => n + 1)}
-                >
-                  Próxima
-                </Button>
+                <Button variant="secondary" disabled={!data.hasMore} onClick={() => setPage((value) => value + 1)}>Próxima</Button>
               </div>
             </>
           )}
-          {data.me && (
-            <p>
-              Meu posicionamento: {data.me.position}º · {data.me.score} XP nesta
-              classificação.
-            </p>
-          )}
-          {prefs.data && !prefs.data.preferences.opted_in && (
-            <p>
-              Participação desativada. Seu progresso pessoal continua disponível
-              no Perfil.
-            </p>
-          )}
+          {data.me && <p>Meu posicionamento: {data.me.position}º · {data.me.score} {kind === 'xp' ? 'XP' : 'pts'}.</p>}
         </section>
-      )}
-      {!data && !error && <p>Consultando classificação…</p>}
-      <RankingPreferences />
+      ) : <p role="status">Consultando classificação…</p>}
     </div>
   );
 }
