@@ -1,4 +1,4 @@
-import { ArrowRight, Compass, Route, UsersRound } from 'lucide-react';
+import { ArrowRight, Route } from 'lucide-react';
 import { useAuth } from '../auth/useAuth';
 import { ButtonLink } from '../components/design-system';
 import { photos } from '../data/demo';
@@ -65,18 +65,6 @@ function Dashboard({ name }: { name: string }) {
         <HomeRecentRides local={local} />
       </HomePerformance>
 
-      <nav className="apex-home-shortcuts" aria-label="Atalhos do Apex Ride">
-        <ButtonLink to="/explorar" variant="outline">
-          <Compass size={20} aria-hidden />
-          Explorar destinos
-          <ArrowRight size={17} aria-hidden />
-        </ButtonLink>
-        <ButtonLink to="/comunidade" variant="outline">
-          <UsersRound size={20} aria-hidden />
-          Ver comunidade
-          <ArrowRight size={17} aria-hidden />
-        </ButtonLink>
-      </nav>
     </div>
   );
 }
