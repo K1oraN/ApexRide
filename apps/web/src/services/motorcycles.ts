@@ -37,14 +37,23 @@ export const motorcycleService = {
   create: (data: MotorcycleData) =>
     authRequest<One>('/motorcycles', 'POST', data),
   update: (id: string, data: MotorcycleData) =>
-    authRequest<One>(`/motorcycles/${id}`, 'PATCH', data),
-  remove: (id: string) => authRequest(`/motorcycles/${id}`, 'DELETE'),
+    authRequest<One>(`/motorcycles/${encodeURIComponent(id)}`, 'PATCH', data),
+  /** Arquivamento reversível na base de dados (legado). */
+  remove: (id: string) =>
+    authRequest(`/motorcycles/${encodeURIComponent(id)}`, 'DELETE'),
+  /** Exclusão permanente: bloqueada pelo servidor se houver qualquer Ride associado. */
+  deletePermanently: (id: string) =>
+    authRequest(`/motorcycles/${encodeURIComponent(id)}/permanent`, 'DELETE'),
   setPrimary: (id: string) =>
-    authRequest<One>(`/motorcycles/${id}/primary`, 'PATCH'),
+    authRequest<One>(`/motorcycles/${encodeURIComponent(id)}/primary`, 'PATCH'),
   upload: (id: string, file: File) =>
-    authRequest<One>(`/motorcycles/${id}/photo`, 'POST', file),
+    authRequest<One>(
+      `/motorcycles/${encodeURIComponent(id)}/photo`,
+      'POST',
+      file,
+    ),
   removePhoto: (id: string) =>
-    authRequest<One>(`/motorcycles/${id}/photo`, 'DELETE'),
+    authRequest<One>(`/motorcycles/${encodeURIComponent(id)}/photo`, 'DELETE'),
 };
 export function validatePhoto(file: File): string | null {
   if (file.size > 5 * 1024 * 1024)
@@ -54,7 +63,6 @@ export function validatePhoto(file: File): string | null {
   if (!file.size) return 'Selecione uma fotografia válida.';
   return null;
 }
-
 export function motorcycleEngine(
   bike: Pick<MotorcycleData, 'displacementCc' | 'propulsion'>,
 ) {

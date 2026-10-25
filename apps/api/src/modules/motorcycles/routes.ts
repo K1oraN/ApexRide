@@ -5,6 +5,7 @@ import {
 } from './identity.js';
 import { registerCatalog } from './catalog.js';
 import { registerGarageRecords } from './records.js';
+import { registerPermanentMotorcycleDeletion } from './permanent-delete.js';
 import { randomUUID } from 'node:crypto';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import type { Pool, PoolClient } from 'pg';
@@ -161,6 +162,14 @@ export async function motorcycleRoutes(
 
   registerCatalog(app, db);
   registerGarageRecords(app, { db, identify, owner, own, transaction });
+  registerPermanentMotorcycleDeletion(app, {
+    identify,
+    owner,
+    own,
+    transaction,
+    queue,
+    clean,
+  });
   app.get('/motorcycles', { onRequest: identify }, async (request) => ({
     status: 'ok',
     motorcycles: (

@@ -59,6 +59,9 @@ function MotorcycleView({
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const [deleteMode, setDeleteMode] = useState<'archive' | 'permanent'>(
+    'archive',
+  );
   const confirmButton = useRef<HTMLButtonElement>(null);
   const [retry, setRetry] = useState(0);
   useEffect(() => {
@@ -90,18 +93,24 @@ function MotorcycleView({
   useEffect(() => {
     if (confirming) confirmButton.current?.focus();
   }, [confirming]);
-  async function action(remove: boolean) {
+  async function action(remove: boolean, permanently = false) {
     if (!bike || busy) return;
     setBusy(true);
     setError('');
     try {
-      if (remove) await motorcycleService.remove(bike.id);
-      else setBike((await motorcycleService.setPrimary(bike.id)).motorcycle);
+      if (remove) {
+        if (permanently) await motorcycleService.deletePermanently(bike.id);
+        else await motorcycleService.remove(bike.id);
+      } else setBike((await motorcycleService.setPrimary(bike.id)).motorcycle);
       await refresh();
       if (remove)
         navigate('/garagem', {
           replace: true,
-          state: { message: 'Moto excluída da garagem.' },
+          state: {
+            message: permanently
+              ? 'Moto excluída definitivamente.'
+              : 'Moto arquivada. Registros preservados.',
+          },
         });
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Não foi possível concluir.');
@@ -158,14 +167,33 @@ function MotorcycleView({
             </Button>
           )}
           <Button
-            variant="destructive"
+            variant="secondary"
             disabled={busy}
-            onClick={() => setConfirming(true)}
+            onClick={() => {
+              setDeleteMode('archive');
+              setConfirming(true);
+            }}
           >
-            Excluir moto
+            Arquivar moto
           </Button>
         </div>
       )}
+      <div className="garage-stage06-permanent-row">
+        <Button
+          variant="destructive"
+          disabled={busy}
+          onClick={() => {
+            setDeleteMode('permanent');
+            setConfirming(true);
+          }}
+        >
+          Excluir definitivamente
+        </Button>
+        <small>
+          A exclusão permanente exige que não existam atividades Ride vinculadas
+          à moto.
+        </small>
+      </div>
       <GarageDetails bike={bike!} />
       <Dialog
         open={confirming}
@@ -173,11 +201,12 @@ function MotorcycleView({
         onClose={() => {
           if (!busy) setConfirming(false);
         }}
-        title={`Excluir ${bike!.brand} ${bike!.model}?`}
+        title={`${deleteMode === 'permanent' ? 'Excluir definitivamente' : 'Arquivar'} ${bike!.brand} ${bike!.model}?`}
       >
         <p>
-          A moto e sua fotografia serão removidas da garagem. Se ela for a
-          principal, outra moto será selecionada.
+          {deleteMode === 'permanent'
+            ? 'Esta ação é irreversível: elimina a moto, registros privados e fotografia. Se houver atividades Ride associadas, o servidor bloqueará a exclusão para preservar seu histórico.'
+            : 'A moto será arquivada e ficará fora da garagem principal. Seus dados históricos serão preservados. Se for a principal, outra moto será selecionada.'}
         </p>
         <div
           className="ui-dialog-actions"
@@ -196,9 +225,13 @@ function MotorcycleView({
             variant="destructive"
             loading={busy}
             disabled={busy}
-            onClick={() => void action(true)}
+            onClick={() => void action(true, deleteMode === 'permanent')}
           >
-            {busy ? 'Excluindo…' : 'Confirmar exclusão'}
+            {busy
+              ? 'Processando…'
+              : deleteMode === 'permanent'
+                ? 'Excluir definitivamente'
+                : 'Confirmar arquivamento'}
           </Button>
         </div>
       </Dialog>

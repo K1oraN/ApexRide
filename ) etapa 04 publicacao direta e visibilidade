@@ -1,0 +1,9 @@
+ apps/api/src/modules/routes/publication.ts   | 135 [32m++++++++++++[m
+ apps/api/src/modules/routes/visibility.ts    |  50 [32m+++++[m
+ apps/web/src/pages/ExplorePage.tsx           | 308 [32m+++++++[m[31m--------------------[m
+ apps/web/src/routes/RoutePublishPanel.tsx    | 221 [32m+++++++++++++++++++[m
+ apps/web/src/styles/apex-stage-04.css        | 168 [32m+++++++++++++++[m
+ database/migrations/038_route_visibility.sql |  22 [32m++[m
+ docs/ETAPA_04_PUBLICACAO.md                  | 120 [32m+++++++++++[m
+ scripts/aplicar-etapa-04.mjs                 | 250 [32m++++++++++++++++++++++[m
+ 8 files changed, 1038 insertions(+), 236 deletions(-)
