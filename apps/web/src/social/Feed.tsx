@@ -1,4 +1,12 @@
-import { Heart, MessageCircle, MoreHorizontal } from 'lucide-react';
+import {
+  Heart,
+  ImagePlus,
+  MessageCircle,
+  MoreHorizontal,
+  PencilLine,
+  Share2,
+} from 'lucide-react';
+/* APEX STAGE 07 FEED */
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useAuth } from '../auth/useAuth';
@@ -268,6 +276,7 @@ export function LivePost({
   canModerate?: boolean;
 }) {
   const { user } = useAuth();
+  const [shareMessage, setShareMessage] = useState('');
   const [comments, setComments] = useState(false),
     [edit, setEdit] = useState(false),
     [confirm, setConfirm] = useState(false),
@@ -280,6 +289,34 @@ export function LivePost({
       setError('');
     } catch (e) {
       setError((e as Error).message);
+    }
+  }
+  async function sharePost() {
+    setShareMessage('');
+    const link = new URL('/comunidade', window.location.origin);
+    link.searchParams.set('post', post.id);
+    try {
+      if (typeof navigator.share === 'function') {
+        await navigator.share({
+          title: 'Publicação Apex Ride',
+          url: link.href,
+        });
+        setShareMessage(
+          'Compartilhamento iniciado. O acesso depende das permissões do autor.',
+        );
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(link.href);
+        setShareMessage(
+          'Link copiado. O acesso depende das permissões do autor.',
+        );
+      } else {
+        setShareMessage('Copie o endereço: ' + link.href);
+      }
+    } catch (cause) {
+      if (cause instanceof DOMException && cause.name === 'AbortError') return;
+      setShareMessage(
+        'Não foi possível compartilhar agora. Copie o endereço: ' + link.href,
+      );
     }
   }
   async function action(kind: 'like' | 'delete') {
@@ -427,6 +464,14 @@ export function LivePost({
           {post.comments}
           <span className="sr-only"> comentários</span>
         </button>
+        <button
+          type="button"
+          onClick={() => void sharePost()}
+          aria-label="Compartilhar publicação"
+        >
+          <Share2 size={20} aria-hidden="true" />
+          <span>Compartilhar</span>
+        </button>
         {user && user.id !== post.author_id && (
           <Link
             className="text-link action-link"
@@ -436,6 +481,11 @@ export function LivePost({
           </Link>
         )}
       </div>
+      {shareMessage && (
+        <p className="community-stage-share-message" role="status">
+          {shareMessage}
+        </p>
+      )}
       {confirm && (
         <div className="social-summary">
           <p>
@@ -538,10 +588,21 @@ export function Feed({
       {!compact &&
         user &&
         canPost &&
+        !composing &&
+        !selectedRide &&
         (!username || username === user.username) && (
-          <Button variant="primary" onClick={() => setComposing(true)}>
-            Criar publicação
-          </Button>
+          <div className="feed-composer-prompt">
+            <Avatar name={user.displayName} placeholder />
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={() => setComposing(true)}
+            >
+              <PencilLine size={19} aria-hidden="true" />
+              Compartilhe sua próxima aventura…
+            </Button>
+            <ImagePlus size={24} aria-hidden="true" />
+          </div>
         )}
       {!compact && user && (composing || selectedRide) && (
         <Composer

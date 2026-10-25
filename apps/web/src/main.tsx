@@ -17,6 +17,7 @@ import './styles/shell.css';
 import './styles/vertical-scroll.css';
 import './styles/explore-mobile-fixes.css';
 import './styles/apex-ui-overhaul.css';
+import './styles/apex-stage-07.css';
 
 if (
   import.meta.env.PROD &&
