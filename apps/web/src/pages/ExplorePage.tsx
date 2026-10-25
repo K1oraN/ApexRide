@@ -1,5 +1,4 @@
-﻿
-import {
+﻿import {
   CalendarDays,
   Compass,
   ChevronLeft,
@@ -14,11 +13,7 @@ import {
   Folder,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import {
-  Link,
-  useNavigate,
-  useSearchParams,
-} from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import type { Coordinate } from '@apex-ride/ride-core/routes';
 import { useAuth } from '../auth/useAuth';
 import {
@@ -36,10 +31,7 @@ import { PersistedRouteCard } from '../components/routes/PersistedRouteCard';
 import { SectionTitle } from '../components/ui';
 import { useRide } from '../ride/context';
 import { DestinationSearch } from '../routes/DestinationSearch';
-import {
-  routeService,
-  type RouteRecord,
-} from '../services/routes';
+import { routeService, type RouteRecord } from '../services/routes';
 import '../styles/routes.css';
 import '../styles/explore.css';
 
@@ -131,12 +123,9 @@ export function ExplorePage() {
   const [error, setError] = useState('');
   const [refresh, setRefresh] = useState(0);
 
-  const [center, setCenter] = useState<
-    Coordinate | undefined
-  >();
+  const [center, setCenter] = useState<Coordinate | undefined>();
 
-  const [locationMessage, setLocationMessage] =
-    useState('');
+  const [locationMessage, setLocationMessage] = useState('');
 
   const [locationPoint, setLocationPoint] = useState<{
     coordinate: Coordinate;
@@ -146,14 +135,10 @@ export function ExplorePage() {
   const pendingLocation = useRef(false);
   const ownsGps = useRef(false);
 
-  const page = Math.max(
-    1,
-    Number(params.get('page')) || 1,
-  );
+  const page = Math.max(1, Number(params.get('page')) || 1);
 
   const activeFilters = Object.entries(filters).filter(
-    ([key, value]) =>
-      value !== defaults[key as keyof typeof defaults],
+    ([key, value]) => value !== defaults[key as keyof typeof defaults],
   ).length;
 
   function change(values: Record<string, string>) {
@@ -209,9 +194,7 @@ export function ExplorePage() {
       ownsGps.current &&
       !ride.navigationGpsShared() &&
       !ride.gpsShared() &&
-      !['running', 'waiting-gps'].includes(
-        ride.getSnapshot().state,
-      )
+      !['running', 'waiting-gps'].includes(ride.getSnapshot().state)
     ) {
       ride.gps.stop();
     }
@@ -232,10 +215,7 @@ export function ExplorePage() {
         reading.accuracy <= 20 &&
         Date.now() - reading.timestamp <= 10000
       ) {
-        const coordinate: Coordinate = [
-          reading.longitude,
-          reading.latitude,
-        ];
+        const coordinate: Coordinate = [reading.longitude, reading.latitude];
 
         setCenter(coordinate);
 
@@ -264,9 +244,7 @@ export function ExplorePage() {
         ownsGps.current &&
         !ride.navigationGpsShared() &&
         !ride.gpsShared() &&
-        !['running', 'waiting-gps'].includes(
-          ride.getSnapshot().state,
-        )
+        !['running', 'waiting-gps'].includes(ride.getSnapshot().state)
       ) {
         ride.gps.stop();
       }
@@ -284,10 +262,7 @@ export function ExplorePage() {
 
   const requestedBounds = requestKey.get('bbox');
 
-  if (
-    requestedBounds &&
-    !validMapBounds(requestedBounds)
-  ) {
+  if (requestedBounds && !validMapBounds(requestedBounds)) {
     requestKey.delete('bbox');
   }
 
@@ -320,25 +295,14 @@ export function ExplorePage() {
         q.delete('sort');
       }
 
-      for (const field of [
-        'minDistance',
-        'maxDistance',
-      ]) {
+      for (const field of ['minDistance', 'maxDistance']) {
         if (q.get(field)) {
-          q.set(
-            field,
-            String(Number(q.get(field)) * 1000),
-          );
+          q.set(field, String(Number(q.get(field)) * 1000));
         }
       }
 
       void routeService
-        .list(
-          q,
-          ['mine', 'favorites'].includes(tab)
-            ? '/' + tab
-            : '',
-        )
+        .list(q, ['mine', 'favorites'].includes(tab) ? '/' + tab : '')
         .then((result) => {
           if (!live) return;
 
@@ -369,10 +333,7 @@ export function ExplorePage() {
     }
 
     try {
-      await routeService.favorite(
-        route.id,
-        !route.favorite,
-      );
+      await routeService.favorite(route.id, !route.favorite);
 
       setRefresh((value) => value + 1);
     } catch (cause) {
@@ -380,17 +341,13 @@ export function ExplorePage() {
     }
   }
 
-  const selected = routes.find(
-    (route) => route.id === params.get('rota'),
-  );
+  const selected = routes.find((route) => route.id === params.get('rota'));
 
   return (
     <div className="explore-page explore-refined">
       <div className="explore-heading">
         <div>
-          <p className="eyebrow">
-            SEU PRÓXIMO DESTINO
-          </p>
+          <p className="eyebrow">SEU PRÓXIMO DESTINO</p>
 
           <h1>
             EXPLORE <em>MAIS LONGE</em>
@@ -416,9 +373,7 @@ export function ExplorePage() {
             type="button"
             aria-expanded={open}
             aria-label={`Filtros${
-              activeFilters
-                ? ` · ${activeFilters} ativos`
-                : ''
+              activeFilters ? ` · ${activeFilters} ativos` : ''
             }`}
             onClick={() => {
               setDraft(filters);
@@ -428,21 +383,14 @@ export function ExplorePage() {
             <SlidersHorizontal />
             <span>
               Filtros
-              {activeFilters
-                ? ` (${activeFilters})`
-                : ''}
+              {activeFilters ? ` (${activeFilters})` : ''}
             </span>
           </Button>
         </div>
       )}
 
       {query && (
-        <Button
-          variant="ghost"
-          onClick={() =>
-            change({ q: '' })
-          }
-        >
+        <Button variant="ghost" onClick={() => change({ q: '' })}>
           Limpar busca de percursos
         </Button>
       )}
@@ -454,15 +402,9 @@ export function ExplorePage() {
           onChange={(value) => {
             if (
               !user &&
-              [
-                'mine',
-                'favorites',
-                'destinations',
-              ].includes(value)
+              ['mine', 'favorites', 'destinations'].includes(value)
             ) {
-              navigate(
-                '/entrar?retorno=%2Fexplorar',
-              );
+              navigate('/entrar?retorno=%2Fexplorar');
               return;
             }
 
@@ -479,10 +421,7 @@ export function ExplorePage() {
           to="/comunidade/eventos"
           variant="secondary"
         >
-          <CalendarDays
-            size={20}
-            aria-hidden="true"
-          />
+          <CalendarDays size={20} aria-hidden="true" />
           Eventos
         </ButtonLink>
       </div>
@@ -496,11 +435,7 @@ export function ExplorePage() {
               setCenter(coordinate);
               setLocationPoint(null);
 
-              navigate(
-                `/explorar/navegar?destino=${coordinate.join(
-                  ',',
-                )}`,
-              );
+              navigate(`/explorar/navegar?destino=${coordinate.join(',')}`);
             }}
           />
         </section>
@@ -512,21 +447,13 @@ export function ExplorePage() {
             <Compass />
 
             <span>
-              <strong>
-                Descubra novos destinos
-              </strong>
+              <strong>Descubra novos destinos</strong>
 
-              <small>
-                Percursos reais. Novas possibilidades.
-              </small>
+              <small>Percursos reais. Novas possibilidades.</small>
             </span>
           </div>
 
-          <ButtonLink
-            variant="primary"
-            to="/explorar/novo"
-            size="lg"
-          >
+          <ButtonLink variant="primary" to="/explorar/novo" size="lg">
             <Plus />
             Criar percurso
           </ButtonLink>
@@ -534,13 +461,9 @@ export function ExplorePage() {
 
         <RouteMap
           routes={routes}
-          selected={
-            params.get('rota') ?? undefined
-          }
+          selected={params.get('rota') ?? undefined}
           onSelect={(id) => {
-            const next = new URLSearchParams(
-              params,
-            );
+            const next = new URLSearchParams(params);
 
             next.set('rota', id);
             setParams(next);
@@ -554,12 +477,10 @@ export function ExplorePage() {
               ? [
                   {
                     id: 'me',
-                    coordinate:
-                      locationPoint.coordinate,
+                    coordinate: locationPoint.coordinate,
                     label: 'Posição consultada',
                     color: '#69b5ff',
-                    radiusMeters:
-                      locationPoint.accuracy,
+                    radiusMeters: locationPoint.accuracy,
                     stale: true,
                   },
                 ]
@@ -575,12 +496,9 @@ export function ExplorePage() {
           onClick={() => {
             pendingLocation.current = true;
 
-            ownsGps.current =
-              !ride.gps.getSnapshot().active;
+            ownsGps.current = !ride.gps.getSnapshot().active;
 
-            setLocationMessage(
-              'Aguardando autorização e posição precisa…',
-            );
+            setLocationMessage('Aguardando autorização e posição precisa…');
 
             ride.gps.start();
 
@@ -595,22 +513,13 @@ export function ExplorePage() {
             }
           }}
         >
-          <MapPin
-            size={19}
-            aria-hidden="true"
-          />
+          <MapPin size={19} aria-hidden="true" />
 
           <span>Minha localização</span>
         </Button>
 
-        <ButtonLink
-          variant="primary"
-          to="/explorar/navegar"
-        >
-          <Navigation
-            size={19}
-            aria-hidden="true"
-          />
+        <ButtonLink variant="primary" to="/explorar/navegar">
+          <Navigation size={19} aria-hidden="true" />
 
           <span>Planejar navegação</span>
         </ButtonLink>
@@ -632,24 +541,17 @@ export function ExplorePage() {
       )}
 
       {locationMessage && (
-        <p
-          className="explore-location-message"
-          role="status"
-        >
+        <p className="explore-location-message" role="status">
           {locationMessage}
         </p>
       )}
 
       {selected && (
         <section className="panel selected-route">
-          <strong>
-            {selected.name}
-          </strong>
+          <strong>{selected.name}</strong>
 
           <div className="route-tools">
-            <ButtonLink
-              to={`/explorar/${selected.id}`}
-            >
+            <ButtonLink to={`/explorar/${selected.id}`}>
               Abrir detalhes do percurso
             </ButtonLink>
 
@@ -665,8 +567,7 @@ export function ExplorePage() {
             <Button
               variant="ghost"
               onClick={() => {
-                const next =
-                  new URLSearchParams(params);
+                const next = new URLSearchParams(params);
 
                 next.delete('rota');
                 setParams(next);
@@ -680,11 +581,7 @@ export function ExplorePage() {
 
       {tab !== 'destinations' && (
         <section>
-          <SectionTitle
-            icon={
-              tab === 'circuit' ? Flag : Route
-            }
-          >
+          <SectionTitle icon={tab === 'circuit' ? Flag : Route}>
             {query || activeFilters
               ? 'RESULTADOS · FILTROS ATIVOS'
               : tab === 'mine'
@@ -697,69 +594,41 @@ export function ExplorePage() {
           </SectionTitle>
 
           {loading ? (
-            <p role="status">
-              Carregando percursos…
-            </p>
+            <p role="status">Carregando percursos…</p>
           ) : error ? (
-            <div
-              className="panel empty-state"
-              role="alert"
-            >
+            <div className="panel empty-state" role="alert">
               <p>{error}</p>
 
-              <Button
-                onClick={() =>
-                  setRefresh(
-                    (value) => value + 1,
-                  )
-                }
-              >
+              <Button onClick={() => setRefresh((value) => value + 1)}>
                 Tentar novamente
               </Button>
             </div>
           ) : routes.length ? (
             <div className="route-grid">
-              {routes.map(
-                (route, index) => (
-                  <PersistedRouteCard
-                    key={route.id}
-                    route={route}
-                    featured={
-                      index === 0 && !query
-                    }
-                    onFavorite={(item) =>
-                      void favorite(item)
-                    }
-                  />
-                ),
-              )}
+              {routes.map((route, index) => (
+                <PersistedRouteCard
+                  key={route.id}
+                  route={route}
+                  featured={index === 0 && !query}
+                  onFavorite={(item) => void favorite(item)}
+                />
+              ))}
             </div>
           ) : (
             <EmptyState title="Nenhuma rota encontrada">
-              Tente outro nome, cidade ou filtro.
-              Apenas percursos aprovados
-              aparecem publicamente. Crie seu
-              primeiro rascunho pelo botão
+              Tente outro nome, cidade ou filtro. Apenas percursos aprovados
+              aparecem publicamente. Crie seu primeiro rascunho pelo botão
               próximo ao mapa.
             </EmptyState>
           )}
 
-          <nav
-            className="page-pagination"
-            aria-label="Páginas de percursos"
-          >
+          <nav className="page-pagination" aria-label="Páginas de percursos">
             <Button
-              disabled={
-                page === 1 || loading
-              }
+              disabled={page === 1 || loading}
               onClick={() => {
-                const next =
-                  new URLSearchParams(params);
+                const next = new URLSearchParams(params);
 
-                next.set(
-                  'page',
-                  String(page - 1),
-                );
+                next.set('page', String(page - 1));
 
                 setParams(next);
               }}
@@ -768,20 +637,14 @@ export function ExplorePage() {
               Anterior
             </Button>
 
-            <span>
-              Página {page}
-            </span>
+            <span>Página {page}</span>
 
             <Button
               disabled={!more || loading}
               onClick={() => {
-                const next =
-                  new URLSearchParams(params);
+                const next = new URLSearchParams(params);
 
-                next.set(
-                  'page',
-                  String(page + 1),
-                );
+                next.set('page', String(page + 1));
 
                 setParams(next);
               }}
@@ -794,10 +657,7 @@ export function ExplorePage() {
       )}
 
       {user?.administrativeAccess && (
-        <Link
-          className="text-link action-link"
-          to="/admin/routes"
-        >
+        <Link className="text-link action-link" to="/admin/routes">
           Moderação de percursos
         </Link>
       )}
@@ -818,7 +678,6 @@ export function ExplorePage() {
         >
           <label>
             Estado (UF)
-
             <Input
               value={draft.state}
               maxLength={2}
@@ -826,8 +685,7 @@ export function ExplorePage() {
               onChange={(event) =>
                 setDraft({
                   ...draft,
-                  state:
-                    event.target.value.toUpperCase(),
+                  state: event.target.value.toUpperCase(),
                 })
               }
               placeholder="Todo o Brasil"
@@ -836,7 +694,6 @@ export function ExplorePage() {
 
           <label>
             Cidade
-
             <Input
               value={draft.city}
               maxLength={120}
@@ -851,15 +708,13 @@ export function ExplorePage() {
 
           <label>
             Categoria
-
             <Input
               value={draft.category}
               maxLength={60}
               onChange={(event) =>
                 setDraft({
                   ...draft,
-                  category:
-                    event.target.value,
+                  category: event.target.value,
                 })
               }
               placeholder="Ex.: Turismo"
@@ -867,12 +722,7 @@ export function ExplorePage() {
           </label>
 
           <div className="coordinate-form">
-            {(
-              [
-                'minDistance',
-                'maxDistance',
-              ] as const
-            ).map((field) => (
+            {(['minDistance', 'maxDistance'] as const).map((field) => (
               <label key={field}>
                 {field === 'minDistance'
                   ? 'Distância mínima (km)'
@@ -887,8 +737,7 @@ export function ExplorePage() {
                   onChange={(event) =>
                     setDraft({
                       ...draft,
-                      [field]:
-                        event.target.value,
+                      [field]: event.target.value,
                     })
                   }
                 />
@@ -898,37 +747,24 @@ export function ExplorePage() {
 
           <label>
             Ordenação
-
             <Select
               value={draft.sort}
               onChange={(event) =>
                 setDraft({
                   ...draft,
-                  sort:
-                    event.target.value,
+                  sort: event.target.value,
                 })
               }
             >
-              <option value="recent">
-                Mais recentes
-              </option>
-              <option value="favorites">
-                Mais favoritados
-              </option>
-              <option value="shortest">
-                Menor distância
-              </option>
-              <option value="longest">
-                Maior distância
-              </option>
+              <option value="recent">Mais recentes</option>
+              <option value="favorites">Mais favoritados</option>
+              <option value="shortest">Menor distância</option>
+              <option value="longest">Maior distância</option>
             </Select>
           </label>
 
           <div className="explore-filter-actions">
-            <Button
-              type="submit"
-              variant="primary"
-            >
+            <Button type="submit" variant="primary">
               Aplicar filtros
             </Button>
 

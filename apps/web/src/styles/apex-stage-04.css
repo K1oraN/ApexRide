@@ -1,0 +1,168 @@
+/* Etapa 04 — visibilidade escolhida pelo dono do percurso. */
+.apex-route-publication {
+  display: grid;
+  gap: 15px;
+  padding: clamp(16px, 2.5vw, 26px);
+  border: 1px solid #394552;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #151d27, #0b1017);
+  min-width: 0;
+}
+.apex-route-publication-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.apex-route-publication-heading > svg {
+  color: #ff2442;
+  flex: 0 0 auto;
+}
+.apex-route-publication-heading h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(18px, 2.4vw, 23px);
+}
+.apex-route-publication-heading p {
+  margin: 5px 0 0;
+  color: #b9c2cf;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.apex-route-visibility-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.apex-route-visibility-grid label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  min-height: 76px;
+  padding: 12px;
+  border: 1px solid #384653;
+  border-radius: 13px;
+  background: #0e151e;
+  color: #eef3f9;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.apex-route-visibility-grid label.is-selected {
+  border-color: #ff2340;
+  background: linear-gradient(120deg, #33131e, #171820);
+  box-shadow: 0 0 0 1px #ff24443b inset;
+}
+.apex-route-visibility-grid label > svg {
+  color: #ff304e;
+  flex: 0 0 auto;
+}
+.apex-route-visibility-grid label > span {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.apex-route-visibility-grid strong {
+  font-size: 14px;
+  overflow-wrap: break-word;
+}
+.apex-route-visibility-grid small {
+  color: #bdc6d1;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+.apex-route-visibility-grid input {
+  accent-color: #ff1734;
+  flex: 0 0 auto;
+}
+.apex-route-group-select {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #edf2fa;
+}
+.apex-route-group-select select {
+  box-sizing: border-box;
+  min-height: 48px;
+  width: 100%;
+  padding: 10px 38px 10px 12px;
+  border: 1px solid #536071;
+  border-radius: 11px;
+  background: #151e29;
+  color: #fff;
+  font-size: 15px;
+}
+.apex-route-group-select small {
+  font-size: 12px;
+  color: #b4bfce;
+  font-weight: 400;
+}
+.apex-route-publish-button {
+  cursor: pointer;
+  min-height: 52px;
+  border: 1px solid #ff3651;
+  border-radius: 13px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  background: linear-gradient(115deg, #ff203c, #c90c27);
+  box-shadow: 0 5px 26px #ff163333;
+}
+.apex-route-publish-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.apex-route-publish-error {
+  color: #ff9dab !important;
+  margin: 0 !important;
+}
+.apex-route-publish-success {
+  color: #6ee1a1 !important;
+  margin: 0 !important;
+}
+.apex-route-publication-caveat {
+  margin: 0 !important;
+  color: #b8c4d1 !important;
+  font-size: 12px !important;
+}
+@media (max-width: 510px) {
+  .apex-route-visibility-grid {
+    grid-template-columns: 1fr;
+  }
+  .apex-route-visibility-grid label {
+    min-height: 61px;
+  }
+  .apex-route-publication {
+    padding: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .apex-route-visibility-grid label {
+    transition: none;
+  }
+}
+
+/* Duas novas abas de descobertas (Seguindo e Grupos) sem colunas estreitas. */
+.explore-refined .explore-categories-row {
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+@media (max-width: 1100px) {
+  .explore-refined .explore-categories-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .explore-refined .explore-categories-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* No detalhe, o bloco de publicação ocupa uma linha inteira das ações. */
+.route-detail .route-tools > .apex-route-publication {
+  flex: 1 1 100%;
+  width: 100%;
+  min-width: 0;
+}
