@@ -1,0 +1,69 @@
+/* Apex Ride — catálogo nacional de modelos (sem fichas presumidas). */
+.catalog-directory,
+.catalog-reviewed {
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: #111820;
+}
+.catalog-directory-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.catalog-directory-heading h3,
+.catalog-reviewed h3 {
+  margin: 0;
+  font: 700 20px/1.2 var(--font-heading);
+}
+.catalog-directory-heading > span {
+  color: #ff9aaa;
+  font-size: 12px;
+  font-weight: 700;
+}
+.catalog-directory-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
+}
+.catalog-directory-grid > label {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+.catalog-directory-grid .ui-select,
+.catalog-directory-grid .ui-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  border-radius: 11px;
+}
+.catalog-directory > .button {
+  justify-self: start;
+  max-width: 100%;
+}
+.catalog-reviewed .catalog-search-grid {
+  min-width: 0;
+}
+@media (max-width: 600px) {
+  .catalog-directory,
+  .catalog-reviewed {
+    padding: 14px;
+  }
+  .catalog-directory-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .catalog-directory > .button {
+    width: 100%;
+  }
+}

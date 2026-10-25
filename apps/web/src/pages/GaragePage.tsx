@@ -1,4 +1,7 @@
-import { CatalogPicker } from '../garage/CatalogPicker';
+import {
+  CatalogPicker,
+  type DirectorySelection,
+} from '../garage/CatalogPicker';
 import { GaragePremium, GarageHero } from '../garage/GaragePremium';
 import { GarageDetails } from '../garage/GarageDetails';
 import type { CatalogVariant } from '../services/catalog';
@@ -241,6 +244,20 @@ function MotorcycleForm({ bike }: { bike: Motorcycle | null }) {
     setShowCatalog(false);
   }
 
+  function selectDirectory(selection: DirectorySelection) {
+    // Directory entries are names only: do not invent a technical revision,
+    // engine size, propulsion type or model-year availability.
+    setBrand(selection.brand);
+    setModel(selection.model);
+    setYear(String(selection.year));
+    setVersionName('');
+    setCatalog(null);
+    setCc('');
+    setPropulsion('combustion');
+    setShowCatalog(false);
+    setError('');
+  }
+
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [photoInputVersion, setPhotoInputVersion] = useState(0);
@@ -360,6 +377,7 @@ function MotorcycleForm({ bike }: { bike: Motorcycle | null }) {
       {showCatalog ? (
         <CatalogPicker
           onSelect={selectCatalog}
+          onDirectorySelect={selectDirectory}
           onManual={() => setShowCatalog(false)}
         />
       ) : (
